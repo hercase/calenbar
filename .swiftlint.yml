@@ -1,0 +1,42 @@
+included:
+  - Sources
+  - Tests
+excluded:
+  - .build
+
+opt_in_rules:
+  - closure_spacing
+  - contains_over_filter_count
+  - empty_count
+  - explicit_init
+  - fatal_error_message
+  - first_where
+  - force_unwrapping
+  - implicit_return
+  - last_where
+  - modifier_order
+  - multiline_parameters
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+  - weak_delegate
+  - yoda_condition
+
+disabled_rules:
+  - todo
+  - trailing_comma # owned by swift-format
+
+line_length:
+  warning: 130
+  error: 160
+  ignores_urls: true
+
+identifier_name:
+  excluded: [id, x, y, i]
+
+type_body_length:
+  warning: 300
+
+file_length:
+  warning: 400

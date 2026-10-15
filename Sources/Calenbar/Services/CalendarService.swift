@@ -1,0 +1,201 @@
+import AppKit
+import CalenbarCore
+import EventKit
+import Network
+import Observation
+
+struct CalendarInfo: Identifiable, Hashable {
+    let id: String
+    let title: String
+    let colorHex: String
+    let sourceTitle: String
+}
+
+/// Reads events from the macOS Calendar database and keeps them fresh.
+@MainActor
+@Observable
+final class CalendarService {
+    enum Access {
+        case notDetermined
+        case granted
+        case denied
+    }
+
+    /// Today through the next two weeks; enough for the title, the list and notifications.
+    private(set) var upcoming: [CalendarEvent] = []
+    private(set) var calendars: [CalendarInfo] = []
+    private(set) var access: Access
+    /// When events were last read from the system calendar database.
+    private(set) var lastReload: Date?
+
+    @ObservationIgnored private let store = EKEventStore()
+    /// Maps our per-occurrence id to EventKit's identifier, for "Open in Calendar".
+    @ObservationIgnored private var eventIdentifiers: [String: String] = [:]
+    @ObservationIgnored private var observers: [NSObjectProtocol] = []
+    @ObservationIgnored private var safetyTimer: Timer?
+    @ObservationIgnored private let network = NWPathMonitor()
+
+    init() {
+        access = Self.currentAccess()
+        observers.append(
+            NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.reload() }
+            })
+        // Synced accounts can go stale after sleep or a network switch; nudge them to refresh.
+        observers.append(
+            NSWorkspace.shared.notificationCenter.addObserver(
+                forName: NSWorkspace.didWakeNotification, object: nil, queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated { self?.refreshSources() }
+            })
+        network.pathUpdateHandler = { [weak self] path in
+            guard path.status == .satisfied else { return }
+            Task { @MainActor in self?.refreshSources() }
+        }
+        network.start(queue: .global(qos: .utility))
+        // macOS syncs Google/Exchange on its own schedule; nudging it often keeps new invites showing up quickly.
+        let timer = Timer(timeInterval: 5 * 60, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.refreshSources() }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        safetyTimer = timer
+        reload()
+    }
+
+    /// Asks macOS to sync remote calendars (Google, Exchange…) now, then re-reads events.
+    func refreshSources() {
+        guard access == .granted else { return }
+        store.refreshSourcesIfNecessary()
+        reload()
+    }
+
+    func requestAccess() async {
+        _ = try? await store.requestFullAccessToEvents()
+        access = Self.currentAccess()
+        reload()
+    }
+
+    func reload() {
+        guard access == .granted else {
+            upcoming = []
+            calendars = []
+            return
+        }
+        calendars = store.calendars(for: .event)
+            .map { calendar in
+                CalendarInfo(
+                    id: calendar.calendarIdentifier,
+                    title: calendar.title,
+                    colorHex: calendar.color.hexString,
+                    sourceTitle: calendar.source.title
+                )
+            }
+            .sorted { ($0.sourceTitle, $0.title) < ($1.sourceTitle, $1.title) }
+
+        lastReload = Date()
+        let startOfToday = Calendar.current.startOfDay(for: Date())
+        let end = Calendar.current.date(byAdding: .day, value: 14, to: startOfToday) ?? startOfToday
+        upcoming = events(from: startOfToday, to: end)
+    }
+
+    func events(from start: Date, to end: Date) -> [CalendarEvent] {
+        guard access == .granted else { return [] }
+        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)
+        let events = store.events(matching: predicate)
+            .map(makeEvent)
+            .sorted { $0.start < $1.start }
+        return CalendarEvent.deduplicated(events)
+    }
+
+    func openInCalendar(_ event: CalendarEvent) {
+        guard let identifier = eventIdentifiers[event.id],
+            let encoded = identifier.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+            let url = URL(string: "ical://ekevent/\(encoded)?method=show&options=more")
+        else {
+            openCalendarApp()
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+
+    func openCalendarApp() {
+        NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Applications/Calendar.app"))
+    }
+
+    static func openPrivacySettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    private static func currentAccess() -> Access {
+        switch EKEventStore.authorizationStatus(for: .event) {
+        case .fullAccess: .granted
+        case .notDetermined: .notDetermined
+        default: .denied
+        }
+    }
+
+    private func makeEvent(_ event: EKEvent) -> CalendarEvent {
+        let identifier = event.eventIdentifier ?? UUID().uuidString
+        let id = "\(identifier)|\(Int(event.startDate.timeIntervalSince1970))"
+        eventIdentifiers[id] = identifier
+
+        let participants = event.attendees ?? []
+        let currentUser = participants.first { $0.isCurrentUser }
+        let organizerURL = event.organizer?.url
+        let attendees = participants.map { participant in
+            Attendee(
+                name: participant.name,
+                email: Self.email(from: participant.url),
+                status: Self.status(participant.participantStatus),
+                kind: Self.kind(participant.participantType),
+                isCurrentUser: participant.isCurrentUser,
+                isOrganizer: organizerURL != nil && participant.url == organizerURL
+            )
+        }
+        return CalendarEvent(
+            id: id,
+            externalID: event.calendarItemExternalIdentifier ?? identifier,
+            title: event.title ?? "",
+            start: event.startDate,
+            end: event.endDate,
+            isAllDay: event.isAllDay,
+            calendarID: event.calendar.calendarIdentifier,
+            calendarTitle: event.calendar.title,
+            calendarColorHex: event.calendar.color.hexString,
+            isDeclined: currentUser?.participantStatus == .declined,
+            hasOtherAttendees: participants.contains { !$0.isCurrentUser },
+            url: event.url,
+            location: event.location,
+            notes: event.notes,
+            attendees: attendees,
+            myStatus: currentUser.map { Self.status($0.participantStatus) } ?? .unknown,
+            isRecurring: event.hasRecurrenceRules
+        )
+    }
+
+    private static func email(from url: URL) -> String? {
+        guard url.scheme == "mailto" else { return nil }
+        return url.absoluteString.replacingOccurrences(of: "mailto:", with: "").removingPercentEncoding
+    }
+
+    private static func status(_ status: EKParticipantStatus) -> ParticipationStatus {
+        switch status {
+        case .pending, .delegated: .pending
+        case .accepted, .completed, .inProcess: .accepted
+        case .tentative: .tentative
+        case .declined: .declined
+        default: .unknown
+        }
+    }
+
+    private static func kind(_ type: EKParticipantType) -> Attendee.Kind {
+        switch type {
+        case .room: .room
+        case .resource: .resource
+        case .group: .group
+        default: .person
+        }
+    }
+}
