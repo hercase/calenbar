@@ -1,11 +1,12 @@
 // Draws the DMG window background: "drag to Applications" arrow and a first-launch hint.
 // Usage: swift scripts/dmg-background.swift <output.png> <scale>
-// Layout matches scripts/package.sh: 640x400 window, app icon at (160, 190), Applications at (480, 190).
+// Layout matches scripts/package.sh: 660x440 window (412 pt of content below the title bar),
+// app icon at (170, 200) and Applications at (490, 200), measured from the content's top-left.
 import AppKit
 
 let args = CommandLine.arguments
 guard args.count == 3, let scale = Double(args[2]) else { fatalError("usage: dmg-background.swift out.png scale") }
-let size = NSSize(width: 640, height: 400)
+let size = NSSize(width: 660, height: 412)
 guard let rep = NSBitmapImageRep(
     bitmapDataPlanes: nil, pixelsWide: Int(size.width * scale), pixelsHigh: Int(size.height * scale),
     bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
@@ -33,24 +34,24 @@ func drawCentered(_ text: String, y: CGFloat, font: NSFont, color: NSColor) {
 }
 
 // AppKit's origin is bottom-left: y = 400 - (distance from top).
-drawCentered("Drag Calenbar to Applications", y: 400 - 70, font: .systemFont(ofSize: 22, weight: .semibold), color: indigo)
+drawCentered("Drag Calenbar to Applications", y: size.height - 72, font: .systemFont(ofSize: 22, weight: .semibold), color: indigo)
 
-// Arrow between the two icons (icon centers at y = 190 from the top).
-let arrowY = 400 - 190.0
+// Arrow between the two icons (icon centers at y = 200 from the top).
+let arrowY = size.height - 200
 let arrow = NSBezierPath()
 arrow.lineWidth = 6
 arrow.lineCapStyle = .round
 arrow.lineJoinStyle = .round
-arrow.move(to: NSPoint(x: 255, y: arrowY))
-arrow.line(to: NSPoint(x: 385, y: arrowY))
-arrow.move(to: NSPoint(x: 362, y: arrowY + 20))
-arrow.line(to: NSPoint(x: 387, y: arrowY))
-arrow.line(to: NSPoint(x: 362, y: arrowY - 20))
+arrow.move(to: NSPoint(x: 270, y: arrowY))
+arrow.line(to: NSPoint(x: 390, y: arrowY))
+arrow.move(to: NSPoint(x: 368, y: arrowY + 20))
+arrow.line(to: NSPoint(x: 392, y: arrowY))
+arrow.line(to: NSPoint(x: 368, y: arrowY - 20))
 indigo.withAlphaComponent(0.85).setStroke()
 arrow.stroke()
 
 drawCentered("First launch: System Settings › Privacy & Security › Open Anyway",
-             y: 34, font: .systemFont(ofSize: 12, weight: .regular), color: secondary)
+             y: 40, font: .systemFont(ofSize: 12, weight: .regular), color: secondary)
 
 NSGraphicsContext.restoreGraphicsState()
 guard let png = rep.representation(using: .png, properties: [:]) else { fatalError("png") }

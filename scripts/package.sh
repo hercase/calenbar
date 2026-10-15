@@ -27,12 +27,12 @@ create-dmg \
   --volicon Resources/AppIcon.icns \
   --background "$WORK/background.tiff" \
   --window-pos 200 120 \
-  --window-size 640 400 \
+  --window-size 660 440 \
   --icon-size 128 \
   --text-size 13 \
-  --icon "Calenbar.app" 160 190 \
+  --icon "Calenbar.app" 170 200 \
   --hide-extension "Calenbar.app" \
-  --app-drop-link 480 190 \
+  --app-drop-link 490 200 \
   --no-internet-enable \
   "$DMG" "$WORK/staging" >/dev/null
 echo "Created $DMG"
