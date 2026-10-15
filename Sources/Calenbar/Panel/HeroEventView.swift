@@ -100,11 +100,12 @@ struct EventContextMenu: View {
 }
 
 enum EventTimeText {
-    static func range(_ event: CalendarEvent) -> String {
+    static func range(_ event: CalendarEvent, in zone: TimeZone = .current) -> String {
         if event.isAllDay {
             return String(localized: "All day")
         }
-        let format = Date.FormatStyle(date: .omitted, time: .shortened)
+        var format = Date.FormatStyle(date: .omitted, time: .shortened)
+        format.timeZone = zone
         return "\(event.start.formatted(format)) – \(event.end.formatted(format))"
     }
 

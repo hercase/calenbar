@@ -20,6 +20,8 @@
 "Today" = "Hoy";
 "Tomorrow" = "Mañana";
 "Yesterday" = "Ayer";
+"tomorrow" = "mañana";
+"yesterday" = "ayer";
 "No events" = "Sin eventos";
 " · Not answered" = " · Sin responder";
 "Join" = "Unirse";

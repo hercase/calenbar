@@ -24,6 +24,9 @@ struct EventDetailView: View {
             DetailLine(systemImage: "circle.fill", tint: Color(hex: event.calendarColorHex)) {
                 Text(event.calendarTitle)
             }
+            if !event.isAllDay {
+                OtherTimeZonesView(event: event, clocks: model.settings.worldClocks)
+            }
             if let link {
                 HStack(alignment: .center, spacing: PanelStyle.small) {
                     ProviderIconView(provider: link.provider, size: 14)
@@ -211,6 +214,58 @@ struct EventActionsRow: View {
                 }
             }
             .controlSize(.small)
+        }
+    }
+}
+
+/// The meeting's time in each configured world clock, so "4 PM here" is also "9 PM in London".
+/// Clocks on the Mac's own time zone are left out.
+private struct OtherTimeZonesView: View {
+    let event: CalendarEvent
+    let clocks: [WorldClock]
+
+    var body: some View {
+        let others = clocks.filter {
+            $0.timeZone.secondsFromGMT(for: event.start) != TimeZone.current.secondsFromGMT(for: event.start)
+        }
+        if !others.isEmpty {
+            VStack(alignment: .leading, spacing: PanelStyle.tight) {
+                ForEach(others) { clock in
+                    let isDay = InlineClocksView.isDaytime(in: clock.timeZone, at: event.start)
+                    HStack(alignment: .firstTextBaseline, spacing: PanelStyle.small) {
+                        Image(systemName: isDay ? "sun.max.fill" : "moon.fill")
+                            .font(.caption)
+                            .foregroundStyle(isDay ? Color.orange : Color.indigo)
+                            .frame(width: 14)
+                        Text(clock.name)
+                            .foregroundStyle(.secondary)
+                        Spacer(minLength: PanelStyle.small)
+                        Text(verbatim: EventTimeText.range(event, in: clock.timeZone))
+                            .monospacedDigit()
+                        if let day = dayNote(in: clock.timeZone) {
+                            Text(verbatim: "· \(day)")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .font(.callout)
+                }
+            }
+        }
+    }
+
+    /// "tomorrow" / "yesterday" when the meeting falls on another calendar day over there.
+    private func dayNote(in zone: TimeZone) -> String? {
+        var remote = Calendar.current
+        remote.timeZone = zone
+        let there = remote.dateComponents([.year, .month, .day], from: event.start)
+        let here = Calendar.current.dateComponents([.year, .month, .day], from: event.start)
+        guard let thereDay = Calendar.current.date(from: there), let hereDay = Calendar.current.date(from: here) else {
+            return nil
+        }
+        switch Calendar.current.dateComponents([.day], from: hereDay, to: thereDay).day ?? 0 {
+        case 1: return String(localized: "tomorrow")
+        case -1: return String(localized: "yesterday")
+        default: return nil
         }
     }
 }
