@@ -44,6 +44,8 @@ final class AppSettings {
     /// Clocks shown in the panel footer; only this many fit on its single line.
     static let maxWorldClocks = 3
     var worldClocks: [WorldClock] { didSet { store(worldClocks, .worldClocks) } }
+    var showClocksInPanel: Bool { didSet { store(showClocksInPanel, .showClocksInPanel) } }
+    var showClocksInEventDetails: Bool { didSet { store(showClocksInEventDetails, .showClocksInEventDetails) } }
 
     /// Backed by the launchd agent, not UserDefaults; re-read after each change in case macOS refused it.
     var launchAtLogin: Bool = LoginLaunch.isEnabled {
@@ -58,7 +60,7 @@ final class AppSettings {
         case titleRule, showMonthCalendar, openEventsIn, meetingBrowserID, preferNativeMeetingApps, flashEnabled,
             flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink
-        case disabledCalendars, hiddenKeys, mutedKeys, worldClocks
+        case disabledCalendars, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel, showClocksInEventDetails
     }
 
     static let notifyLeadOptions = [0, 1, 2, 5, 10]
@@ -84,6 +86,8 @@ final class AppSettings {
         hiddenKeys = Self.load(.hiddenKeys, from: defaults) ?? []
         mutedKeys = Self.load(.mutedKeys, from: defaults) ?? []
         worldClocks = Self.load(.worldClocks, from: defaults) ?? []
+        showClocksInPanel = Self.load(.showClocksInPanel, from: defaults) ?? true
+        showClocksInEventDetails = Self.load(.showClocksInEventDetails, from: defaults) ?? true
         pruneExpiredEventKeys()
         // "Hide from menu bar" and "mute" were merged into a single Skip.
         if !hiddenKeys.isEmpty {

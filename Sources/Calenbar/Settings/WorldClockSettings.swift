@@ -13,7 +13,7 @@ struct WorldClockSettings: View {
                             .font(.title)
                             .foregroundStyle(.secondary)
                         Text("No world clocks yet").font(.headline)
-                        Text("Add the cities you work with. They show at the bottom of the panel.")
+                        Text("Add the cities you work with to see their time in the panel and in each meeting.")
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -29,10 +29,10 @@ struct WorldClockSettings: View {
                     .onMove { settings.worldClocks.move(fromOffsets: $0, toOffset: $1) }
                 }
             } header: {
-                Text("World Clocks")
+                Text("Clocks")
             } footer: {
                 HStack {
-                    Text("Up to 3 clocks, shown at the bottom of the panel.")
+                    Text("Up to 3 clocks.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()
@@ -46,6 +46,10 @@ struct WorldClockSettings: View {
                             }
                         }
                 }
+            }
+            Section("Show") {
+                Toggle("In the panel", isOn: $settings.showClocksInPanel)
+                Toggle("Meeting times in event details", isOn: $settings.showClocksInEventDetails)
             }
         }
         .formStyle(.grouped)
@@ -85,7 +89,7 @@ private struct ClockRow: View {
 
     private var subtitle: String {
         let zone = clock.timeZoneID.replacingOccurrences(of: "_", with: " ")
-        return "\(zone) · \(InlineClocksView.offset(of: clock.timeZone, at: Date()))"
+        return "\(zone) · \(WorldClocksView.offset(of: clock.timeZone, at: Date()))"
     }
 
     private static func timeStyle(_ zone: TimeZone) -> Date.FormatStyle {

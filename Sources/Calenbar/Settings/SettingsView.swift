@@ -27,7 +27,7 @@ enum SettingsWindow {
         add(String(localized: "General"), "gearshape", GeneralSettings(settings: model.settings, calendar: model.calendar))
         add(String(localized: "Calendars"), "calendar", CalendarSettings(model: model))
         add(String(localized: "Notifications"), "bell.badge", NotificationSettings(settings: model.settings))
-        add(String(localized: "World Clocks"), "globe", WorldClockSettings(settings: model.settings, uiState: uiState))
+        add(String(localized: "Time Zones"), "globe", WorldClockSettings(settings: model.settings, uiState: uiState))
         add(String(localized: "About"), "info.circle", AboutView(updates: model.updates))
 
         let window = NSWindow(contentViewController: tabs)

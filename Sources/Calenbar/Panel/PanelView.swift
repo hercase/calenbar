@@ -18,6 +18,10 @@ struct PanelView: View {
                 MiniCalendarView(model: model, state: state)
                 PanelDivider()
                 EventListView(model: model, state: state)
+                if model.settings.showClocksInPanel, !model.settings.worldClocks.isEmpty {
+                    PanelDivider()
+                    WorldClocksView(clocks: model.settings.worldClocks, now: model.now)
+                }
             }
             PanelDivider()
             FooterView(model: model, openSettings: openSettings)
@@ -46,7 +50,7 @@ private struct AccessRequiredView: View {
     }
 }
 
-/// Bottom bar: world clocks (or today's date) on the left, everything else behind "•••".
+/// Bottom bar: today's date (or an update notice) on the left, everything else behind "•••".
 private struct FooterView: View {
     let model: AppModel
     let openSettings: () -> Void
@@ -66,12 +70,10 @@ private struct FooterView: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(Color.accentColor)
                 .help("Download the new version from GitHub")
-            } else if model.settings.worldClocks.isEmpty {
+            } else {
                 Text(model.now.formatted(.dateTime.weekday(.wide).day().month(.wide)))
                     .font(.caption)
                     .foregroundStyle(.secondary)
-            } else {
-                InlineClocksView(clocks: model.settings.worldClocks, now: model.now)
             }
             Spacer(minLength: 0)
             Menu {

@@ -1,29 +1,44 @@
 import SwiftUI
 
-/// World clocks on one line: day/night icon, name and local time; offset in the tooltip.
-struct InlineClocksView: View {
+/// World clocks section of the panel: one row per clock (at most three), like a small clock list.
+struct WorldClocksView: View {
     let clocks: [WorldClock]
     let now: Date
 
     var body: some View {
-        HStack(spacing: PanelStyle.medium) {
+        VStack(spacing: PanelStyle.small) {
             ForEach(clocks.prefix(AppSettings.maxWorldClocks)) { clock in
-                HStack(spacing: 4) {
-                    Image(systemName: Self.isDaytime(in: clock.timeZone, at: now) ? "sun.max.fill" : "moon.fill")
-                        .font(.caption2)
-                        .foregroundStyle(Self.isDaytime(in: clock.timeZone, at: now) ? Color.orange : Color.indigo)
+                let isDay = Self.isDaytime(in: clock.timeZone, at: now)
+                HStack(spacing: PanelStyle.small) {
+                    Image(systemName: isDay ? "sun.max.fill" : "moon.fill")
+                        .font(.caption)
+                        .foregroundStyle(isDay ? Color.orange : Color.indigo)
+                        .frame(width: 16)
                     Text(clock.name)
+                        .lineLimit(1)
+                    Text(Self.offset(of: clock.timeZone, at: now))
+                        .font(.caption)
                         .foregroundStyle(.secondary)
+                    Spacer(minLength: PanelStyle.small)
+                    if let day = Self.dayNote(in: clock.timeZone, at: now) {
+                        Text(day)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                     Text(now.formatted(Self.timeStyle(in: clock.timeZone)))
                         .monospacedDigit()
                 }
-                .lineLimit(1)
-                .help(
-                    "\(clock.name): \(Self.offset(of: clock.timeZone, at: now)), \(Self.relativeDay(in: clock.timeZone, at: now))"
-                )
+                .font(.callout)
             }
         }
-        .font(.caption)
+        .padding(.horizontal, PanelStyle.inset)
+        .padding(.vertical, PanelStyle.small + 2)
+    }
+
+    /// "Tomorrow"/"Yesterday" only when the clock is on another day; nothing when it's the same day.
+    static func dayNote(in zone: TimeZone, at date: Date) -> String? {
+        let note = relativeDay(in: zone, at: date)
+        return note == String(localized: "Today") ? nil : note
     }
 
     static func isDaytime(in zone: TimeZone, at date: Date) -> Bool {

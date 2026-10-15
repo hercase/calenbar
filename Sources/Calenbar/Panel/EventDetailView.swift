@@ -24,7 +24,7 @@ struct EventDetailView: View {
             DetailLine(systemImage: "circle.fill", tint: Color(hex: event.calendarColorHex)) {
                 Text(event.calendarTitle)
             }
-            if !event.isAllDay {
+            if !event.isAllDay, model.settings.showClocksInEventDetails {
                 OtherTimeZonesView(event: event, clocks: model.settings.worldClocks)
             }
             if let link {
@@ -231,7 +231,7 @@ private struct OtherTimeZonesView: View {
         if !others.isEmpty {
             VStack(alignment: .leading, spacing: PanelStyle.tight) {
                 ForEach(others) { clock in
-                    let isDay = InlineClocksView.isDaytime(in: clock.timeZone, at: event.start)
+                    let isDay = WorldClocksView.isDaytime(in: clock.timeZone, at: event.start)
                     HStack(alignment: .firstTextBaseline, spacing: PanelStyle.small) {
                         Image(systemName: isDay ? "sun.max.fill" : "moon.fill")
                             .font(.caption)

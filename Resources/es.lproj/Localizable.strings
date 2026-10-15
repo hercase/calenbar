@@ -77,7 +77,11 @@
 "General" = "General";
 "Calendars" = "Calendarios";
 "Notifications" = "Notificaciones";
-"World Clocks" = "Relojes mundiales";
+"Time Zones" = "Zonas horarias";
+"Clocks" = "Relojes";
+"Show" = "Mostrar";
+"In the panel" = "En el panel";
+"Meeting times in event details" = "Hora de las reuniones en el detalle";
 "About" = "Acerca de";
 
 /* Settings: General */
@@ -126,9 +130,9 @@
 
 /* Settings: World clocks */
 "No world clocks yet" = "Todavía no hay relojes";
-"Add the cities you work with. They show at the bottom of the panel." = "Se pueden agregar las ciudades con las que se trabaja. Aparecen al pie del panel.";
+"Add the cities you work with to see their time in the panel and in each meeting." = "Agregar las ciudades con las que se trabaja para ver su hora en el panel y en cada reunión.";
 "Add Clock…" = "Agregar reloj…";
-"Up to 3 clocks, shown at the bottom of the panel." = "Hasta 3 relojes, al pie del panel.";
+"Up to 3 clocks." = "Hasta 3 relojes.";
 "Name" = "Nombre";
 "Search a city, e.g. San Diego or Madrid" = "Buscar una ciudad, p. ej. San Diego o Madrid";
 "Cities" = "Ciudades";
