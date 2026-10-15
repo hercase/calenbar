@@ -21,12 +21,14 @@ final class StatusBarController {
     private let model: AppModel
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let onClick: (NSStatusBarButton) -> Void
-    private let videoIcon = NSImage(systemSymbolName: "video.fill", accessibilityDescription: "Video meeting")
-    private let warningIcon = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "Warning")
-    private let idleIcon = NSImage(systemSymbolName: "calendar", accessibilityDescription: "Calendar")
+    private let videoIcon = NSImage(systemSymbolName: "video.fill", accessibilityDescription: String(localized: "Video meeting"))
+    private let warningIcon = NSImage(
+        systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Warning"))
+    private let idleIcon = NSImage(systemSymbolName: "calendar", accessibilityDescription: String(localized: "Calendar"))
 
     /// Calendar with a checkmark: you're done for today.
-    private let doneIcon = NSImage(systemSymbolName: "calendar.badge.checkmark", accessibilityDescription: "No more events today")
+    private let doneIcon = NSImage(
+        systemSymbolName: "calendar.badge.checkmark", accessibilityDescription: String(localized: "No more events today"))
 
     /// Extra shrinking applied only if macOS still hides the item despite the computed budget.
     private var occlusionPenalty = 0.0
@@ -69,7 +71,7 @@ final class StatusBarController {
 
         switch model.calendar.access {
         case .denied:
-            set(button, image: warningIcon, title: "Calendar access")
+            set(button, image: warningIcon, title: String(localized: "Calendar access"))
             updateAttention(for: nil)
             return
         case .notDetermined:
@@ -92,7 +94,7 @@ final class StatusBarController {
 
         guard let event else {
             set(button, image: doneIcon ?? idleIcon, title: "")
-            button.toolTip = "No more events today"
+            button.toolTip = String(localized: "No more events today")
             return
         }
 

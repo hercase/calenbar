@@ -44,8 +44,8 @@ struct EventListView: View {
         let day = state.selectedDay
         if calendar.isDateInToday(day), let tomorrow = calendar.date(byAdding: .day, value: 1, to: day) {
             return [
-                Section(title: "Today", events: model.listEvents(on: day)),
-                Section(title: "Tomorrow", events: model.listEvents(on: tomorrow)),
+                Section(title: String(localized: "Today"), events: model.listEvents(on: day)),
+                Section(title: String(localized: "Tomorrow"), events: model.listEvents(on: tomorrow)),
             ]
         }
         let title = day.formatted(.dateTime.weekday(.wide).month(.wide).day())
@@ -140,16 +140,20 @@ struct SkipButton: View {
 
     var body: some View {
         let isSkipped = model.isSkipped(event)
-        let help = isSkipped ? "Bring this event back" : "Skip: hide from the menu bar and don't alert"
+        let help =
+            isSkipped
+            ? String(localized: "Bring this event back") : String(localized: "Skip: hide from the menu bar and don’t alert")
         Button {
             model.settings.toggleSkipped(event)
         } label: {
-            Label(isSkipped ? "Unskip" : "Skip", systemImage: isSkipped ? "eye" : "eye.slash")
-                .font(.caption.weight(.medium))
-                .padding(.horizontal, PanelStyle.small)
-                .frame(height: 22)
-                .background(Color.primary.opacity(0.08), in: Capsule())
-                .contentShape(Capsule())
+            Label(
+                isSkipped ? String(localized: "Unskip") : String(localized: "Skip"), systemImage: isSkipped ? "eye" : "eye.slash"
+            )
+            .font(.caption.weight(.medium))
+            .padding(.horizontal, PanelStyle.small)
+            .frame(height: 22)
+            .background(Color.primary.opacity(0.08), in: Capsule())
+            .contentShape(Capsule())
         }
         .buttonStyle(.borderless)
         .foregroundStyle(.primary)

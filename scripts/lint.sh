@@ -7,4 +7,5 @@ if [ "$1" = "--check" ]; then
 else
   swift format --in-place --recursive Sources Tests
 fi
+python3 scripts/check-l10n.py
 TOOLCHAIN_DIR="${TOOLCHAIN_DIR:-$(xcode-select -p)}" swiftlint lint --strict --quiet

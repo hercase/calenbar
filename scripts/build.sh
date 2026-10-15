@@ -16,6 +16,7 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Library/LaunchAgents"
 cp "$BIN/Calenbar" "$APP/Contents/MacOS/Calenbar"
 cp -R Resources/ProviderIcons "$APP/Contents/Resources/ProviderIcons"
+cp -R Resources/*.lproj "$APP/Contents/Resources/"
 cp Resources/LaunchAgent.plist "$APP/Contents/Library/LaunchAgents/com.hernancase.calenbar.agent.plist"
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD/" Resources/Info.plist > "$APP/Contents/Info.plist"
 if [ -f Resources/AppIcon.icns ]; then

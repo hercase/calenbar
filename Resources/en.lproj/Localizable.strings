@@ -1,0 +1,4 @@
+/* English text for identifier-style keys. Every other key is its own English text. */
+
+"settings.menuSpace.footer" = "Optional. On displays without a notch, lets long titles use the free space up to the active app's menus instead of a fixed width. Not needed on a MacBook screen. Requires Accessibility access, used only to read where the app menus end.";
+"settings.sync.footer" = "macOS syncs Google and Exchange calendars on its own schedule. For new invitations to show up quickly, set Calendar › Settings › Accounts › Refresh Calendars to \"Every minute\".";

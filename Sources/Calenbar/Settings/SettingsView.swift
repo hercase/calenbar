@@ -18,11 +18,11 @@ enum SettingsWindow {
             item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: title)
             tabs.addTabViewItem(item)
         }
-        add("General", "gearshape", GeneralSettings(settings: model.settings, calendar: model.calendar))
-        add("Calendars", "calendar", CalendarSettings(model: model))
-        add("Notifications", "bell.badge", NotificationSettings(settings: model.settings))
-        add("World Clocks", "globe", WorldClockSettings(settings: model.settings, uiState: uiState))
-        add("About", "info.circle", AboutView(updates: model.updates))
+        add(String(localized: "General"), "gearshape", GeneralSettings(settings: model.settings, calendar: model.calendar))
+        add(String(localized: "Calendars"), "calendar", CalendarSettings(model: model))
+        add(String(localized: "Notifications"), "bell.badge", NotificationSettings(settings: model.settings))
+        add(String(localized: "World Clocks"), "globe", WorldClockSettings(settings: model.settings, uiState: uiState))
+        add(String(localized: "About"), "info.circle", AboutView(updates: model.updates))
 
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]
@@ -58,15 +58,9 @@ private struct GeneralSettings: View {
                     }
                 }
             } footer: {
-                Text(
-                    """
-                    Optional. On displays without a notch, lets long titles use the free space up to the \
-                    active app's menus instead of a fixed width. Not needed on a MacBook screen. \
-                    Requires Accessibility access, used only to read where the app menus end.
-                    """
-                )
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                Text("settings.menuSpace.footer")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             Section {
                 LabeledContent("Last updated") {
@@ -82,12 +76,7 @@ private struct GeneralSettings: View {
                 Text("Sync")
             } footer: {
                 VStack(alignment: .leading, spacing: PanelStyle.tight) {
-                    Text(
-                        """
-                        macOS syncs Google and Exchange calendars on its own schedule. For new invitations to \
-                        show up quickly, set Calendar › Settings › Accounts › Refresh Calendars to "Every minute".
-                        """
-                    )
+                    Text("settings.sync.footer")
                     Button("Open Calendar…") { calendar.openCalendarApp() }
                         .buttonStyle(.link)
                 }
@@ -134,10 +123,10 @@ private struct CalendarSettings: View {
                 }
             }
             .width(min: 180)
-            column("List", .list)
-            column("Menu bar", .title)
-            column("Notify", .notify)
-            column("Alert", .alert)
+            column(String(localized: "List"), .list)
+            column(String(localized: "Menu bar"), .title)
+            column(String(localized: "Notify"), .notify)
+            column(String(localized: "Alert"), .alert)
         }
         .padding()
     }
@@ -166,7 +155,8 @@ private struct NotificationSettings: View {
                 Toggle("Notify before events", isOn: $settings.notificationsEnabled)
                 Picker("When", selection: $settings.notifyLeadMinutes) {
                     ForEach(AppSettings.notifyLeadOptions, id: \.self) { minutes in
-                        Text(minutes == 0 ? "At start time" : "\(minutes) min before").tag(minutes)
+                        Text(minutes == 0 ? String(localized: "At start time") : String(localized: "\(minutes) min before")).tag(
+                            minutes)
                     }
                 }
                 .disabled(!settings.notificationsEnabled)
@@ -175,7 +165,8 @@ private struct NotificationSettings: View {
                 Toggle("Show full-screen alert", isOn: $settings.alertEnabled)
                 Picker("When", selection: $settings.alertLeadMinutes) {
                     ForEach(AppSettings.notifyLeadOptions, id: \.self) { minutes in
-                        Text(minutes == 0 ? "At start time" : "\(minutes) min before").tag(minutes)
+                        Text(minutes == 0 ? String(localized: "At start time") : String(localized: "\(minutes) min before")).tag(
+                            minutes)
                     }
                 }
                 .disabled(!settings.alertEnabled)
@@ -375,7 +366,7 @@ private struct UpdateStatusView: View {
                 ProgressView().controlSize(.small)
                 Text("Checking…").foregroundStyle(.secondary)
             } else {
-                Text(updates.lastCheck == nil ? "" : "You're up to date.")
+                Text(updates.lastCheck == nil ? "" : String(localized: "You’re up to date."))
                     .foregroundStyle(.secondary)
                 Button("Check for Updates") { Task { await updates.check() } }
             }

@@ -1,0 +1,142 @@
+/* Spanish. Checked against the sources by scripts/check-l10n.py. */
+
+/* Menu bar title and countdowns */
+"now" = "ahora";
+"in %@" = "en %@";
+"%@ left" = "quedan %@";
+"Now" = "Ahora";
+"In %@" = "En %@";
+"Ends in %@" = "Termina en %@";
+"Upcoming in %@" = "Empieza en %@";
+"(No title)" = "(Sin título)";
+"All day" = "Todo el día";
+"Calendar access" = "Acceso al calendario";
+"No more events today" = "No hay más eventos hoy";
+"Video meeting" = "Videollamada";
+"Warning" = "Advertencia";
+"Calendar" = "Calendario";
+
+/* Panel */
+"Today" = "Hoy";
+"Tomorrow" = "Mañana";
+"Yesterday" = "Ayer";
+"No events" = "Sin eventos";
+" · Not answered" = " · Sin responder";
+"Join" = "Unirse";
+"Join %@" = "Unirse a %@";
+"Join %@ (Return)" = "Unirse a %@ (Retorno)";
+"Copy Meeting Link" = "Copiar enlace de la reunión";
+"Answer in %@…" = "Responder en %@…";
+"Answer in %@" = "Responder en %@";
+"Open in %@" = "Abrir en %@";
+"Skip" = "Omitir";
+"Unskip" = "Restaurar";
+"Skip Event" = "Omitir evento";
+"Bring this event back" = "Volver a mostrar este evento";
+"Skip: hide from the menu bar and don’t alert" = "Omitir: ocultar de la barra de menús y no avisar";
+"Hide from the menu bar and don’t alert" = "Ocultar de la barra de menús y no avisar";
+"Skip this event: hide it from the menu bar and don’t alert" = "Omitir este evento: ocultarlo de la barra de menús y no avisar";
+"Hide calendar" = "Ocultar calendario";
+"Show calendar" = "Mostrar calendario";
+"Calendar access needed" = "Se necesita acceso al calendario";
+"Calenbar reads your events from the macOS Calendar app. Nothing leaves your Mac." = "Calenbar lee los eventos de la app Calendario de macOS. Nada sale de la Mac.";
+"Allow Access" = "Permitir acceso";
+"Open Privacy Settings" = "Abrir ajustes de privacidad";
+"Update available · %@" = "Actualización disponible · %@";
+"Download the new version from GitHub" = "Descargar la nueva versión desde GitHub";
+"Open Calendar" = "Abrir Calendario";
+"Settings…" = "Ajustes…";
+"Quit Calenbar" = "Salir de Calenbar";
+"More" = "Más";
+"Same time" = "Misma hora";
+
+/* Event details */
+"Organized by %@" = "Organizado por %@";
+"%@ (you)" = "%@ (yo)";
+"%lld guests · %lld yes" = "%lld invitados · %lld sí";
+"+%lld more" = "+%lld más";
+"Your response:" = "Respuesta:";
+"Yes" = "Sí";
+"Maybe" = "Quizás";
+"No" = "No";
+"Not answered" = "Sin responder";
+"You haven't answered this invitation yet" = "Esta invitación todavía no tiene respuesta";
+"Unknown" = "Desconocido";
+
+/* Notifications and full-screen alert */
+"Starting now · %@" = "Empieza ahora · %@";
+"In %@ · %@" = "En %@ · %@";
+"Starting soon" = "Empieza pronto";
+"Starting now" = "Empieza ahora";
+"Snooze 1 min" = "Posponer 1 min";
+"Dismiss" = "Descartar";
+
+/* Settings: tabs */
+"General" = "General";
+"Calendars" = "Calendarios";
+"Notifications" = "Notificaciones";
+"World Clocks" = "Relojes mundiales";
+"About" = "Acerca de";
+
+/* Settings: General */
+"Launch at login" = "Abrir al iniciar sesión";
+"Switch to the next event" = "Pasar al siguiente evento";
+"5 min before it starts" = "5 min antes de que empiece";
+"5 min before the current one ends" = "5 min antes de que termine el actual";
+"Show month calendar in the panel" = "Mostrar el calendario mensual en el panel";
+"Measure app menus" = "Medir los menús de la app";
+"On" = "Activado";
+"Allow…" = "Permitir…";
+"settings.menuSpace.footer" = "Opcional. En pantallas sin notch, permite que los títulos largos usen el espacio libre hasta los menús de la app activa en lugar de un ancho fijo. No hace falta en la pantalla de una MacBook. Requiere acceso de Accesibilidad, que se usa solo para saber dónde terminan los menús.";
+"Sync" = "Sincronización";
+"Last updated" = "Última actualización";
+"Refresh Now" = "Actualizar ahora";
+"settings.sync.footer" = "macOS sincroniza los calendarios de Google y Exchange según su propio intervalo. Para que las invitaciones nuevas aparezcan rápido, en Calendario › Ajustes › Cuentas, configurar Actualizar calendarios en \"Cada minuto\".";
+"Open Calendar…" = "Abrir Calendario…";
+"Meetings & events" = "Reuniones y eventos";
+"Open meeting links in" = "Abrir enlaces de reuniones en";
+"Default browser" = "Navegador predeterminado";
+"Use the Zoom and Teams apps when installed" = "Usar las apps de Zoom y Teams si están instaladas";
+"Open events and invitations in" = "Abrir eventos e invitaciones en";
+"Automatic (Google Calendar for Google events)" = "Automático (Google Calendar para eventos de Google)";
+"Calendar app" = "App Calendario";
+"Google Calendar (web)" = "Google Calendar (web)";
+"Grab attention when an event is close" = "Llamar la atención cuando falta poco";
+"Flash red in the menu bar" = "Parpadear en rojo en la barra de menús";
+"Start 5 minutes before (flashes at the end of each minute)" = "Empezar 5 minutos antes (parpadea al final de cada minuto)";
+"Play a sound at 5 min and 30 s" = "Sonido a los 5 min y a los 30 s";
+
+/* Settings: Calendars */
+"List" = "Lista";
+"Menu bar" = "Barra";
+"Notify" = "Avisar";
+"Alert" = "Alerta";
+
+/* Settings: Notifications */
+"Notification" = "Notificación";
+"Notify before events" = "Avisar antes de los eventos";
+"When" = "Cuándo";
+"At start time" = "Al empezar";
+"%lld min before" = "%lld min antes";
+"Full-screen alert" = "Alerta a pantalla completa";
+"Show full-screen alert" = "Mostrar alerta a pantalla completa";
+"Only for events with a meeting link" = "Solo para eventos con enlace de reunión";
+
+/* Settings: World clocks */
+"No world clocks yet" = "Todavía no hay relojes";
+"Add the cities you work with. They show at the bottom of the panel." = "Se pueden agregar las ciudades con las que se trabaja. Aparecen al pie del panel.";
+"Add Clock…" = "Agregar reloj…";
+"Name" = "Nombre";
+"Search a city, e.g. Madrid or New York" = "Buscar una ciudad, p. ej. Madrid o Nueva York";
+"Type at least 2 letters" = "Escribir al menos 2 letras";
+"No matching time zones" = "No hay zonas horarias que coincidan";
+"Remove %@" = "Quitar %@";
+
+/* Settings: About */
+"Version %@" = "Versión %@";
+"Your next meeting, always in the menu bar." = "Tu próxima reunión, siempre en la barra de menús.";
+"Made by Hernán Case" = "Hecho por Hernán Case";
+"Download %@" = "Descargar %@";
+"Checking…" = "Buscando…";
+"Check for Updates" = "Buscar actualizaciones";
+"You’re up to date." = "Está todo actualizado.";

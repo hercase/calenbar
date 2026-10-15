@@ -62,8 +62,8 @@ final class AppModel {
     func eventDestinationName(_ event: CalendarEvent) -> String {
         let isGoogle = GoogleCalendarLink.isGoogleEvent(externalID: event.externalID)
         switch settings.openEventsIn {
-        case .calendarApp: return "Calendar"
-        case .automatic, .googleWeb: return isGoogle ? "Google Calendar" : "Calendar"
+        case .calendarApp: return String(localized: "Calendar")
+        case .automatic, .googleWeb: return isGoogle ? "Google Calendar" : String(localized: "Calendar")
         }
     }
 

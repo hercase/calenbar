@@ -22,7 +22,8 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         super.init()
         guard let center else { return }
         center.delegate = self
-        let join = UNNotificationAction(identifier: Identifier.joinAction, title: "Join", options: [.foreground])
+        let join = UNNotificationAction(
+            identifier: Identifier.joinAction, title: String(localized: "Join"), options: [.foreground])
         center.setNotificationCategories([
             UNNotificationCategory(identifier: Identifier.meetingCategory, actions: [join], intentIdentifiers: []),
             UNNotificationCategory(identifier: Identifier.eventCategory, actions: [], intentIdentifiers: []),
@@ -56,8 +57,8 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
             content.title = TitleFormatter.displayTitle(event)
             content.body =
                 lead == 0
-                ? "Starting now · \(EventTimeText.range(event))"
-                : "In \(TitleFormatter.compactDuration(lead)) · \(EventTimeText.range(event))"
+                ? String(localized: "Starting now · \(EventTimeText.range(event))")
+                : String(localized: "In \(TitleFormatter.compactDuration(lead)) · \(EventTimeText.range(event))")
             content.sound = .default
             if let link = event.meetingLink {
                 content.categoryIdentifier = Identifier.meetingCategory

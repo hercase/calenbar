@@ -101,7 +101,7 @@ private struct AlertView: View {
 
     var body: some View {
         VStack(spacing: 18) {
-            Text(event.start > Date() ? "Starting soon" : "Starting now")
+            Text(event.start > Date() ? String(localized: "Starting soon") : String(localized: "Starting now"))
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(.secondary)
             Text(TitleFormatter.displayTitle(event))
@@ -110,7 +110,7 @@ private struct AlertView: View {
                 .lineLimit(3)
             HStack(spacing: 8) {
                 Circle().fill(Color(hex: event.calendarColorHex)).frame(width: 10, height: 10)
-                Text("\(EventTimeText.range(event)) · \(event.calendarTitle)")
+                Text(verbatim: "\(EventTimeText.range(event)) · \(event.calendarTitle)")
             }
             .font(.title3)
             .foregroundStyle(.secondary)

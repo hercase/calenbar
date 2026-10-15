@@ -37,7 +37,7 @@ struct HeroEventView: View {
                     .lineLimit(1)
                 HStack(spacing: 0) {
                     Text(Self.when(event, now: model.now))
-                    Text(" · \(EventTimeText.range(event))")
+                    Text(verbatim: " · \(EventTimeText.range(event))")
                     if event.needsResponse {
                         Text(" · Not answered").foregroundStyle(.orange.opacity(0.9))
                     }
@@ -53,7 +53,7 @@ struct HeroEventView: View {
             if isUpcoming {
                 IconButton(
                     systemImage: "eye.slash",
-                    label: "Skip this event: hide it from the menu bar and don't alert"
+                    label: String(localized: "Skip this event: hide it from the menu bar and don’t alert")
                 ) {
                     model.settings.toggleSkipped(event)
                 }
@@ -69,11 +69,11 @@ struct HeroEventView: View {
     static func when(_ event: CalendarEvent, now: Date) -> String {
         if event.isOngoing(at: now) {
             if now.timeIntervalSince(event.start) < 60 {
-                return "Now"
+                return String(localized: "Now")
             }
-            return "Ends in \(TitleFormatter.compactDuration(event.end.timeIntervalSince(now)))"
+            return String(localized: "Ends in \(TitleFormatter.compactDuration(event.end.timeIntervalSince(now)))")
         }
-        return "In \(TitleFormatter.compactDuration(event.start.timeIntervalSince(now)))"
+        return String(localized: "In \(TitleFormatter.compactDuration(event.start.timeIntervalSince(now)))")
     }
 }
 
@@ -93,14 +93,16 @@ struct EventContextMenu: View {
         }
         Button("Open in \(model.eventDestinationName(event))") { model.openEvent(event) }
         Divider()
-        Button(model.isSkipped(event) ? "Unskip" : "Skip Event") { model.settings.toggleSkipped(event) }
+        Button(model.isSkipped(event) ? String(localized: "Unskip") : String(localized: "Skip Event")) {
+            model.settings.toggleSkipped(event)
+        }
     }
 }
 
 enum EventTimeText {
     static func range(_ event: CalendarEvent) -> String {
         if event.isAllDay {
-            return "All day"
+            return String(localized: "All day")
         }
         let format = Date.FormatStyle(date: .omitted, time: .shortened)
         return "\(event.start.formatted(format)) – \(event.end.formatted(format))"
@@ -112,10 +114,10 @@ enum EventTimeText {
             return nil
         }
         if event.isOngoing(at: now) {
-            return "now"
+            return String(localized: "now")
         }
         let delta = event.start.timeIntervalSince(now)
         guard delta < 12 * 3_600 else { return nil }
-        return "in \(TitleFormatter.compactDuration(delta))"
+        return String(localized: "in \(TitleFormatter.compactDuration(delta))")
     }
 }

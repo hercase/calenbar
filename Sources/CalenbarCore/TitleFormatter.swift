@@ -6,18 +6,18 @@ public enum TitleFormatter {
 
     public static func displayTitle(_ event: CalendarEvent) -> String {
         let trimmed = event.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? "(No title)" : trimmed
+        return trimmed.isEmpty ? String(localized: "(No title)") : trimmed
     }
 
     /// `now` during the first minute, `25m left` while ongoing, `in 1h 4m` before it starts.
     public static func suffix(for event: CalendarEvent, now: Date) -> String {
         if event.isOngoing(at: now) {
             if now.timeIntervalSince(event.start) < 60 {
-                return "now"
+                return String(localized: "now")
             }
-            return "\(compactDuration(event.end.timeIntervalSince(now))) left"
+            return String(localized: "\(compactDuration(event.end.timeIntervalSince(now))) left")
         }
-        return "in \(compactDuration(event.start.timeIntervalSince(now)))"
+        return String(localized: "in \(compactDuration(event.start.timeIntervalSince(now)))")
     }
 
     public static func title(for event: CalendarEvent, now: Date) -> String {
@@ -27,9 +27,9 @@ public enum TitleFormatter {
     /// Panel header: `Ends in 12m` or `Upcoming in 1h 2m`.
     public static func header(for event: CalendarEvent, now: Date) -> String {
         if event.isOngoing(at: now) {
-            return "Ends in \(compactDuration(event.end.timeIntervalSince(now)))"
+            return String(localized: "Ends in \(compactDuration(event.end.timeIntervalSince(now)))")
         }
-        return "Upcoming in \(compactDuration(event.start.timeIntervalSince(now)))"
+        return String(localized: "Upcoming in \(compactDuration(event.start.timeIntervalSince(now)))")
     }
 
     /// Rounds up to whole minutes (never shows `0m`): `1m`, `45m`, `1h`, `1h 4m`.

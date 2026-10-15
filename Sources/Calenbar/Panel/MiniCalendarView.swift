@@ -40,8 +40,8 @@ struct MiniCalendarView: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help(isExpanded ? "Hide calendar" : "Show calendar")
-            .accessibilityLabel(isExpanded ? "Hide calendar" : "Show calendar")
+            .help(isExpanded ? String(localized: "Hide calendar") : String(localized: "Show calendar"))
+            .accessibilityLabel(isExpanded ? String(localized: "Hide calendar") : String(localized: "Show calendar"))
 
             Spacer(minLength: 0)
 

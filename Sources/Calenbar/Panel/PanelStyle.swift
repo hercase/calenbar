@@ -102,10 +102,10 @@ struct RSVPStatusLine: View {
 
     private func label(_ status: ParticipationStatus) -> String {
         switch status {
-        case .accepted: "Yes"
-        case .tentative: "Maybe"
-        case .declined: "No"
-        case .pending, .unknown: "Not answered"
+        case .accepted: String(localized: "Yes")
+        case .tentative: String(localized: "Maybe")
+        case .declined: String(localized: "No")
+        case .pending, .unknown: String(localized: "Not answered")
         }
     }
 }

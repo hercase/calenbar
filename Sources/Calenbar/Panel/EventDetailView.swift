@@ -13,9 +13,12 @@ struct EventDetailView: View {
                 Text(TitleFormatter.displayTitle(event))
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
-                Text("\(event.start.formatted(.dateTime.weekday(.wide).day().month(.wide))) · \(EventTimeText.range(event))")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
+                Text(
+                    verbatim:
+                        "\(event.start.formatted(.dateTime.weekday(.wide).day().month(.wide))) · \(EventTimeText.range(event))"
+                )
+                .font(.callout)
+                .foregroundStyle(.secondary)
             }
 
             DetailLine(systemImage: "circle.fill", tint: Color(hex: event.calendarColorHex)) {
@@ -111,7 +114,7 @@ private struct ParticipantsView: View {
                         .font(.caption)
                         .foregroundStyle(color(for: person.status))
                         .frame(width: 14)
-                    Text(person.isCurrentUser ? "\(person.displayName) (you)" : person.displayName)
+                    Text(person.isCurrentUser ? String(localized: "\(person.displayName) (you)") : person.displayName)
                         .font(.callout)
                         .lineLimit(1)
                 }
@@ -127,7 +130,7 @@ private struct ParticipantsView: View {
 
     private var summary: String {
         let accepted = people.filter { $0.status == .accepted }.count
-        return "\(people.count) guests · \(accepted) yes"
+        return String(localized: "\(people.count) guests · \(accepted) yes")
     }
 
     private func rank(_ person: Attendee) -> Int {
@@ -180,17 +183,22 @@ struct EventActionsRow: View {
                     Button {
                         model.settings.toggleSkipped(event)
                     } label: {
-                        Label(isSkipped ? "Unskip" : "Skip", systemImage: isSkipped ? "eye" : "eye.slash")
+                        Label(
+                            isSkipped ? String(localized: "Unskip") : String(localized: "Skip"),
+                            systemImage: isSkipped ? "eye" : "eye.slash")
                     }
                     .buttonStyle(.borderless)
-                    .help(isSkipped ? "Bring this event back" : "Hide from the menu bar and don't alert")
+                    .help(
+                        isSkipped
+                            ? String(localized: "Bring this event back")
+                            : String(localized: "Hide from the menu bar and don’t alert"))
                 }
                 Spacer(minLength: 0)
                 if event.needsResponse {
                     Button {
                         model.openEvent(event)
                     } label: {
-                        Label("Answer in \(destination)", systemImage: "arrow.up.forward")
+                        Label(String(localized: "Answer in \(destination)"), systemImage: "arrow.up.forward")
                     }
                     .buttonStyle(.borderedProminent)
                     .help("You haven't answered this invitation yet")
@@ -198,7 +206,7 @@ struct EventActionsRow: View {
                     Button {
                         model.openEvent(event)
                     } label: {
-                        Label("Open in \(destination)", systemImage: "arrow.up.forward")
+                        Label(String(localized: "Open in \(destination)"), systemImage: "arrow.up.forward")
                     }
                 }
             }

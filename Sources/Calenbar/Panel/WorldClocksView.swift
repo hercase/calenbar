@@ -42,7 +42,7 @@ struct InlineClocksView: View {
     /// Difference from the local zone, e.g. `-1h`, `+5h 30m`, `Same time`.
     static func offset(of zone: TimeZone, at date: Date) -> String {
         let delta = zone.secondsFromGMT(for: date) - TimeZone.current.secondsFromGMT(for: date)
-        guard delta != 0 else { return "Same time" }
+        guard delta != 0 else { return String(localized: "Same time") }
         let sign = delta > 0 ? "+" : "-"
         let hours = abs(delta) / 3_600
         let minutes = abs(delta) % 3_600 / 60
@@ -55,13 +55,13 @@ struct InlineClocksView: View {
         let parts = remote.dateComponents([.year, .month, .day], from: date)
         let local = Calendar.current.dateComponents([.year, .month, .day], from: date)
         guard let remoteDay = Calendar.current.date(from: parts), let localDay = Calendar.current.date(from: local) else {
-            return "Today"
+            return String(localized: "Today")
         }
         let days = Calendar.current.dateComponents([.day], from: localDay, to: remoteDay).day ?? 0
         switch days {
-        case 0: return "Today"
-        case 1: return "Tomorrow"
-        case -1: return "Yesterday"
+        case 0: return String(localized: "Today")
+        case 1: return String(localized: "Tomorrow")
+        case -1: return String(localized: "Yesterday")
         default: return remoteDay.formatted(.dateTime.weekday(.abbreviated))
         }
     }

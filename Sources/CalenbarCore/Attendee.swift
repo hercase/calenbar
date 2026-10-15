@@ -45,7 +45,7 @@ public struct Attendee: Hashable, Sendable {
         if let name, !name.isEmpty {
             return name
         }
-        return email ?? "Unknown"
+        return email ?? String(localized: "Unknown")
     }
 }
 
