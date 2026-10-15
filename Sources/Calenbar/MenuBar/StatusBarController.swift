@@ -30,8 +30,7 @@ final class StatusBarController {
     /// The app's icon in every state: a calendar showing today's date (with or without a title next to it).
     private var todayIcon: NSImage? {
         let day = Calendar.current.component(.day, from: model.now)
-        return NSImage(systemSymbolName: "\(day).calendar", accessibilityDescription: String(localized: "Calendar"))
-            ?? idleIcon
+        return DateIcon.image(day: day)
     }
 
     /// Extra shrinking applied only if macOS still hides the item despite the computed budget.
