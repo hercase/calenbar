@@ -20,7 +20,7 @@ NON_TRANSLATABLE = {"Calenbar", "hercase.vercel.app"}
 LITERAL = r'"((?:[^"\\]|\\.)*)"'
 PATTERNS = [
     re.compile(r"String\(localized:\s*" + LITERAL),
-    re.compile(r"\b(?:Text|Button|Label|Toggle|Section|LabeledContent|TextField|Picker|Menu|TableColumn|Link|SectionHeader)\(\s*" + LITERAL),
+    re.compile(r"\b(?:Text|Button|Label|Toggle|Section|LabeledContent|TextField|Picker|Menu|TableColumn|Link|SectionHeader|hint)\(\s*" + LITERAL),
     re.compile(r"\.(?:help|accessibilityLabel)\(\s*" + LITERAL),
 ]
 INTEGER_HINTS = re.compile(r"count|minutes|accepted|limit|Int\(")

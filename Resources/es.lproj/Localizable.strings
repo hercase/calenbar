@@ -127,9 +127,12 @@
 "Add the cities you work with. They show at the bottom of the panel." = "Se pueden agregar las ciudades con las que se trabaja. Aparecen al pie del panel.";
 "Add Clock…" = "Agregar reloj…";
 "Name" = "Nombre";
-"Search a city, e.g. Madrid or New York" = "Buscar una ciudad, p. ej. Madrid o Nueva York";
+"Search a city, e.g. San Diego or Madrid" = "Buscar una ciudad, p. ej. San Diego o Madrid";
+"Cities" = "Ciudades";
+"Time zones" = "Zonas horarias";
+"Click to rename" = "Clic para renombrar";
 "Type at least 2 letters" = "Escribir al menos 2 letras";
-"No matching time zones" = "No hay zonas horarias que coincidan";
+"No matching places" = "No hay lugares que coincidan";
 "Remove %@" = "Quitar %@";
 
 /* Settings: About */

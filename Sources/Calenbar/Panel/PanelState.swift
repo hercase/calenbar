@@ -70,6 +70,6 @@ final class PanelState {
 @MainActor
 @Observable
 final class SettingsUIState {
-    var timeZoneQuery = ""
     var isAddingClock = false
+    let citySearch = CitySearch()
 }

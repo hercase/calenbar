@@ -5,13 +5,19 @@ import SwiftUI
 /// Settings window with icon tabs in the toolbar, like native macOS preference windows.
 @MainActor
 enum SettingsWindow {
+    private static let pageSize = NSSize(width: 560, height: 480)
+
     static func make(model: AppModel, uiState: SettingsUIState) -> NSWindow {
         let tabs = NSTabViewController()
         tabs.tabStyle = .toolbar
         tabs.canPropagateSelectedChildViewControllerTitle = true
 
         func add(_ title: String, _ symbol: String, _ view: some View) {
-            let page = NSHostingController(rootView: view.frame(width: 540, height: 460))
+            let page = NSHostingController(rootView: view.frame(width: pageSize.width, height: pageSize.height))
+            // Fixed size per page: otherwise the window can end up narrower than the content and clip it,
+            // which also hides the grouped form's margins.
+            page.sizingOptions = []
+            page.preferredContentSize = pageSize
             page.title = title
             let item = NSTabViewItem(viewController: page)
             item.label = title
@@ -26,6 +32,7 @@ enum SettingsWindow {
 
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]
+        window.setContentSize(pageSize)
         window.toolbarStyle = .preference
         window.isReleasedWhenClosed = false
         window.center()
@@ -175,145 +182,6 @@ private struct NotificationSettings: View {
             }
         }
         .formStyle(.grouped)
-    }
-}
-
-private struct WorldClockSettings: View {
-    @Bindable var settings: AppSettings
-    @Bindable var uiState: SettingsUIState
-
-    var body: some View {
-        Form {
-            Section {
-                if settings.worldClocks.isEmpty {
-                    VStack(spacing: PanelStyle.small) {
-                        Image(systemName: "globe")
-                            .font(.title)
-                            .foregroundStyle(.secondary)
-                        Text("No world clocks yet").font(.headline)
-                        Text("Add the cities you work with. They show at the bottom of the panel.")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, PanelStyle.large)
-                } else {
-                    ForEach($settings.worldClocks) { $clock in
-                        ClockRow(clock: $clock) {
-                            settings.worldClocks.removeAll { $0.id == clock.id }
-                        }
-                    }
-                    .onMove { settings.worldClocks.move(fromOffsets: $0, toOffset: $1) }
-                }
-            } header: {
-                Text("World Clocks")
-            } footer: {
-                HStack {
-                    Spacer()
-                    Button("Add Clock…") { uiState.isAddingClock = true }
-                        .popover(isPresented: $uiState.isAddingClock, arrowEdge: .bottom) {
-                            TimeZonePicker(query: $uiState.timeZoneQuery) { identifier, name in
-                                settings.worldClocks.append(WorldClock(timeZoneID: identifier, name: name))
-                                uiState.timeZoneQuery = ""
-                                uiState.isAddingClock = false
-                            }
-                        }
-                }
-            }
-        }
-        .formStyle(.grouped)
-    }
-}
-
-private struct ClockRow: View {
-    @Binding var clock: WorldClock
-    let remove: () -> Void
-
-    var body: some View {
-        HStack(spacing: PanelStyle.medium) {
-            VStack(alignment: .leading, spacing: 2) {
-                TextField("Name", text: $clock.name)
-                    .textFieldStyle(.plain)
-                    .font(.body.weight(.medium))
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            Text(Date().formatted(Self.timeStyle(clock.timeZone)))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-            Button(role: .destructive, action: remove) {
-                Image(systemName: "minus.circle.fill")
-                    .foregroundStyle(.secondary)
-            }
-            .buttonStyle(.borderless)
-            .help("Remove \(clock.name)")
-            .accessibilityLabel("Remove \(clock.name)")
-        }
-    }
-
-    private var subtitle: String {
-        let zone = clock.timeZoneID.replacingOccurrences(of: "_", with: " ")
-        return "\(zone) · \(InlineClocksView.offset(of: clock.timeZone, at: Date()))"
-    }
-
-    private static func timeStyle(_ zone: TimeZone) -> Date.FormatStyle {
-        var style = Date.FormatStyle(date: .omitted, time: .shortened)
-        style.timeZone = zone
-        return style
-    }
-}
-
-/// Search field + results, shown in a popover from "Add Clock…".
-private struct TimeZonePicker: View {
-    @Binding var query: String
-    let pick: (_ identifier: String, _ name: String) -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: PanelStyle.small) {
-            TextField("Search a city, e.g. Madrid or New York", text: $query)
-                .textFieldStyle(.roundedBorder)
-            if query.count < 2 {
-                Text("Type at least 2 letters")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.vertical, PanelStyle.tight)
-            } else if matches.isEmpty {
-                Text("No matching time zones")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.vertical, PanelStyle.tight)
-            } else {
-                List(matches, id: \.self) { identifier in
-                    Button {
-                        pick(identifier, Self.cityName(identifier))
-                    } label: {
-                        HStack {
-                            Text(Self.cityName(identifier))
-                            Spacer()
-                            Text(identifier.split(separator: "/").first.map(String.init) ?? "")
-                                .foregroundStyle(.secondary)
-                        }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                }
-                .frame(height: 200)
-            }
-        }
-        .padding(PanelStyle.medium)
-        .frame(width: 320)
-    }
-
-    private var matches: [String] {
-        let needle = query.replacingOccurrences(of: " ", with: "_").lowercased()
-        return TimeZone.knownTimeZoneIdentifiers.filter { $0.lowercased().contains(needle) }.prefix(30).map { $0 }
-    }
-
-    static func cityName(_ identifier: String) -> String {
-        (identifier.split(separator: "/").last.map(String.init) ?? identifier).replacingOccurrences(of: "_", with: " ")
     }
 }
 
