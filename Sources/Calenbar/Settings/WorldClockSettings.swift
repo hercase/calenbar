@@ -32,8 +32,12 @@ struct WorldClockSettings: View {
                 Text("World Clocks")
             } footer: {
                 HStack {
+                    Text("Up to 3 clocks, shown at the bottom of the panel.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     Spacer()
                     Button("Add Clock…") { uiState.isAddingClock = true }
+                        .disabled(settings.worldClocks.count >= AppSettings.maxWorldClocks)
                         .popover(isPresented: $uiState.isAddingClock, arrowEdge: .bottom) {
                             ClockPicker(search: uiState.citySearch) { identifier, name in
                                 settings.worldClocks.append(WorldClock(timeZoneID: identifier, name: name))

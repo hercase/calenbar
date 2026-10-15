@@ -7,7 +7,7 @@ struct InlineClocksView: View {
 
     var body: some View {
         HStack(spacing: PanelStyle.medium) {
-            ForEach(clocks.prefix(3)) { clock in
+            ForEach(clocks.prefix(AppSettings.maxWorldClocks)) { clock in
                 HStack(spacing: 4) {
                     Image(systemName: Self.isDaytime(in: clock.timeZone, at: now) ? "sun.max.fill" : "moon.fill")
                         .font(.caption2)

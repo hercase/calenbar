@@ -41,6 +41,8 @@ final class AppSettings {
     var disabledCalendars: [CalendarPurpose: Set<String>] { didSet { store(disabledCalendars, .disabledCalendars) } }
     var hiddenKeys: Set<String> { didSet { store(hiddenKeys, .hiddenKeys) } }
     var mutedKeys: Set<String> { didSet { store(mutedKeys, .mutedKeys) } }
+    /// Clocks shown in the panel footer; only this many fit on its single line.
+    static let maxWorldClocks = 3
     var worldClocks: [WorldClock] { didSet { store(worldClocks, .worldClocks) } }
 
     /// Backed by the launchd agent, not UserDefaults; re-read after each change in case macOS refused it.
