@@ -23,14 +23,16 @@ final class StatusBarController {
     private let model: AppModel
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let onClick: (NSStatusBarButton) -> Void
-    private let videoIcon = NSImage(systemSymbolName: "video.fill", accessibilityDescription: String(localized: "Video meeting"))
     private let warningIcon = NSImage(
         systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Warning"))
     private let idleIcon = NSImage(systemSymbolName: "calendar", accessibilityDescription: String(localized: "Calendar"))
 
-    /// Calendar with a checkmark: you're done for today.
-    private let doneIcon = NSImage(
-        systemSymbolName: "calendar.badge.checkmark", accessibilityDescription: String(localized: "No more events today"))
+    /// The app's icon in every state: a calendar showing today's date (with or without a title next to it).
+    private var todayIcon: NSImage? {
+        let day = Calendar.current.component(.day, from: model.now)
+        return NSImage(systemSymbolName: "\(day).calendar", accessibilityDescription: String(localized: "Calendar"))
+            ?? idleIcon
+    }
 
     /// Extra shrinking applied only if macOS still hides the item despite the computed budget.
     private var occlusionPenalty = 0.0
@@ -94,12 +96,12 @@ final class StatusBarController {
         updateAttention(for: event)
 
         guard let event else {
-            set(button, image: doneIcon ?? idleIcon, title: "")
+            set(button, image: todayIcon, title: "")
             button.toolTip = String(localized: "No more events today")
             return
         }
 
-        let icon = event.meetingLink == nil ? nil : videoIcon
+        let icon = todayIcon
         let font = NSFont.menuBarFont(ofSize: 0)
         let title = TitleWidthFitter.fit(
             title: TitleFormatter.displayTitle(event),
