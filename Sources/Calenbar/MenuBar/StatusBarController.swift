@@ -15,8 +15,10 @@ final class StatusBarController {
     private static let gapAfterAppMenus = 24.0
     /// Used when the app menus can't be measured (no Accessibility permission).
     private static let fallbackTitle = 200.0
-    /// The notch-side search stops once the remaining range is this narrow.
-    private static let searchPrecision = 16.0
+    /// Starting width on a notched screen, before anything is learned. Deliberately modest: once macOS
+    /// pushes the item left of the notch it doesn't bring it back on its own.
+    private static let notchStartWidth = 160.0
+    private static let learnedWidthKey = "notchTitleWidth"
 
     private let model: AppModel
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -32,11 +34,13 @@ final class StatusBarController {
 
     /// Extra shrinking applied only if macOS still hides the item despite the computed budget.
     private var occlusionPenalty = 0.0
-    /// On a notched MacBook: the widest title that keeps the item right of the notch, learned by
-    /// trying widths (macOS doesn't report free menu bar space). nil when even the narrowest doesn't fit.
-    private var notchBudget: Double? = widestTitle
-    /// Bounds of an in-progress search for `notchBudget`.
-    private var notchSearch: ClosedRange<Double>?
+    /// On a notched MacBook: the widest title known to keep the item right of the notch. It only ever
+    /// shrinks (and is remembered across launches), so the item never jumps over the notch again.
+    /// nil when even the narrowest title doesn't fit there.
+    private var notchBudget: Double? = {
+        let saved = UserDefaults.standard.double(forKey: learnedWidthKey)
+        return saved > 0 ? saved : notchStartWidth
+    }()
     private var placementCheckPending = false
     private var renderedEventKey: String?
     private var attentionTimer: Timer?
@@ -84,11 +88,8 @@ final class StatusBarController {
 
         let event = model.titleEvent
         if event?.key != renderedEventKey {
-            // A different title may fit differently; try the full budget again.
             renderedEventKey = event?.key
             occlusionPenalty = 0
-            notchBudget = Self.widestTitle
-            notchSearch = nil
         }
         updateAttention(for: event)
 
@@ -195,12 +196,18 @@ final class StatusBarController {
         }
     }
 
-    /// Forget what we learned and fit again from the widest title.
+    /// Displays changed (or permissions did): start again from the modest default width.
     private func refit() {
         occlusionPenalty = 0
-        notchBudget = Self.widestTitle
-        notchSearch = nil
+        if notchEdge != nil {
+            setNotchBudget(Self.notchStartWidth)
+        }
         render()
+    }
+
+    private func setNotchBudget(_ width: Double?) {
+        notchBudget = width
+        UserDefaults.standard.set(width ?? 0, forKey: Self.learnedWidthKey)
     }
 
     /// macOS lays the item out asynchronously; look at where it landed shortly after a change.
@@ -228,30 +235,15 @@ final class StatusBarController {
         }
     }
 
-    /// Binary search for the widest title that still sits right of the notch.
+    /// The item landed left of the notch (or hidden): narrow the title and make macOS lay the item out
+    /// again, since it won't move an item back over the notch by itself.
     private func searchNotchBudget(current: Double, placed: Bool) {
-        if notchSearch == nil {
-            guard !placed else { return }  // Fits as is; nothing to do.
-            notchSearch = Self.narrowestTitle...current
-        }
-        guard var range = notchSearch else { return }
-
-        if placed {
-            range = current...range.upperBound
-        } else {
-            range = range.lowerBound...current
-        }
-
-        if range.upperBound - range.lowerBound <= Self.searchPrecision {
-            notchSearch = nil
-            let fitsAtNarrowest = placed || range.lowerBound > Self.narrowestTitle
-            // Even the narrowest title doesn't fit right of the notch: fall back to the app-menus budget.
-            notchBudget = fitsAtNarrowest ? range.lowerBound : nil
-        } else {
-            notchSearch = range
-            notchBudget = (range.lowerBound + range.upperBound) / 2
-        }
+        guard !placed else { return }
+        let narrower = current - Self.shrinkStep
+        setNotchBudget(narrower >= Self.narrowestTitle ? narrower : nil)
+        statusItem.isVisible = false
         render()
+        statusItem.isVisible = true
     }
 
     // MARK: - Flashing as an event approaches
