@@ -24,6 +24,8 @@ struct CalendarSettings: View {
             help: String(localized: "Show the full-screen alert for its events")),
     ]
     private static let columnWidth: CGFloat = 64
+    /// Room for the ••• button at the end of each row.
+    private static let menuWidth: CGFloat = 28
 
     var body: some View {
         let groups = groupedCalendars
@@ -77,6 +79,7 @@ struct CalendarSettings: View {
                     .frame(width: Self.columnWidth)
                     .help(column.help)
             }
+            Color.clear.frame(width: Self.menuWidth)
         }
         .font(.caption.weight(.medium))
         .foregroundStyle(.secondary)
@@ -116,17 +119,33 @@ struct CalendarSettings: View {
                 .help(column.help)
                 .accessibilityLabel("\(column.title): \(info.title)")
             }
+            Menu {
+                rowMenu(info, isHolidays: isHolidays)
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .foregroundStyle(.secondary)
+            }
+            .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
+            .fixedSize()
+            .frame(width: Self.menuWidth)
+            .help("More options for \(info.title)")
+            .accessibilityLabel("More options for \(info.title)")
         }
-        .contextMenu {
-            Button("Hide from Calenbar") { setAll(false, for: info) }
-            Button("Show Everywhere") { setAll(true, for: info) }
-            Divider()
-            Toggle(
-                "Holidays Calendar",
-                isOn: Binding(get: { isHolidays }, set: { model.settings.setHolidays($0, calendar: info) }))
-            Divider()
-            Button("Manage in Calendar…") { model.calendar.openCalendarApp() }
-        }
+        .contextMenu { rowMenu(info, isHolidays: isHolidays) }
+    }
+
+    /// The same choices behind the ••• button and the right click.
+    @ViewBuilder
+    private func rowMenu(_ info: CalendarInfo, isHolidays: Bool) -> some View {
+        Button("Hide from Calenbar") { setAll(false, for: info) }
+        Button("Show Everywhere") { setAll(true, for: info) }
+        Divider()
+        Toggle(
+            "Holidays Calendar",
+            isOn: Binding(get: { isHolidays }, set: { model.settings.setHolidays($0, calendar: info) }))
+        Divider()
+        Button("Manage in Calendar…") { model.calendar.openCalendarApp() }
     }
 
     /// Hide = unchecked everywhere: the calendar stays on the Mac, Calenbar just ignores it.

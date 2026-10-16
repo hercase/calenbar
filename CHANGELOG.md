@@ -22,7 +22,7 @@ Un atajo para entrar, una alerta que no tapa todo, y los días libres en el cale
 - When an update is waiting, the menu bar icon gets a dot and both menus offer “Update to…” or “Restart to Update”.
 - Sharing your screen? Hide event titles and the menu bar says “Meeting • in 12m” until you turn it back on.
 - Start a new Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.
-- Time off and holidays stand out: a tinted day in the month view and an icon in the list, for events named Out of office, PTO, vacation and their equivalents in Spanish, Portuguese, German, Dutch, French, Italian, Danish, Swedish and Polish, and for holiday calendars (recognised by name; right-click one in Settings › Calendars to change that).
+- Time off and holidays stand out: a tinted day in the month view and an icon in the list, for events named Out of office, PTO, vacation and their equivalents in Spanish, Portuguese, German, Dutch, French, Italian, Danish, Swedish and Polish, and for holiday calendars (recognised by name; the ••• button in Settings › Calendars changes that).
 - Settings › Calendars: unchecking List drops a calendar from Calenbar in one click.
 - A personal event mirrored into a work calendar shows once, even when the copy says just “Busy” or carries a tag like “[Personal]”; the card says which other calendar has it.
 - Week numbers in the month calendar, optional.
@@ -43,7 +43,7 @@ Un atajo para entrar, una alerta que no tapa todo, y los días libres en el cale
 - Cuando hay una actualización esperando, el ícono de la barra muestra un punto y los dos menús ofrecen “Actualizar a…” o “Reiniciar para actualizar”.
 - ¿Compartiendo pantalla? Ocultá los títulos y la barra dice “Reunión • en 12m” hasta que lo desactives.
 - Iniciá una reunión nueva de Google Meet, Zoom o Microsoft Teams desde el menú ••• del panel.
-- Los días libres y feriados se destacan: el día teñido en el mes y un ícono en la lista, para eventos llamados Out of office, PTO, vacaciones y sus equivalentes en portugués, alemán, holandés, francés, italiano, danés, sueco y polaco, y para los calendarios de feriados (se reconocen por el nombre; clic derecho en Ajustes › Calendarios para cambiarlo).
+- Los días libres y feriados se destacan: el día teñido en el mes y un ícono en la lista, para eventos llamados Out of office, PTO, vacaciones y sus equivalentes en portugués, alemán, holandés, francés, italiano, danés, sueco y polaco, y para los calendarios de feriados (se reconocen por el nombre; el botón ••• en Ajustes › Calendarios lo cambia).
 - Ajustes › Calendarios: desmarcar Lista saca un calendario de Calenbar con un solo clic.
 - Un evento personal reflejado en el calendario de trabajo aparece una sola vez, aunque la copia diga solo “Ocupado” o lleve una etiqueta como “[Personal]”; la tarjeta dice en qué otro calendario está.
 - Números de semana en el calendario del mes, opcional.
