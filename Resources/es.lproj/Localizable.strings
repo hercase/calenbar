@@ -142,6 +142,9 @@
 
 /* Settings: Calendars */
 "List" = "Lista";
+"settings.calendars.footer" = "Los calendarios vienen de las cuentas en Ajustes del Sistema › Cuentas de Internet. Para cada uno, elegí dónde aparece: la lista del panel, la barra de menús, las notificaciones y la alerta a pantalla completa.";
+"settings.calendars.noAccount" = "Esta Mac todavía no tiene una cuenta de calendario. Agregá tu cuenta de Google, Exchange o iCloud y activá Calendarios; aparece acá en menos de un minuto.";
+"Add Account…" = "Agregar cuenta…";
 "Menu bar" = "Barra";
 "Notify" = "Avisar";
 "Alert" = "Alerta";

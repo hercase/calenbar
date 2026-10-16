@@ -174,6 +174,27 @@ private struct CalendarSettings: View {
     let model: AppModel
 
     var body: some View {
+        VStack(alignment: .leading, spacing: PanelStyle.medium) {
+            calendarTable
+            HStack(alignment: .firstTextBaseline, spacing: PanelStyle.medium) {
+                Text(
+                    model.calendar.hasAccountCalendar
+                        ? String(localized: "settings.calendars.footer")
+                        : String(localized: "settings.calendars.noAccount")
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Button("Add Account…") { CalendarService.openInternetAccountsSettings() }
+                Button("Open Calendar") { model.calendar.openCalendarApp() }
+            }
+            .controlSize(.small)
+        }
+        .padding()
+    }
+
+    private var calendarTable: some View {
         Table(model.calendar.calendars) {
             TableColumn("Calendar") { info in
                 HStack {
@@ -190,7 +211,6 @@ private struct CalendarSettings: View {
             column(String(localized: "Notify"), .notify)
             column(String(localized: "Alert"), .alert)
         }
-        .padding()
     }
 
     private func column(_ title: String, _ purpose: CalendarPurpose) -> TableColumn<CalendarInfo, Never, some View, Text> {
