@@ -180,7 +180,7 @@ private struct MenuBarSettings: View {
 
 /// Explanatory text under a section. Grouped forms align footers to the trailing edge on macOS, which
 /// reads wrong for paragraphs; this keeps them leading and in the secondary caption style.
-private struct SettingsFooter<Content: View>: View {
+struct SettingsFooter<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
@@ -191,64 +191,6 @@ private struct SettingsFooter<Content: View>: View {
         .foregroundStyle(.secondary)
         .multilineTextAlignment(.leading)
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-private struct CalendarSettings: View {
-    let model: AppModel
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: PanelStyle.medium) {
-            calendarTable
-            HStack(alignment: .firstTextBaseline, spacing: PanelStyle.medium) {
-                Text(
-                    model.calendar.hasAccountCalendar
-                        ? String(localized: "settings.calendars.footer")
-                        : String(localized: "settings.calendars.noAccount")
-                )
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0)
-                Button("Add Account…") { CalendarService.openInternetAccountsSettings() }
-                Button("Open Calendar") { model.calendar.openCalendarApp() }
-            }
-            .controlSize(.small)
-        }
-        .padding()
-    }
-
-    private var calendarTable: some View {
-        Table(model.calendar.calendars) {
-            TableColumn("Calendar") { info in
-                HStack {
-                    Circle().fill(Color(hex: info.colorHex)).frame(width: 10, height: 10)
-                    VStack(alignment: .leading) {
-                        Text(info.title)
-                        Text(info.sourceTitle).font(.caption).foregroundStyle(.secondary)
-                    }
-                }
-            }
-            .width(min: 180)
-            column(String(localized: "List"), .list)
-            column(String(localized: "Menu bar"), .title)
-            column(String(localized: "Notify"), .notify)
-            column(String(localized: "Alert"), .alert)
-        }
-    }
-
-    private func column(_ title: String, _ purpose: CalendarPurpose) -> TableColumn<CalendarInfo, Never, some View, Text> {
-        TableColumn(title) { info in
-            Toggle(
-                title,
-                isOn: Binding(
-                    get: { model.settings.isEnabled(calendarID: info.id, for: purpose) },
-                    set: { model.settings.setEnabled($0, calendarID: info.id, for: purpose) }
-                )
-            )
-            .labelsHidden()
-        }
-        .width(64)
     }
 }
 

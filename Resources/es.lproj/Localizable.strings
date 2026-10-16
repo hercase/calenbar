@@ -231,3 +231,7 @@
 "Click, then press the keys" = "Clic y después presioná las teclas";
 "Holiday" = "Feriado";
 "Time off" = "Día libre";
+"Show in the panel's list" = "Mostrar en la lista del panel";
+"Let it be the event shown in the menu bar" = "Puede ser el evento que muestra la barra de menús";
+"Send a notification before its events" = "Enviar una notificación antes de sus eventos";
+"Show the full-screen alert for its events" = "Mostrar la alerta a pantalla completa para sus eventos";

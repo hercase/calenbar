@@ -19,6 +19,7 @@ Quieter notifications, and install from the terminal.
 - Start a new Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.
 - Time off and holidays stand out: a tinted day in the month view and an icon in the list, for events named Out of office, PTO or vacation, and for holiday calendars.
 - Week numbers in the month calendar, optional.
+- Settings › Calendars groups calendars by account, with a header row and a hint on each checkbox.
 
 ### es
 - Ajustes › Notificaciones avisa cuando macOS tiene las notificaciones de Calenbar desactivadas, con un botón para arreglarlo.
@@ -31,6 +32,7 @@ Quieter notifications, and install from the terminal.
 - Iniciá una reunión nueva de Google Meet, Zoom o Microsoft Teams desde el menú ••• del panel.
 - Los días libres y feriados se destacan: el día teñido en el mes y un ícono en la lista, para eventos llamados Out of office, PTO o vacaciones, y para calendarios de feriados.
 - Números de semana en el calendario del mes, opcional.
+- Ajustes › Calendarios agrupa los calendarios por cuenta, con fila de encabezado y una ayuda en cada casilla.
 
 ## 0.4.1 - 2026-10-16
 
