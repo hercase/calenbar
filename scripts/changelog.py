@@ -5,7 +5,8 @@
   scripts/changelog.py notes X.Y.Z          # prints Markdown notes for the GitHub release
   scripts/changelog.py html X.Y.Z           # inserts the version's <article> into docs/whats-new.html
 
-CHANGELOG.md format: "## X.Y.Z - YYYY-MM-DD" (or "## Unreleased"), an optional "### Headline" line,
+CHANGELOG.md format: "## X.Y.Z - YYYY-MM-DD" (or "## Unreleased"), an optional "### Headline" (one line in
+English, optionally a second one in Spanish),
 English bullets, then an optional "### es" block with Spanish bullets.
 """
 import datetime
@@ -33,11 +34,16 @@ def sections():
 
 def parse(body):
     headline = ""
-    if match := re.search(r"^### Headline\n(.+)$", body, re.M):
+    headline_es = ""
+    # One line in English; an optional second line right under it in Spanish.
+    if match := re.search(r"^### Headline\n(.+)\n(?:(.+)\n)?", body, re.M):
         headline = match.group(1).strip()
+        headline_es = (match.group(2) or "").strip()
+        if headline_es.startswith("#") or headline_es.startswith("-"):
+            headline_es = ""
     english, _, spanish = body.partition("### es")
     bullets = lambda chunk: [line[2:].strip() for line in chunk.splitlines() if line.startswith("- ")]
-    return headline, bullets(english), bullets(spanish)
+    return headline, headline_es, bullets(english), bullets(spanish)
 
 
 def release(version):
@@ -50,7 +56,7 @@ def release(version):
 
 def notes(version):
     section = sections().get(version) or sys.exit(f"no {version} in CHANGELOG.md")
-    headline, english, _ = parse(section["body"])
+    headline, _, english, _ = parse(section["body"])
     lines = ([f"**{headline}**", ""] if headline else []) + [f"- {item}" for item in english]
     print("\n".join(lines))
 
@@ -62,7 +68,8 @@ def inline(text):
 
 def html_entry(version):
     section = sections().get(version) or sys.exit(f"no {version} in CHANGELOG.md")
-    headline, english, spanish = parse(section["body"])
+    headline, headline_es, english, spanish = parse(section["body"])
+    headline_es = headline_es or headline
     date = datetime.date.fromisoformat(section["date"])
     shown = date.strftime("%B %-d, %Y")
     spanish = spanish or english
@@ -74,7 +81,7 @@ def html_entry(version):
         '  <article class="release">\n'
         f'    <time datetime="{date.isoformat()}">{shown}</time>\n'
         "    <div>\n"
-        f'      <h2><span data-en>{inline(headline)}</span><span data-es hidden>{inline(headline)}</span>'
+        f'      <h2><span data-en>{inline(headline)}</span><span data-es hidden>{inline(headline_es)}</span>'
         f'<span class="ver">{version}</span></h2>\n'
         + items(english, "en", False) + items(spanish, "es", True) +
         "    </div>\n  </article>\n\n"

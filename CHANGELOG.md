@@ -8,6 +8,7 @@ section into the release. Bullets are English; an optional `### es` block carrie
 
 ### Headline
 A shortcut to join, an alert that doesn't take over, and days off on the calendar.
+Un atajo para entrar, una alerta que no tapa todo, y los días libres en el calendario.
 
 - Settings › Notifications says when macOS has notifications turned off for Calenbar, with a button to fix it.
 - Install with Homebrew: `brew install --cask hercase/calenbar/calenbar` (trust the tap when asked).
