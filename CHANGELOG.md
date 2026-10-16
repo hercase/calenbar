@@ -13,12 +13,14 @@ Quieter notifications, and install from the terminal.
 - Install with Homebrew: `brew install --cask hercase/calenbar/calenbar` (trust the tap when asked).
 - Up to five world clocks, and the same time zone can't be added twice.
 - The full-screen alert shows the room, who organized the meeting and how many accepted, and counts down live. Snooze for 1, 5 or 10 minutes, or until the meeting starts.
+- Settings › Menu Bar explains how to move the item next to the clock.
 
 ### es
 - Ajustes › Notificaciones avisa cuando macOS tiene las notificaciones de Calenbar desactivadas, con un botón para arreglarlo.
 - Instalación con Homebrew: `brew install --cask hercase/calenbar/calenbar` (confiá en el tap cuando lo pida).
 - Hasta cinco relojes del mundo, y la misma zona horaria no se puede agregar dos veces.
 - La alerta a pantalla completa muestra la sala, quién organiza y cuántos aceptaron, y la cuenta regresiva se actualiza. Posponer por 1, 5 o 10 minutos, o hasta que empiece.
+- Ajustes › Barra de menús explica cómo mover el ítem junto al reloj.
 
 ## 0.4.1 - 2026-10-16
 

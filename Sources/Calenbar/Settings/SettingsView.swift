@@ -149,6 +149,13 @@ private struct MenuBarSettings: View {
             } footer: {
                 SettingsFooter { Text("settings.menuSpace.footer") }
             }
+            Section {
+                Text("settings.position.row")
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            } header: {
+                Text("Position")
+            }
         }
         .formStyle(.grouped)
     }
@@ -289,7 +296,6 @@ private struct AboutView: View {
     private let website = URL(string: "https://hercase.vercel.app/?utm_source=calenbar&utm_medium=app&utm_campaign=about")
     private let repository = URL(string: "https://github.com/hercase/calenbar")
     private let issues = URL(string: "https://github.com/hercase/calenbar/issues/new")
-    private let sparkle = URL(string: "https://sparkle-project.org")
 
     var body: some View {
         Form {
@@ -328,17 +334,6 @@ private struct AboutView: View {
                 }
             } header: {
                 Text("Links")
-            } footer: {
-                HStack(spacing: PanelStyle.tight) {
-                    Text("Updates are delivered with")
-                    if let sparkle {
-                        Link("Sparkle", destination: sparkle)
-                    }
-                    Text(verbatim: "· © 2026 Hernan Case")
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.top, PanelStyle.tight)
             }
         }
         .formStyle(.grouped)

@@ -119,6 +119,8 @@
 "End of tomorrow" = "Fin de mañana";
 "2 days ahead" = "2 días antes";
 "7 days ahead" = "7 días antes";
+"Position" = "Posición";
+"settings.position.row" = "macOS pone los ítems nuevos a la izquierda de la barra de menús y son lo primero que esconde cuando está llena. Mantené ⌘ y arrastrá el ítem de Calenbar junto al reloj una vez; se queda ahí aunque relances o actualices.";
 "settings.horizon.footer" = "Fuera de ese plazo la barra de menús muestra solo la fecha de hoy. Un evento en curso se muestra siempre.";
 "Nothing coming up" = "Nada en el horizonte";
 "Use the free space after the app menus" = "Usar el espacio libre después de los menús de la app";
@@ -203,7 +205,6 @@
 "Source code" = "Código fuente";
 "Something wrong?" = "¿Algo anda mal?";
 "Report a problem" = "Reportar un problema";
-"Updates are delivered with" = "Las actualizaciones llegan con";
 "Update to %@…" = "Actualizar a %@…";
 "Last checked %@" = "Última comprobación: %@";
 "Check for Updates…" = "Buscar actualizaciones…";
