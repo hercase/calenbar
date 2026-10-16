@@ -5,5 +5,10 @@
     <!-- Required under the hardened runtime; without it EventKit access is silently denied. -->
     <key>com.apple.security.personal-information.calendars</key>
     <true/>
+    <!-- Sparkle.framework is signed with the same self-signed identity, which has no Team ID, so the
+         hardened runtime's library validation would refuse to load it. Not needed once the app is
+         signed with a Developer ID (framework and app then share a Team ID). -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
 </dict>
 </plist>
