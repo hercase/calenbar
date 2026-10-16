@@ -100,4 +100,7 @@ final class PanelState {
 final class SettingsUIState {
     var isAddingClock = false
     let citySearch = CitySearch()
+    var isRecordingShortcut = false
+    /// The key monitor installed while recording, so it can be removed.
+    @ObservationIgnored var keyMonitor: Any?
 }

@@ -136,6 +136,19 @@ private struct FooterView: View {
                 state.isPanelPinned.toggle()
             }
             Menu {
+                Button("Join Next Meeting") { model.joinNextMeeting() }
+                    .disabled(model.nextMeeting == nil)
+                Menu("New Meeting") {
+                    ForEach(MeetingProvider.instantMeetingProviders, id: \.self) { provider in
+                        Button(provider.displayName) { model.startNewMeeting(provider) }
+                    }
+                }
+                Divider()
+                Toggle(
+                    "Hide Event Titles in Menu Bar",
+                    isOn: Binding(
+                        get: { model.settings.hideTitlesInMenuBar }, set: { model.settings.hideTitlesInMenuBar = $0 }))
+                Divider()
                 Button("Open Calendar") { model.calendar.openCalendarApp() }
                 Button("Settings…", action: openSettings)
                     .keyboardShortcut(",")

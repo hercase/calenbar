@@ -89,6 +89,16 @@ final class StatusBarController {
     /// Right click: the same actions as the panel's "•••" menu, without opening the panel.
     private func showMenu() {
         let menu = NSMenu()
+        menu.autoenablesItems = false
+        let join = menu.addItem(withTitle: String(localized: "Join Next Meeting"), action: #selector(joinNext), keyEquivalent: "")
+        join.target = self
+        join.isEnabled = model.nextMeeting != nil
+        menu.addItem(.separator())
+        let hide = menu.addItem(
+            withTitle: String(localized: "Hide Event Titles"), action: #selector(toggleHideTitles), keyEquivalent: "")
+        hide.target = self
+        hide.state = model.settings.hideTitlesInMenuBar ? .on : .off
+        menu.addItem(.separator())
         menu.addItem(withTitle: String(localized: "Open Calendar"), action: #selector(openCalendar), keyEquivalent: "").target =
             self
         menu.addItem(withTitle: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",").target = self
@@ -100,6 +110,8 @@ final class StatusBarController {
         statusItem.menu = nil
     }
 
+    @objc private func joinNext() { model.joinNextMeeting() }
+    @objc private func toggleHideTitles() { model.settings.hideTitlesInMenuBar.toggle() }
     @objc private func openCalendar() { model.calendar.openCalendarApp() }
     @objc private func openSettings() { onOpenSettings() }
     @objc private func quit() { NSApp.terminate(nil) }
@@ -137,15 +149,16 @@ final class StatusBarController {
 
         let icon = todayIcon
         let font = NSFont.menuBarFont(ofSize: 0)
+        let shownTitle = model.menuBarTitle(for: event)
         let title = TitleWidthFitter.fit(
-            title: TitleFormatter.displayTitle(event),
+            title: shownTitle,
             suffix: TitleFormatter.suffix(for: event, now: model.now),
             maxWidth: titleBudget
         ) { text in
             Double((text as NSString).size(withAttributes: [.font: font]).width)
         }
         set(button, image: icon, title: title)
-        button.toolTip = "\(TitleFormatter.displayTitle(event)) — \(event.calendarTitle)"
+        button.toolTip = model.settings.hideTitlesInMenuBar ? shownTitle : "\(shownTitle) — \(event.calendarTitle)"
         schedulePlacementCheck()
     }
 

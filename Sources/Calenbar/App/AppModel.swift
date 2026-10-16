@@ -1,3 +1,4 @@
+import AppKit
 import CalenbarCore
 import Foundation
 import Observation
@@ -25,6 +26,32 @@ final class AppModel {
     var titleEvent: CalendarEvent? {
         let candidates = settings.eventFilter.apply(calendar.upcoming, for: .title)
         return TitleSelector(rule: settings.titleRule, horizon: settings.titleHorizon).select(from: candidates, now: now)
+    }
+
+    /// The meeting the global shortcut and "Join Next Meeting" open.
+    var nextMeeting: CalendarEvent? {
+        MeetingPicker.next(titleEvent: titleEvent, candidates: events(for: .title), now: now)
+    }
+
+    /// Joins it, or beeps when there's nothing to join.
+    func joinNextMeeting() {
+        guard let link = nextMeeting?.meetingLink else {
+            NSSound.beep()
+            return
+        }
+        MeetingOpener.open(link)
+    }
+
+    /// Opens the service's instant-meeting page in the user's meeting browser.
+    func startNewMeeting(_ provider: MeetingProvider) {
+        if let url = provider.newMeetingURL {
+            MeetingOpener.openInBrowser(url)
+        }
+    }
+
+    /// What the menu bar prints for an event: its title, or a stand-in while the screen is shared.
+    func menuBarTitle(for event: CalendarEvent) -> String {
+        settings.hideTitlesInMenuBar ? TitleFormatter.privateTitle(event) : TitleFormatter.displayTitle(event)
     }
 
     func events(for purpose: CalendarPurpose) -> [CalendarEvent] {

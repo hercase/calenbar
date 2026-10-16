@@ -2,6 +2,8 @@
 
 "settings.menuSpace.footer" = "Optional. On displays without a notch, lets long titles use the free space up to the active app's menus instead of a fixed width. Not needed on a MacBook screen. Requires Accessibility access, used only to read where the app menus end.";
 "settings.position.row" = "macOS puts new items at the far left of the menu bar and hides them first when it gets crowded. Hold ⌘ and drag the Calenbar item next to the clock once; it stays there across relaunches and updates.";
+"settings.privacy.footer" = "The menu bar shows “Meeting • in 12m” instead of the title, so a shared screen or a recording doesn't reveal it. The panel is unchanged. Also in the panel's ••• menu and the item's right-click menu.";
+"settings.shortcut.footer" = "The shortcut works in any app. It joins the meeting shown in the menu bar, or the next one with a link.";
 "settings.horizon.footer" = "Outside this window the menu bar shows only today's date. An event that is already running is always shown.";
 "settings.sync.footer" = "macOS syncs Google and Exchange calendars on its own schedule. For new invitations to show up quickly, set Calendar › Settings › Accounts › Refresh Calendars to \"Every minute\".";
 "settings.calendars.footer" = "Calendars come from the accounts in System Settings › Internet Accounts. For each one, choose where it appears: the panel list, the menu bar, notifications and the full-screen alert.";

@@ -26,6 +26,11 @@ final class AppSettings {
     /// How far ahead the menu bar looks for the next event.
     var titleHorizon: TitleHorizon { didSet { store(titleHorizon, .titleHorizon) } }
     var showMonthCalendar: Bool { didSet { store(showMonthCalendar, .showMonthCalendar) } }
+    var showWeekNumbers: Bool { didSet { store(showWeekNumbers, .showWeekNumbers) } }
+    /// Screen-sharing mode: the menu bar says "Meeting" instead of the event's title.
+    var hideTitlesInMenuBar: Bool { didSet { store(hideTitlesInMenuBar, .hideTitlesInMenuBar) } }
+    /// System-wide shortcut that joins the next meeting; nil when none is recorded.
+    var joinShortcut: KeyShortcut? { didSet { store(joinShortcut, .joinShortcut) } }
     var openEventsIn: EventDestination { didSet { store(openEventsIn, .openEventsIn) } }
     /// Bundle id of the browser for meeting links; empty means the system default browser.
     var meetingBrowserID: String { didSet { store(meetingBrowserID, .meetingBrowserID) } }
@@ -61,8 +66,8 @@ final class AppSettings {
     }
 
     private enum Key: String {
-        case titleRule, titleHorizon, showMonthCalendar, openEventsIn, meetingBrowserID, preferNativeMeetingApps,
-            flashEnabled, flashFromFiveMinutes, attentionSound
+        case titleRule, titleHorizon, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar, joinShortcut, openEventsIn,
+            meetingBrowserID, preferNativeMeetingApps, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID
         case disabledCalendars, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel, showClocksInEventDetails
     }
@@ -76,6 +81,10 @@ final class AppSettings {
         titleRule = Self.load(.titleRule, from: defaults) ?? .switchBeforeNextStarts
         titleHorizon = Self.load(.titleHorizon, from: defaults) ?? .today
         showMonthCalendar = Self.load(.showMonthCalendar, from: defaults) ?? false
+        showWeekNumbers = Self.load(.showWeekNumbers, from: defaults) ?? false
+        hideTitlesInMenuBar = Self.load(.hideTitlesInMenuBar, from: defaults) ?? false
+        let storedShortcut: KeyShortcut?? = Self.load(.joinShortcut, from: defaults)
+        joinShortcut = storedShortcut.flatMap { $0 }
         openEventsIn = Self.load(.openEventsIn, from: defaults) ?? .automatic
         meetingBrowserID = Self.load(.meetingBrowserID, from: defaults) ?? ""
         preferNativeMeetingApps = Self.load(.preferNativeMeetingApps, from: defaults) ?? true

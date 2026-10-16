@@ -30,6 +30,19 @@ public enum MeetingProvider: String, CaseIterable, Sendable {
         case .gather: "Gather"
         }
     }
+
+    /// Services with an instant-meeting page, in the order the "New Meeting" menu lists them.
+    public static let instantMeetingProviders: [MeetingProvider] = [.googleMeet, .zoom, .teams]
+
+    /// Where a brand-new call starts, for `instantMeetingProviders`.
+    public var newMeetingURL: URL? {
+        switch self {
+        case .googleMeet: URL(string: "https://meet.new")
+        case .zoom: URL(string: "https://zoom.us/start/videomeeting")
+        case .teams: URL(string: "https://teams.microsoft.com/l/meeting/new")
+        default: nil
+        }
+    }
 }
 
 public struct MeetingLink: Equatable, Sendable {

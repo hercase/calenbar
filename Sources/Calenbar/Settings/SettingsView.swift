@@ -17,7 +17,7 @@ enum SettingsWindow {
         [
             Page(
                 title: String(localized: "General"), symbol: "gearshape",
-                view: AnyView(GeneralSettings(settings: model.settings, calendar: model.calendar))),
+                view: AnyView(GeneralSettings(settings: model.settings, calendar: model.calendar, uiState: uiState))),
             Page(
                 title: String(localized: "Menu Bar"), symbol: "menubar.rectangle",
                 view: AnyView(MenuBarSettings(settings: model.settings))),
@@ -63,12 +63,15 @@ enum SettingsWindow {
 private struct GeneralSettings: View {
     @Bindable var settings: AppSettings
     let calendar: CalendarService
+    let uiState: SettingsUIState
 
     var body: some View {
         Form {
             Section {
                 Toggle("Launch at login", isOn: $settings.launchAtLogin)
                 Toggle("Show month calendar in the panel", isOn: $settings.showMonthCalendar)
+                Toggle("Show week numbers in the month calendar", isOn: $settings.showWeekNumbers)
+                    .disabled(!settings.showMonthCalendar)
             }
             Section {
                 LabeledContent {
@@ -88,7 +91,10 @@ private struct GeneralSettings: View {
                         .buttonStyle(.link)
                 }
             }
-            Section("Meetings & events") {
+            Section {
+                LabeledContent("Join the next meeting from anywhere") {
+                    ShortcutRecorder(settings: settings, uiState: uiState)
+                }
                 Picker("Open meeting links in", selection: $settings.meetingBrowserID) {
                     Text("Default browser").tag("")
                     ForEach(MeetingOpener.installedBrowsers()) { browser in
@@ -101,6 +107,10 @@ private struct GeneralSettings: View {
                     Text("Calendar app").tag(EventDestination.calendarApp)
                     Text("Google Calendar (web)").tag(EventDestination.googleWeb)
                 }
+            } header: {
+                Text("Meetings & events")
+            } footer: {
+                SettingsFooter { Text("settings.shortcut.footer") }
             }
         }
         .formStyle(.grouped)
@@ -132,6 +142,13 @@ private struct MenuBarSettings: View {
                 Text("Next event")
             } footer: {
                 SettingsFooter { Text("settings.horizon.footer") }
+            }
+            Section {
+                Toggle("Hide event titles", isOn: $settings.hideTitlesInMenuBar)
+            } header: {
+                Text("Sharing your screen")
+            } footer: {
+                SettingsFooter { Text("settings.privacy.footer") }
             }
             Section {
                 LabeledContent("Use the free space after the app menus") {

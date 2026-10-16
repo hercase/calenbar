@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
     private var notifications: NotificationScheduler?
     private var alerts: FullScreenAlertController?
+    private var hotKeys: HotKeyCenter?
     private var settingsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -32,6 +33,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             MeetingOpener.browserBundleID = model.settings.meetingBrowserID
             MeetingOpener.preferNativeApps = model.settings.preferNativeMeetingApps
         }
+        let hotKeys = HotKeyCenter { model.joinNextMeeting() }
+        self.hotKeys = hotKeys
+        observeContinuously { hotKeys.set(model.settings.joinShortcut) }
 
         Task {
             if model.calendar.access == .notDetermined {

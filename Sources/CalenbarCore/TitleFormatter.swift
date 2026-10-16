@@ -9,6 +9,11 @@ public enum TitleFormatter {
         return trimmed.isEmpty ? String(localized: "(No title)") : trimmed
     }
 
+    /// Stand-in for the title when the menu bar must not reveal it (screen sharing, recordings).
+    public static func privateTitle(_ event: CalendarEvent) -> String {
+        event.meetingLink == nil ? String(localized: "Event") : String(localized: "Meeting")
+    }
+
     /// `now` during the first minute, `25m left` while ongoing, `in 1h 4m` before it starts.
     public static func suffix(for event: CalendarEvent, now: Date) -> String {
         if event.isOngoing(at: now) {

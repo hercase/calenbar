@@ -121,6 +121,8 @@
 "7 days ahead" = "7 días antes";
 "Position" = "Posición";
 "settings.position.row" = "macOS pone los ítems nuevos a la izquierda de la barra de menús y son lo primero que esconde cuando está llena. Mantené ⌘ y arrastrá el ítem de Calenbar junto al reloj una vez; se queda ahí aunque relances o actualices.";
+"settings.privacy.footer" = "La barra de menús muestra “Reunión • en 12m” en vez del título, así una pantalla compartida o una grabación no lo revela. El panel no cambia. También está en el menú ••• del panel y en el clic derecho del ítem.";
+"settings.shortcut.footer" = "El atajo funciona en cualquier app. Entra a la reunión que muestra la barra, o a la próxima que tenga link.";
 "settings.horizon.footer" = "Fuera de ese plazo la barra de menús muestra solo la fecha de hoy. Un evento en curso se muestra siempre.";
 "Nothing coming up" = "Nada en el horizonte";
 "Use the free space after the app menus" = "Usar el espacio libre después de los menús de la app";
@@ -209,3 +211,23 @@
 "Last checked %@" = "Última comprobación: %@";
 "Check for Updates…" = "Buscar actualizaciones…";
 "Download and install updates automatically" = "Descargar e instalar actualizaciones automáticamente";
+
+"Join Next Meeting" = "Entrar a la próxima reunión";
+"New Meeting" = "Nueva reunión";
+"Hide Event Titles" = "Ocultar títulos de eventos";
+"Hide Event Titles in Menu Bar" = "Ocultar títulos en la barra de menús";
+"Hide event titles" = "Ocultar los títulos de los eventos";
+"Sharing your screen" = "Al compartir pantalla";
+"Meeting" = "Reunión";
+"Event" = "Evento";
+"Show week numbers in the month calendar" = "Mostrar números de semana en el calendario";
+"Week %lld" = "Semana %lld";
+"%@, day off" = "%@, día libre";
+"Join the next meeting from anywhere" = "Entrar a la próxima reunión desde cualquier app";
+"Press keys…" = "Presioná las teclas…";
+"Record Shortcut" = "Grabar atajo";
+"Remove shortcut" = "Quitar atajo";
+"Esc cancels" = "Esc cancela";
+"Click, then press the keys" = "Clic y después presioná las teclas";
+"Holiday" = "Feriado";
+"Time off" = "Día libre";
