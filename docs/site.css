@@ -89,6 +89,8 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
   padding: 0 0 28px; text-align: left;
 }
 .screen.short { padding-bottom: 72px; }
+/* In a grid column, auto margins would size the screen to the menu bar's unwrapped width. */
+.feature .screen { margin: 0; width: 100%; }
 .menubar {
   height: 32px; background: var(--bar); color: var(--bar-ink);
   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
@@ -145,7 +147,7 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 @media (max-width: 640px) { .release { grid-template-columns: 1fr; gap: 6px; } }
 
 /* Features: text and a screenshot, alternating sides. */
-.feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 80px 0; border-top: 1px solid var(--rule); }
+.feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; padding: 80px 0; border-top: 1px solid var(--rule); }
 .feature.flip > .text { order: 2; }
 .feature h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 1.12; letter-spacing: -0.025em; margin: 0 0 12px; }
 .feature p { margin: 0 0 14px; color: var(--ink-2); }
@@ -159,12 +161,29 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 .feature.wide .text { max-width: 60ch; }
 @media (max-width: 680px) { .feature { grid-template-columns: 1fr; gap: 24px; padding: 40px 0; } .feature.flip > .text { order: 0; } }
 
+/* Meeting services Join recognises */
+.services { padding: 56px 0; border-top: 1px solid var(--rule); text-align: center; }
+.services h2 { font-size: clamp(22px, 3vw, 28px); letter-spacing: -0.02em; margin: 0 0 20px; }
+.services ul { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 760px; }
+.services li { background: var(--win); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 16px; font-size: 15px; font-weight: 500; }
+.services p { color: var(--ink-3); font-size: 14px; margin: 18px 0 0; }
+
+/* Keyboard */
+.keys { padding: 64px 0; border-top: 1px solid var(--rule); }
+.keys h2 { font-size: clamp(26px, 3.4vw, 34px); letter-spacing: -0.025em; margin: 0 0 20px; }
+.keys dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.keys dl > div { display: flex; align-items: baseline; gap: 14px; background: var(--win); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; }
+.keys dt { flex: none; min-width: 84px; color: var(--ink-2); font-size: 14px; }
+.keys dd { margin: 0; color: var(--ink-2); font-size: 15px; }
+kbd { display: inline-block; min-width: 24px; padding: 2px 7px; margin-right: 3px; text-align: center; font: 600 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--win-rule); border-bottom-width: 2px; border-radius: 6px; }
+
 /* Questions */
 .faq { padding: 56px 0 24px; border-top: 1px solid var(--rule); }
 .faq h2 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 20px; }
 .faq dl { margin: 0; display: grid; gap: 22px; max-width: 64ch; }
 .faq dt { font-weight: 600; margin: 0 0 4px; }
 .faq dd { margin: 0; color: var(--ink-2); }
+.faq dd code { font-size: .85em; background: var(--win); border: 1px solid var(--rule); border-radius: 5px; padding: 1px 5px; overflow-wrap: anywhere; }
 
 /* Closing band */
 .closing { padding: 64px 24px; margin: 24px 0 56px; text-align: center; border-radius: 24px; background: var(--wallpaper); box-shadow: 0 0 0 1px var(--wallpaper-edge); }
@@ -243,3 +262,4 @@ p code { background: var(--win); border: 1px solid var(--rule); border-radius: 5
 
 footer { padding: 36px 0 48px; color: var(--ink-3); font-size: 14px; border-top: 1px solid var(--rule); }
 footer a { color: var(--ink-2); }
+footer span { line-height: 1.8; }
