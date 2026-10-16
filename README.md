@@ -22,4 +22,4 @@ Swift Package Manager with the Xcode Command Line Tools; no Xcode needed. See [C
 
 ## Credits
 
-Made by [Hernan Case](https://hercase.vercel.app/?utm_source=calenbar&utm_medium=github). Updates by [Sparkle](https://sparkle-project.org).
+Made by [Hernan Case](https://hercase.vercel.app/?utm_source=calenbar&utm_medium=github). Updates by [Sparkle](https://sparkle-project.org). [MIT license](LICENSE).
