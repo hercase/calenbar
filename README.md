@@ -55,4 +55,4 @@ The release machine needs the "Calenbar Dev" code-signing identity (`scripts/mak
 
 ## Credits
 
-Made by [Hernán Case](https://hercase.vercel.app/).
+Made by [Hernan Case](https://hercase.vercel.app/).

@@ -189,7 +189,7 @@ struct PreviewFixtures {
                 name: "Ana Pérez", email: "ana@example.com", status: .accepted, kind: .person, isCurrentUser: false,
                 isOrganizer: true),
             Attendee(
-                name: "Hernán", email: "me@example.com", status: .accepted, kind: .person, isCurrentUser: true, isOrganizer: false
+                name: "Hernan", email: "me@example.com", status: .accepted, kind: .person, isCurrentUser: true, isOrganizer: false
             ),
             Attendee(
                 name: "Tomás López", email: "tomas@example.com", status: .pending, kind: .person, isCurrentUser: false,
