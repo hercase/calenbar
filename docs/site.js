@@ -30,10 +30,11 @@
     if (!code || !button) return;
     button.addEventListener('click', function () {
       var text = code.textContent, done = function () {
+        if (button.classList.contains('copied')) return;
         var label = button.textContent;
-        button.textContent = button.dataset.copied || 'Copied';
-        button.setAttribute('data-copied', '');
-        setTimeout(function () { button.textContent = label; button.removeAttribute('data-copied'); }, 1600);
+        button.textContent = button.dataset.done || 'Copied';
+        button.classList.add('copied');
+        setTimeout(function () { button.textContent = label; button.classList.remove('copied'); }, 1600);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, done);
       else { var range = document.createRange(); range.selectNodeContents(code); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(range); }
