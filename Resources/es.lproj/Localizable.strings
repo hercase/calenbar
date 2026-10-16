@@ -150,7 +150,7 @@
 
 /* Settings: Calendars */
 "List" = "Lista";
-"settings.calendars.footer" = "Los calendarios vienen de las cuentas en Ajustes del Sistema › Cuentas de Internet. Para cada uno, elegí dónde aparece: la lista del panel, la barra de menús, las notificaciones y la alerta a pantalla completa.";
+"settings.calendars.footer" = "Los calendarios vienen de las cuentas en Ajustes del Sistema › Cuentas de Internet. Para cada uno, elegí dónde aparece: la lista del panel, la barra de menús, las notificaciones y la alerta a pantalla completa. Clic derecho en un calendario para ocultarlo de Calenbar del todo. Agregar o borrar calendarios se hace en la app Calendario.";
 "settings.calendars.noAccount" = "Esta Mac todavía no tiene una cuenta de calendario. Agregá tu cuenta de Google, Exchange o iCloud y activá Calendarios; aparece acá en menos de un minuto.";
 "Add Account…" = "Agregar cuenta…";
 "Menu bar" = "Barra";
@@ -235,3 +235,6 @@
 "Let it be the event shown in the menu bar" = "Puede ser el evento que muestra la barra de menús";
 "Send a notification before its events" = "Enviar una notificación antes de sus eventos";
 "Show the full-screen alert for its events" = "Mostrar la alerta a pantalla completa para sus eventos";
+"Hide from Calenbar" = "Ocultar de Calenbar";
+"Show Everywhere" = "Mostrar en todos lados";
+"Manage in Calendar…" = "Administrar en Calendario…";

@@ -105,6 +105,19 @@ struct CalendarSettings: View {
                 .accessibilityLabel("\(column.title): \(info.title)")
             }
         }
+        .contextMenu {
+            Button("Hide from Calenbar") { setAll(false, for: info) }
+            Button("Show Everywhere") { setAll(true, for: info) }
+            Divider()
+            Button("Manage in Calendar…") { model.calendar.openCalendarApp() }
+        }
+    }
+
+    /// Hide = unchecked everywhere: the calendar stays on the Mac, Calenbar just ignores it.
+    private func setAll(_ enabled: Bool, for info: CalendarInfo) {
+        for purpose in CalendarPurpose.allCases {
+            model.settings.setEnabled(enabled, calendarID: info.id, for: purpose)
+        }
     }
 
     private var footer: some View {
