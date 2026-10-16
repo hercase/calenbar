@@ -4,287 +4,173 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Calenbar</title>
-<meta name="description" content="Your next meeting, always in the menu bar. A small, native macOS app.">
+<meta name="description" content="Your next meeting, in the menu bar. A small, native macOS app with one-click join, reminders and world clocks.">
 <link rel="icon" href="img/icon.png">
-<style>
-  :root {
-    --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --muted: #6e6e73; --line: #d2d2d7;
-    --accent: #0a84ff; --accent-text: #ffffff; --tint: #eef4ff;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #1c1c1e; --card: #2c2c2e; --text: #f5f5f7; --muted: #98989d; --line: #3a3a3c;
-      --accent: #0a84ff; --accent-text: #ffffff; --tint: #1f2a3d;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #1c1c1e; --card: #2c2c2e; --text: #f5f5f7; --muted: #98989d; --line: #3a3a3c;
-    --accent: #0a84ff; --accent-text: #ffffff; --tint: #1f2a3d;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font: 17px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  main { max-width: 720px; margin: 0 auto; padding: 48px 16px 64px; }
-  header { text-align: center; }
-  header img { width: 128px; height: 128px; }
-  h1 { font-size: 40px; letter-spacing: -0.02em; margin: 12px 0 4px; }
-  .tagline { color: var(--muted); font-size: 21px; margin: 0 0 24px; }
-  .download {
-    display: inline-block; background: var(--accent); color: var(--accent-text); text-decoration: none;
-    font-size: 19px; font-weight: 600; padding: 14px 32px; border-radius: 14px;
-  }
-  .download:hover { filter: brightness(1.08); }
-  .fine { color: var(--muted); font-size: 14px; margin: 12px 0 0; }
-  .lang { position: absolute; top: 16px; right: 16px; }
-  .lang button {
-    background: none; border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 4px 10px;
-    font: inherit; font-size: 14px; cursor: pointer;
-  }
-  .lang button[aria-pressed="true"] { background: var(--card); font-weight: 600; }
-  h2 { font-size: 24px; letter-spacing: -0.01em; margin: 48px 0 16px; }
-  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: step; }
-  ol.steps li {
-    background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px;
-    margin-bottom: 16px; display: grid; grid-template-columns: 1fr; gap: 16px;
-  }
-  @media (min-width: 600px) { ol.steps li { grid-template-columns: 1fr 220px; align-items: center; } }
-  ol.steps li::before {
-    counter-increment: step; content: counter(step);
-    display: inline-flex; width: 28px; height: 28px; border-radius: 50%; align-items: center; justify-content: center;
-    background: var(--accent); color: var(--accent-text); font-weight: 700; font-size: 15px; margin-bottom: 8px;
-  }
-  ol.steps h3 { margin: 0 0 6px; font-size: 19px; }
-  ol.steps p { margin: 0; color: var(--muted); }
-  ol.steps p b { color: var(--text); font-weight: 600; }
-  figure { margin: 0; }
-  figure svg, figure img { width: 100%; height: auto; display: block; border-radius: 10px; }
-  .note { background: var(--tint); border-radius: 12px; padding: 14px 18px; color: var(--text); }
-  footer { color: var(--muted); font-size: 14px; text-align: center; margin-top: 56px; }
-  footer a { color: var(--muted); }
-  [hidden] { display: none !important; }
-  kbd { font: inherit; }
-</style>
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
-<div class="lang" role="group" aria-label="Language">
-  <button type="button" data-lang="en" aria-pressed="true">English</button>
-  <button type="button" data-lang="es" aria-pressed="false">Español</button>
-</div>
-<main>
-  <header>
-    <img src="img/icon.png" alt="" width="128" height="128">
-    <h1>Calenbar</h1>
-    <p class="tagline" data-en>Your next meeting, always in the menu bar.</p>
-    <p class="tagline" data-es hidden>Tu próxima reunión, siempre en la barra de menús.</p>
-    <a class="download" href="https://github.com/hercase/calenbar/releases/latest/download/Calenbar.dmg">
-      <span data-en>Download for Mac</span><span data-es hidden>Descargar para Mac</span>
-    </a>
-    <p class="fine">
-      <span data-en>Free · macOS 14 or later · Apple silicon and Intel · <span id="version"></span></span>
-      <span data-es hidden>Gratis · macOS 14 o posterior · Apple silicon e Intel · <span id="version-es"></span></span>
-    </p>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="./"><img src="img/icon.png" alt="" width="28" height="28">Calenbar</a>
+    <nav>
+      <a href="install.html"><span data-en>Install guide</span><span data-es hidden>Guía de instalación</span></a>
+      <a href="https://github.com/hercase/calenbar">GitHub</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" data-lang="es" aria-pressed="false">Español</button>
+      </div>
+    </nav>
   </header>
 
-  <section data-en>
-    <h2>Install in four steps</h2>
-    <ol class="steps">
-      <li>
-        <div>
-          <h3>Drag Calenbar to Applications</h3>
-          <p>Open the downloaded <b>Calenbar.dmg</b>. A window appears with the app and an arrow: drag the Calenbar icon onto the Applications folder. Then open Calenbar from Applications (or with Spotlight).</p>
-        </div>
-        <figure><img src="img/dmg.png" alt="The disk image window: Calenbar icon, an arrow, and the Applications folder" width="660" height="412"></figure>
-      </li>
-      <li>
-        <div>
-          <h3>Tell macOS it's OK to open</h3>
-          <p>Calenbar isn't registered with Apple yet, so the first time macOS shows “Apple could not verify…”. Click <b>Done</b>, then open <b>System Settings › Privacy &amp; Security</b>, scroll down and click <b>Open Anyway</b> next to Calenbar. Confirm with your password. This happens only once; updates install themselves afterwards.</p>
-        </div>
-        <figure aria-hidden="true">
-          <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Helvetica, Arial" font-size="9">
-            <rect width="220" height="150" rx="10" fill="var(--bg)"/>
-            <rect x="14" y="14" width="192" height="24" rx="6" fill="var(--card)" stroke="var(--line)"/>
-            <text x="24" y="29" fill="var(--text)" font-weight="600">Privacy &amp; Security</text>
-            <rect x="14" y="50" width="192" height="84" rx="8" fill="var(--card)" stroke="var(--line)"/>
-            <text x="24" y="70" fill="var(--muted)" font-size="8">Security</text>
-            <text x="24" y="92" fill="var(--text)">“Calenbar” was blocked to protect</text>
-            <text x="24" y="104" fill="var(--text)">your Mac.</text>
-            <rect x="120" y="112" width="76" height="16" rx="5" fill="var(--accent)"/>
-            <text x="158" y="123" fill="#fff" text-anchor="middle" font-weight="600">Open Anyway</text>
-          </svg>
-        </figure>
-      </li>
-      <li>
-        <div>
-          <h3>Allow access to your calendars</h3>
-          <p>Calenbar asks for <b>Full Access</b> to Calendars: that's how it reads your events. Everything stays on your Mac. Then allow <b>Notifications</b> so it can warn you before meetings. Changed your mind? Both live in System Settings › Privacy &amp; Security.</p>
-        </div>
-        <figure aria-hidden="true">
-          <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Helvetica, Arial" font-size="9">
-            <rect width="220" height="150" rx="10" fill="var(--bg)"/>
-            <rect x="40" y="18" width="140" height="114" rx="10" fill="var(--card)" stroke="var(--line)"/>
-            <rect x="96" y="30" width="28" height="28" rx="6" fill="var(--tint)" stroke="var(--accent)"/>
-            <text x="110" y="49" fill="var(--accent)" text-anchor="middle" font-weight="700" font-size="12">15</text>
-            <text x="110" y="74" fill="var(--text)" text-anchor="middle" font-weight="600">“Calenbar” would like</text>
-            <text x="110" y="86" fill="var(--text)" text-anchor="middle" font-weight="600">full access to your calendar</text>
-            <rect x="52" y="100" width="56" height="16" rx="5" fill="var(--bg)" stroke="var(--line)"/>
-            <text x="80" y="111" fill="var(--text)" text-anchor="middle">Don't Allow</text>
-            <rect x="112" y="100" width="56" height="16" rx="5" fill="var(--accent)"/>
-            <text x="140" y="111" fill="#fff" text-anchor="middle" font-weight="600">Allow Full Access</text>
-          </svg>
-        </figure>
-      </li>
-      <li>
-        <div>
-          <h3>Using Google Calendar or Outlook? Add the account once</h3>
-          <p>Calenbar shows whatever the Mac's Calendar knows. Open <b>System Settings › Internet Accounts</b>, add your Google (or Microsoft Exchange) account and make sure <b>Calendars</b> is turned on. If you already use the Calendar app with that account, there's nothing to do.</p>
-        </div>
-        <figure aria-hidden="true">
-          <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Helvetica, Arial" font-size="9">
-            <rect width="220" height="150" rx="10" fill="var(--bg)"/>
-            <rect x="14" y="14" width="192" height="24" rx="6" fill="var(--card)" stroke="var(--line)"/>
-            <text x="24" y="29" fill="var(--text)" font-weight="600">Internet Accounts</text>
-            <rect x="14" y="50" width="192" height="84" rx="8" fill="var(--card)" stroke="var(--line)"/>
-            <text x="24" y="70" fill="var(--text)" font-weight="600">Google</text>
-            <text x="24" y="82" fill="var(--muted)" font-size="8">you@gmail.com</text>
-            <text x="24" y="104" fill="var(--text)">Mail</text>
-            <rect x="166" y="96" width="24" height="12" rx="6" fill="var(--line)"/>
-            <text x="24" y="122" fill="var(--text)">Calendars</text>
-            <rect x="166" y="114" width="24" height="12" rx="6" fill="#34c759"/>
-            <circle cx="184" cy="120" r="5" fill="#fff"/>
-          </svg>
-        </figure>
-      </li>
-    </ol>
-    <p class="note">That's it. Calenbar lives in the menu bar (top right), starts with your Mac, and updates itself: when a new version is ready it shows <b>Update available</b> in its panel.</p>
+  <section class="hero">
+    <h1 data-en>Your next meeting, in the menu bar.</h1>
+    <h1 data-es hidden>Tu próxima reunión, en la barra de menús.</h1>
+    <p class="lede" data-en>A small Mac app that keeps the current or upcoming event in the menu bar, counts down to it, and joins the call in one click.</p>
+    <p class="lede" data-es hidden>Una app chica para Mac que deja el evento actual o el próximo en la barra de menús, cuenta cuánto falta y entra a la llamada con un clic.</p>
+    <div class="cta">
+      <a class="download" href="https://github.com/hercase/calenbar/releases/latest/download/Calenbar.dmg">
+        <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v9.6l2.9-2.9a1 1 0 1 1 1.4 1.4l-4.6 4.6a1 1 0 0 1-1.4 0L6.7 12.1a1 1 0 0 1 1.4-1.4l2.9 2.9V4a1 1 0 0 1 1-1zM5 17a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/></svg>
+        <span data-en>Download for Mac</span><span data-es hidden>Descargar para Mac</span>
+      </a>
+      <p class="fine" data-en>Free and open source. macOS 14 or later.<span data-version="en"></span> Not sure how to install a Mac app from outside the App Store? <a href="install.html">Here's how</a>.</p>
+      <p class="fine" data-es hidden>Gratis y de código abierto. macOS 14 o posterior.<span data-version="es"></span> ¿No sabés cómo instalar una app de Mac fuera del App Store? <a href="install.html">Así se hace</a>.</p>
+    </div>
 
-    <h2>What it does</h2>
-    <ul>
-      <li>Shows the current or next event with a live countdown, e.g. <b>Weekly Sync • in 12m</b>.</li>
-      <li>Joins Google Meet, Zoom, Teams, Webex, Slack and FaceTime calls in one click.</li>
-      <li>Panel with today and tomorrow, a month view, world clocks, and details for each meeting.</li>
-      <li>A notification and an optional full-screen reminder before meetings; the menu bar flashes in the last minutes.</li>
-      <li>Private by design: events are read from the Mac's calendar and never leave it.</li>
-    </ul>
+    <div class="screen" aria-hidden="true">
+      <div class="menubar">
+        <div class="menus"><span><b>Finder</b></span><span>File</span><span>Edit</span><span>View</span><span>Go</span></div>
+        <div class="spacer"></div>
+        <div class="item"><span class="daybox">16</span><span data-en>Weekly Sync</span><span data-es hidden>Reunión semanal</span><span class="dot">•</span><span data-en>in 12m</span><span data-es hidden>en 12m</span></div>
+        <svg class="sys" viewBox="0 0 24 24"><path d="M12 19.5a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zm-3.6-4.3a5.1 5.1 0 0 1 7.2 0l-1.3 1.3a3.3 3.3 0 0 0-4.6 0zm-2.9-2.9a9.2 9.2 0 0 1 13 0l-1.3 1.3a7.4 7.4 0 0 0-10.4 0zM2.6 9.4a13.3 13.3 0 0 1 18.8 0l-1.3 1.3a11.5 11.5 0 0 0-16.2 0z"/></svg>
+        <svg class="sys" viewBox="0 0 28 14"><rect x="1" y="2" width="22" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="2.8" y="3.8" width="18.4" height="6.4" rx="1.6"/><path d="M24.6 5.2v3.6a1.9 1.9 0 0 0 0-3.6z"/></svg>
+        <span class="clock sys">Thu 16 Oct 9:41 AM</span>
+      </div>
+      <img class="panel" src="img/panel.png" alt="" width="340" height="529">
+    </div>
   </section>
 
-  <section data-es hidden>
-    <h2>Instalación en cuatro pasos</h2>
-    <ol class="steps">
-      <li>
-        <div>
-          <h3>Arrastrá Calenbar a Aplicaciones</h3>
-          <p>Abrí el archivo descargado <b>Calenbar.dmg</b>. Aparece una ventana con la app y una flecha: arrastrá el ícono de Calenbar sobre la carpeta Aplicaciones. Después abrí Calenbar desde Aplicaciones (o con Spotlight).</p>
-        </div>
-        <figure><img src="img/dmg.png" alt="La ventana de la imagen de disco: el ícono de Calenbar, una flecha y la carpeta Aplicaciones" width="660" height="412"></figure>
-      </li>
-      <li>
-        <div>
-          <h3>Decile a macOS que está bien abrirla</h3>
-          <p>Calenbar todavía no está registrada en Apple, así que la primera vez macOS muestra “Apple no pudo verificar…”. Tocá <b>OK</b>, abrí <b>Ajustes del Sistema › Privacidad y seguridad</b>, bajá hasta el final y tocá <b>Abrir de todos modos</b> junto a Calenbar. Confirmá con tu contraseña. Pasa una sola vez: las actualizaciones se instalan solas.</p>
-        </div>
-        <figure aria-hidden="true">
-          <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Helvetica, Arial" font-size="9">
-            <rect width="220" height="150" rx="10" fill="var(--bg)"/>
-            <rect x="14" y="14" width="192" height="24" rx="6" fill="var(--card)" stroke="var(--line)"/>
-            <text x="24" y="29" fill="var(--text)" font-weight="600">Privacidad y seguridad</text>
-            <rect x="14" y="50" width="192" height="84" rx="8" fill="var(--card)" stroke="var(--line)"/>
-            <text x="24" y="70" fill="var(--muted)" font-size="8">Seguridad</text>
-            <text x="24" y="92" fill="var(--text)">Se bloqueó “Calenbar” para</text>
-            <text x="24" y="104" fill="var(--text)">proteger la Mac.</text>
-            <rect x="104" y="112" width="92" height="16" rx="5" fill="var(--accent)"/>
-            <text x="150" y="123" fill="#fff" text-anchor="middle" font-weight="600">Abrir de todos modos</text>
-          </svg>
-        </figure>
-      </li>
-      <li>
-        <div>
-          <h3>Permitile acceder a tus calendarios</h3>
-          <p>Calenbar pide <b>acceso completo</b> a Calendarios: así lee tus eventos. Todo queda en tu Mac. Después permití las <b>Notificaciones</b> para que te avise antes de cada reunión. Las dos cosas se pueden cambiar en Ajustes del Sistema › Privacidad y seguridad.</p>
-        </div>
-        <figure aria-hidden="true">
-          <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Helvetica, Arial" font-size="9">
-            <rect width="220" height="150" rx="10" fill="var(--bg)"/>
-            <rect x="40" y="18" width="140" height="114" rx="10" fill="var(--card)" stroke="var(--line)"/>
-            <rect x="96" y="30" width="28" height="28" rx="6" fill="var(--tint)" stroke="var(--accent)"/>
-            <text x="110" y="49" fill="var(--accent)" text-anchor="middle" font-weight="700" font-size="12">15</text>
-            <text x="110" y="74" fill="var(--text)" text-anchor="middle" font-weight="600">“Calenbar” quiere acceso</text>
-            <text x="110" y="86" fill="var(--text)" text-anchor="middle" font-weight="600">completo a tu calendario</text>
-            <rect x="52" y="100" width="56" height="16" rx="5" fill="var(--bg)" stroke="var(--line)"/>
-            <text x="80" y="111" fill="var(--text)" text-anchor="middle">No permitir</text>
-            <rect x="112" y="100" width="56" height="16" rx="5" fill="var(--accent)"/>
-            <text x="140" y="111" fill="#fff" text-anchor="middle" font-weight="600">Permitir</text>
-          </svg>
-        </figure>
-      </li>
-      <li>
-        <div>
-          <h3>¿Usás Google Calendar u Outlook? Agregá la cuenta una vez</h3>
-          <p>Calenbar muestra lo que conoce el Calendario de la Mac. Abrí <b>Ajustes del Sistema › Cuentas de Internet</b>, agregá tu cuenta de Google (o Microsoft Exchange) y fijate que <b>Calendarios</b> esté activado. Si ya usás la app Calendario con esa cuenta, no hay nada que hacer.</p>
-        </div>
-        <figure aria-hidden="true">
-          <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Helvetica, Arial" font-size="9">
-            <rect width="220" height="150" rx="10" fill="var(--bg)"/>
-            <rect x="14" y="14" width="192" height="24" rx="6" fill="var(--card)" stroke="var(--line)"/>
-            <text x="24" y="29" fill="var(--text)" font-weight="600">Cuentas de Internet</text>
-            <rect x="14" y="50" width="192" height="84" rx="8" fill="var(--card)" stroke="var(--line)"/>
-            <text x="24" y="70" fill="var(--text)" font-weight="600">Google</text>
-            <text x="24" y="82" fill="var(--muted)" font-size="8">vos@gmail.com</text>
-            <text x="24" y="104" fill="var(--text)">Mail</text>
-            <rect x="166" y="96" width="24" height="12" rx="6" fill="var(--line)"/>
-            <text x="24" y="122" fill="var(--text)">Calendarios</text>
-            <rect x="166" y="114" width="24" height="12" rx="6" fill="#34c759"/>
-            <circle cx="184" cy="120" r="5" fill="#fff"/>
-          </svg>
-        </figure>
-      </li>
-    </ol>
-    <p class="note">Listo. Calenbar vive en la barra de menús (arriba a la derecha), se abre con la Mac y se actualiza sola: cuando hay una versión nueva, el panel muestra <b>Actualización disponible</b>.</p>
+  <section class="feature">
+    <div class="text">
+      <h2 data-en>The menu bar</h2>
+      <h2 data-es hidden>La barra de menús</h2>
+      <p data-en>Next to the clock: a small calendar with today's date, the name of the event and how long until it starts. When it starts the bar says “now”, and while it runs, how long is left. Long names are shortened before they can push the item behind the notch.</p>
+      <p data-es hidden>Al lado del reloj: un calendario chico con la fecha de hoy, el nombre del evento y cuánto falta. Cuando empieza dice “ahora”, y mientras dura, cuánto queda. Los nombres largos se recortan antes de que el ítem se esconda detrás del notch.</p>
+      <ul data-en>
+        <li>You decide how far ahead it looks: the next hour, the rest of the day, the week.</li>
+        <li>In the last five minutes it flashes red; there's an optional sound.</li>
+        <li>Right-click an event to skip it: it leaves the bar and won't notify you.</li>
+      </ul>
+      <ul data-es hidden>
+        <li>Vos decidís hasta dónde mira: la próxima hora, el resto del día, la semana.</li>
+        <li>En los últimos cinco minutos parpadea en rojo; hay un sonido opcional.</li>
+        <li>Clic derecho en un evento para omitirlo: se va de la barra y no te avisa.</li>
+      </ul>
+    </div>
+    <div class="screen short">
+      <div class="menubar">
+        <div class="menus"><span><b>Safari</b></span><span>File</span><span>Edit</span><span>View</span></div>
+        <div class="spacer"></div>
+        <div class="item"><span class="daybox">16</span><span data-en>Weekly Sync</span><span data-es hidden>Reunión semanal</span><span class="dot">•</span><span data-en>25m left</span><span data-es hidden>quedan 25m</span></div>
+        <span class="clock sys">Thu 16 Oct 9:41 AM</span>
+      </div>
+    </div>
+  </section>
 
-    <h2>Qué hace</h2>
-    <ul>
-      <li>Muestra el evento actual o el próximo con cuenta regresiva, por ejemplo <b>Weekly Sync • en 12m</b>.</li>
-      <li>Entra a reuniones de Google Meet, Zoom, Teams, Webex, Slack y FaceTime con un clic.</li>
-      <li>Panel con hoy y mañana, vista mensual, relojes del mundo y el detalle de cada reunión.</li>
-      <li>Notificación y aviso opcional a pantalla completa antes de cada reunión; la barra de menús parpadea en los últimos minutos.</li>
-      <li>Privada por diseño: los eventos se leen del calendario de la Mac y nunca salen de ella.</li>
-    </ul>
+  <section class="feature flip">
+    <div class="text">
+      <h2 data-en>The event card</h2>
+      <h2 data-es hidden>La tarjeta del evento</h2>
+      <p data-en>Click any event and the card opens beside it: the time here and in your other time zones, a Join button, the room, who's invited and who said yes, the notes. Join opens Google Meet, Zoom, Teams, Webex, Slack huddles or FaceTime; Zoom and Teams go straight to their apps if you have them.</p>
+      <p data-es hidden>Hacé clic en un evento y se abre la tarjeta al lado: la hora acá y en tus otras zonas horarias, el botón para entrar, la sala, quién está invitado y quién dijo que sí, las notas. Entrar abre Google Meet, Zoom, Teams, Webex, huddles de Slack o FaceTime; Zoom y Teams van directo a sus apps si las tenés.</p>
+      <ul data-en>
+        <li>Invitations you haven't answered are marked in the list, and the card takes you to answer them.</li>
+        <li>Meeting links open in the browser you pick, not necessarily your default one.</li>
+      </ul>
+      <ul data-es hidden>
+        <li>Las invitaciones que no respondiste quedan marcadas en la lista, y la tarjeta te lleva a responderlas.</li>
+        <li>Los enlaces de reunión se abren en el navegador que elijas, no necesariamente el predeterminado.</li>
+      </ul>
+    </div>
+    <img class="card" src="img/card.png" alt="The event card: time in Madrid and Tokyo, a Join Google Meet button, the room, guests and their replies" width="300" height="458">
+  </section>
+
+  <section class="feature wide">
+    <div class="text">
+      <h2 data-en>Before a meeting</h2>
+      <h2 data-es hidden>Antes de una reunión</h2>
+      <p data-en>A notification with a Join button a minute before (or five, or ten). If you tend to lose track anyway, turn on the full-screen reminder: it takes over the screen you're looking at when the meeting starts, and goes away with Join, Snooze or Esc.</p>
+      <p data-es hidden>Una notificación con botón para entrar un minuto antes (o cinco, o diez). Si igual se te pasa, activá el aviso a pantalla completa: cubre la pantalla que estés mirando cuando empieza la reunión, y se va con Entrar, Posponer o Esc.</p>
+    </div>
+    <img src="img/alert.png" alt="Full-screen reminder: Starting soon, Weekly Sync, with Join, Snooze and Dismiss buttons" width="900" height="420">
+  </section>
+
+  <section class="feature">
+    <div class="text">
+      <h2 data-en>Settings</h2>
+      <h2 data-es hidden>Ajustes</h2>
+      <p data-en>Not many, and each one does something you can see.</p>
+      <p data-es hidden>Pocos, y cada uno hace algo que se nota.</p>
+      <ul data-en>
+        <li>Per calendar: show it in the list, in the menu bar, in notifications, in the full-screen reminder.</li>
+        <li>World clocks for up to three cities, with the meeting time shown in each.</li>
+        <li>Which browser opens links; whether Zoom and Teams use their apps.</li>
+        <li>A month view in the panel, if you want one. English or Spanish.</li>
+      </ul>
+      <ul data-es hidden>
+        <li>Por calendario: mostrarlo en la lista, en la barra, en notificaciones, en el aviso a pantalla completa.</li>
+        <li>Relojes de hasta tres ciudades, con la hora de la reunión en cada una.</li>
+        <li>Con qué navegador se abren los enlaces; si Zoom y Teams usan sus apps.</li>
+        <li>Vista mensual en el panel, si la querés. Español o inglés.</li>
+      </ul>
+    </div>
+    <img src="img/settings.png" alt="Settings, Menu Bar tab: how far ahead to show the next event and when to switch to it" width="560" height="480">
+  </section>
+
+  <section class="faq" data-en>
+    <h2>Questions</h2>
+    <dl>
+      <dt>Does it work with Google Calendar?</dt>
+      <dd>Yes. Calenbar reads whatever the Mac's Calendar app has, so a Google, Exchange or iCloud account added in System Settings › Internet Accounts shows up. No separate sign-in.</dd>
+      <dt>Why does macOS say it can't verify the app?</dt>
+      <dd>Calenbar isn't registered with Apple's developer program, so macOS shows that warning for the first launch. Opening it through System Settings › Privacy &amp; Security › Open Anyway is a one-time step; <a href="install.html">the guide shows where</a>. Updates afterwards install themselves without it.</dd>
+      <dt>Where does my data go?</dt>
+      <dd>Nowhere. Events are read on your Mac and never sent anywhere. The only network request is a daily check for a new version.</dd>
+      <dt>What does it cost?</dt>
+      <dd>Nothing. The <a href="https://github.com/hercase/calenbar">source is on GitHub</a>.</dd>
+    </dl>
+  </section>
+
+  <section class="faq" data-es hidden>
+    <h2>Preguntas</h2>
+    <dl>
+      <dt>¿Funciona con Google Calendar?</dt>
+      <dd>Sí. Calenbar lee lo que tiene la app Calendario de la Mac, así que una cuenta de Google, Exchange o iCloud agregada en Ajustes del Sistema › Cuentas de Internet aparece. No hay que iniciar sesión aparte.</dd>
+      <dt>¿Por qué macOS dice que no puede verificar la app?</dt>
+      <dd>Calenbar no está registrada en el programa de desarrolladores de Apple, así que macOS muestra ese aviso la primera vez. Abrirla desde Ajustes del Sistema › Privacidad y seguridad › Abrir de todos modos se hace una sola vez; <a href="install.html">la guía muestra dónde</a>. Las actualizaciones después se instalan solas.</dd>
+      <dt>¿A dónde van mis datos?</dt>
+      <dd>A ningún lado. Los eventos se leen en tu Mac y no se envían. La única conexión es una consulta diaria para ver si hay versión nueva.</dd>
+      <dt>¿Cuánto cuesta?</dt>
+      <dd>Nada. El <a href="https://github.com/hercase/calenbar">código está en GitHub</a>.</dd>
+    </dl>
+  </section>
+
+  <section class="closing">
+    <h2 data-en>Try it</h2>
+    <h2 data-es hidden>Probala</h2>
+    <p data-en>A few megabytes, no account, and it updates itself from then on.</p>
+    <p data-es hidden>Unos pocos megabytes, sin cuenta, y de ahí en más se actualiza sola.</p>
+    <a class="download" href="https://github.com/hercase/calenbar/releases/latest/download/Calenbar.dmg">
+      <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v9.6l2.9-2.9a1 1 0 1 1 1.4 1.4l-4.6 4.6a1 1 0 0 1-1.4 0L6.7 12.1a1 1 0 0 1 1.4-1.4l2.9 2.9V4a1 1 0 0 1 1-1zM5 17a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/></svg>
+      <span data-en>Download for Mac</span><span data-es hidden>Descargar para Mac</span>
+    </a>
   </section>
 
   <footer>
-    <span data-en>Made by <a href="https://hercase.vercel.app/?utm_source=calenbar&utm_medium=landing">Hernan Case</a> · <a href="https://github.com/hercase/calenbar">Source on GitHub</a></span>
-    <span data-es hidden>Hecho por <a href="https://hercase.vercel.app/?utm_source=calenbar&utm_medium=landing">Hernan Case</a> · <a href="https://github.com/hercase/calenbar">Código en GitHub</a></span>
+    <span data-en>Made by <a href="https://hercase.vercel.app/?utm_source=calenbar&utm_medium=landing">Hernan Case</a>. <a href="install.html">Install guide</a>. <a href="https://github.com/hercase/calenbar">Source on GitHub</a>.</span>
+    <span data-es hidden>Hecho por <a href="https://hercase.vercel.app/?utm_source=calenbar&utm_medium=landing">Hernan Case</a>. <a href="install.html">Guía de instalación</a>. <a href="https://github.com/hercase/calenbar">Código en GitHub</a>.</span>
   </footer>
-</main>
-<script>
-  (function () {
-    var buttons = document.querySelectorAll('.lang button');
-    function setLang(lang) {
-      document.documentElement.lang = lang;
-      document.querySelectorAll('[data-en]').forEach(function (el) { el.hidden = lang !== 'en'; });
-      document.querySelectorAll('[data-es]').forEach(function (el) { el.hidden = lang !== 'es'; });
-      buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
-      try { localStorage.setItem('lang', lang); } catch (e) {}
-    }
-    buttons.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
-    var saved = null;
-    try { saved = localStorage.getItem('lang'); } catch (e) {}
-    setLang(saved || (navigator.language && navigator.language.indexOf('es') === 0 ? 'es' : 'en'));
-
-    // Latest version number, purely cosmetic; the Download link works without it.
-    fetch('https://api.github.com/repos/hercase/calenbar/releases/latest')
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (release) {
-        if (!release || !release.tag_name) return;
-        var v = release.tag_name.replace(/^v/, '');
-        document.getElementById('version').textContent = 'Version ' + v;
-        document.getElementById('version-es').textContent = 'Versión ' + v;
-      })
-      .catch(function () {});
-  })();
-</script>
+</div>
+<script src="site.js"></script>
 </body>
 </html>
