@@ -6,7 +6,7 @@
 <title>Calenbar</title>
 <meta name="description" content="Your next meeting, in the menu bar. A small, native macOS app with one-click join, reminders and world clocks.">
 <link rel="icon" href="img/icon.png">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="site.css">
 </head>
 <body>
@@ -46,7 +46,7 @@
         <svg class="sys" viewBox="0 0 28 14"><rect x="1" y="2" width="22" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="2.8" y="3.8" width="18.4" height="6.4" rx="1.6"/><path d="M24.6 5.2v3.6a1.9 1.9 0 0 0 0-3.6z"/></svg>
         <span class="clock sys">Thu 16 Oct 9:41 AM</span>
       </div>
-      <img class="panel" src="img/panel.png" alt="" width="340" height="529">
+      <picture><source srcset="img/panel-dark.png" media="(prefers-color-scheme: dark)"><img class="panel" src="img/panel.png" alt="" width="340" height="529"></picture>
     </div>
   </section>
 
@@ -92,7 +92,7 @@
         <li>Los enlaces de reunión se abren en el navegador que elijas, no necesariamente el predeterminado.</li>
       </ul>
     </div>
-    <img class="card" src="img/card.png" alt="The event card: time in Madrid and Tokyo, a Join Google Meet button, the room, guests and their replies" width="300" height="458">
+    <picture class="card"><source srcset="img/card-dark.png" media="(prefers-color-scheme: dark)"><img src="img/card.png" alt="The event card: time in Madrid and Tokyo, a Join Google Meet button, the room, guests and their replies" width="300" height="458"></picture>
   </section>
 
   <section class="feature wide">
@@ -102,7 +102,7 @@
       <p data-en>A notification with a Join button a minute before (or five, or ten). If you tend to lose track anyway, turn on the full-screen reminder: it takes over the screen you're looking at when the meeting starts, and goes away with Join, Snooze or Esc.</p>
       <p data-es hidden>Una notificación con botón para entrar un minuto antes (o cinco, o diez). Si igual se te pasa, activá el aviso a pantalla completa: cubre la pantalla que estés mirando cuando empieza la reunión, y se va con Entrar, Posponer o Esc.</p>
     </div>
-    <img src="img/alert.png" alt="Full-screen reminder: Starting soon, Weekly Sync, with Join, Snooze and Dismiss buttons" width="900" height="420">
+    <picture class=""><source srcset="img/alert-dark.png" media="(prefers-color-scheme: dark)"><img src="img/alert.png" alt="Full-screen reminder: Starting soon, Weekly Sync, with Join, Snooze and Dismiss buttons" width="900" height="420"></picture>
   </section>
 
   <section class="feature">
@@ -124,7 +124,7 @@
         <li>Vista mensual en el panel, si la querés. Español o inglés.</li>
       </ul>
     </div>
-    <img src="img/settings.png" alt="Settings, Menu Bar tab: how far ahead to show the next event and when to switch to it" width="560" height="480">
+    <picture class=""><source srcset="img/settings-dark.png" media="(prefers-color-scheme: dark)"><img src="img/settings.png" alt="Settings, Menu Bar tab: how far ahead to show the next event and when to switch to it" width="560" height="480"></picture>
   </section>
 
   <section class="faq" data-en>

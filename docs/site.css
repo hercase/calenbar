@@ -1,9 +1,22 @@
 :root {
   --paper: #fbfbfd; --ink: #1d1d1f; --ink-2: #515154; --ink-3: #86868b; --rule: #e3e3e8;
   --accent: #4c4ed6; --accent-ink: #ffffff; --band: #eef0ff;
-  --bar: rgba(246, 246, 248, .94); --bar-ink: #1d1d1f;
+  --bar: rgba(255, 255, 255, .72); --bar-ink: #1d1d1f;
   --win: #ffffff; --win-rule: #d8d8dd; --win-head: #f2f2f5; --sys-blue: #0a84ff; --sys-green: #34c759;
   --shadow: 0 0 0 1px rgba(0,0,0,.07), 0 18px 48px rgba(28, 29, 70, .14);
+  --wallpaper: linear-gradient(135deg, #dfe3ff 0%, #eef0ff 38%, #fbe9f1 72%, #e6f0ff 100%);
+  --wallpaper-edge: rgba(28, 29, 70, .08);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #141416; --ink: #f5f5f7; --ink-2: #c7c7cc; --ink-3: #8e8e93; --rule: #2c2c30;
+    --accent: #8a8cff; --accent-ink: #0d0d1f; --band: #1c1d33;
+    --bar: rgba(40, 40, 46, .72); --bar-ink: #f5f5f7;
+    --win: #2c2c2e; --win-rule: #3f3f44; --win-head: #353538;
+    --shadow: 0 0 0 1px rgba(255,255,255,.08), 0 18px 48px rgba(0, 0, 0, .55);
+    --wallpaper: linear-gradient(135deg, #1b1c3a 0%, #262a5c 40%, #3a2550 75%, #1c2440 100%);
+    --wallpaper-edge: rgba(255,255,255,.08);
+  }
 }
 * { box-sizing: border-box; min-width: 0; }
 img { max-width: 100%; }
@@ -55,13 +68,13 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 /* A slice of desktop: wallpaper, the menu bar on top, and whatever hangs from Calenbar's item. */
 .screen {
   position: relative; margin: 44px auto 0; max-width: 780px; border-radius: 18px; overflow: hidden;
-  background: linear-gradient(135deg, #dfe3ff 0%, #eef0ff 38%, #fbe9f1 72%, #e6f0ff 100%);
-  box-shadow: 0 0 0 1px rgba(28, 29, 70, .08), 0 24px 60px rgba(28, 29, 70, .16);
+  background: var(--wallpaper);
+  box-shadow: 0 0 0 1px var(--wallpaper-edge), 0 24px 60px rgba(28, 29, 70, .16);
   padding: 0 0 28px; text-align: left;
 }
 .screen.short { padding-bottom: 72px; }
 .menubar {
-  height: 32px; background: rgba(255, 255, 255, .72); color: var(--bar-ink);
+  height: 32px; background: var(--bar); color: var(--bar-ink);
   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
   display: flex; align-items: center; padding: 0 16px; gap: 18px; font-size: 13.5px;
   border-bottom: 1px solid rgba(0,0,0,.06);
@@ -87,8 +100,9 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 .feature ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--ink-2); font-size: 16px; }
 .feature li { padding-left: 18px; position: relative; }
 .feature li::before { content: ""; position: absolute; left: 0; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
-.feature img { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow); }
-.feature img.card { max-width: 300px; margin: 0 auto; }
+.feature img, .feature picture { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow); }
+.feature picture img { box-shadow: none; }
+.feature picture.card { max-width: 300px; margin: 0 auto; }
 .feature.wide { grid-template-columns: 1fr; gap: 24px; }
 .feature.wide .text { max-width: 60ch; }
 @media (max-width: 680px) { .feature { grid-template-columns: 1fr; gap: 24px; padding: 40px 0; } .feature.flip > .text { order: 0; } }
