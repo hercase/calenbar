@@ -22,6 +22,9 @@ final class PanelController {
                 }))
         hosting.sizingOptions = [.preferredContentSize]
         popover.contentViewController = hosting
+        observeContinuously { [weak self, state] in
+            self?.popover.behavior = state.isPanelPinned ? .applicationDefined : .transient
+        }
     }
 
     func toggle(from button: NSStatusBarButton) {

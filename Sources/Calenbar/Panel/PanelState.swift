@@ -8,6 +8,8 @@ import Observation
 final class PanelState {
     var selectedDay = Calendar.current.startOfDay(for: Date())
     var displayedMonth = Calendar.current.startOfMonth(for: Date())
+    /// Pinned: the panel stays open when you click elsewhere, until the menu bar item is clicked again.
+    var isPanelPinned = false
 
     /// Row under the mouse; reveals its inline actions.
     var hoveredEventID: String?

@@ -28,7 +28,7 @@ struct PanelView: View {
                 }
             }
             PanelDivider()
-            FooterView(model: model, openSettings: openSettings)
+            FooterView(model: model, state: state, openSettings: openSettings)
         }
         .frame(width: PanelStyle.width)
     }
@@ -78,6 +78,7 @@ private struct NoCalendarsView: View {
 /// Bottom bar: today's date (or an update notice) on the left, everything else behind "•••".
 private struct FooterView: View {
     let model: AppModel
+    let state: PanelState
     let openSettings: () -> Void
 
     var body: some View {
@@ -110,6 +111,14 @@ private struct FooterView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
+            IconButton(
+                systemImage: state.isPanelPinned ? "pin.fill" : "pin",
+                label: state.isPanelPinned
+                    ? String(localized: "Let the panel close by itself") : String(localized: "Keep the panel open"),
+                tint: state.isPanelPinned ? .accentColor : .secondary
+            ) {
+                state.isPanelPinned.toggle()
+            }
             Menu {
                 Button("Open Calendar") { model.calendar.openCalendarApp() }
                 Button("Settings…", action: openSettings)

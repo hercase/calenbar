@@ -54,6 +54,8 @@
 "Settings…" = "Ajustes…";
 "Quit Calenbar" = "Salir de Calenbar";
 "More" = "Más";
+"Keep the panel open" = "Mantener el panel abierto";
+"Let the panel close by itself" = "Dejar que el panel se cierre solo";
 "Same time" = "Misma hora";
 
 /* Event details */
