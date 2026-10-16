@@ -89,7 +89,7 @@ rm -f "$NOTES.rb"
 
 python3 scripts/appcast.py docs/appcast.xml \
   --version "$VERSION" --build "$BUILD" --url "$DOWNLOAD_URL" --length "$LENGTH" \
-  --signature "$SIGNATURE" --minimum-system-version "$MIN_OS" --notes "$SUMMARY"
+  --signature "$SIGNATURE" --minimum-system-version "$MIN_OS" --notes-html "$(python3 scripts/changelog.py appcast "$VERSION")"
 git commit -qm "chore: appcast for v$VERSION" docs/appcast.xml
 git push -q origin main
 echo "Released v$VERSION; the appcast at $PAGES_URL/appcast.xml goes live when GitHub Pages redeploys (about a minute)."

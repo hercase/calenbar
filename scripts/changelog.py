@@ -68,6 +68,15 @@ def inline(text):
     return re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
 
 
+def appcast_html(version):
+    """Release notes as the HTML Sparkle renders in its update dialog."""
+    section = sections().get(version) or sys.exit(f"no {version} in CHANGELOG.md")
+    headline, _, english, _ = parse(section["body"])
+    parts = [f"<p><b>{inline(headline)}</b></p>"] if headline else []
+    parts.append("<ul>" + "".join(f"<li>{inline(b)}</li>" for b in english) + "</ul>")
+    print("".join(parts))
+
+
 def html_entry(version):
     section = sections().get(version) or sys.exit(f"no {version} in CHANGELOG.md")
     headline, headline_es, english, spanish = parse(section["body"])
@@ -97,6 +106,6 @@ def html_entry(version):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3 or sys.argv[1] not in {"release", "notes", "html"}:
+    if len(sys.argv) != 3 or sys.argv[1] not in {"release", "notes", "html", "appcast"}:
         sys.exit(__doc__)
-    {"release": release, "notes": notes, "html": html_entry}[sys.argv[1]](sys.argv[2])
+    {"release": release, "notes": notes, "html": html_entry, "appcast": appcast_html}[sys.argv[1]](sys.argv[2])

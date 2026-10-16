@@ -2,7 +2,7 @@
 """Prepends a release to the Sparkle appcast, keeping earlier items.
 
 Usage: scripts/appcast.py docs/appcast.xml --version 0.4.0 --build 42 --url <dmg url> --length <bytes>
-       --signature <EdDSA signature from sign_update -p> [--minimum-system-version 14.0] [--notes "text"]
+       --signature <EdDSA signature from sign_update -p> [--minimum-system-version 14.0] [--notes "text" | --notes-html "<p>…</p>"]
 
 Items are plain Sparkle <item>s with an EdDSA-signed enclosure; the DMG stays on GitHub Releases
 and only this file lives on GitHub Pages.
@@ -29,7 +29,9 @@ FOOTER = """  </channel>
 
 def item_xml(args, published):
     notes = ""
-    if args.notes:
+    if args.notes_html:
+        notes = f"      <description><![CDATA[{args.notes_html}]]></description>\n"
+    elif args.notes:
         notes = f"      <description><![CDATA[<p>{escape(args.notes)}</p>]]></description>\n"
     return (
         "    <item>\n"
@@ -59,7 +61,8 @@ def main():
     parser.add_argument("--length", required=True, type=int)
     parser.add_argument("--signature", required=True)
     parser.add_argument("--minimum-system-version", default="14.0")
-    parser.add_argument("--notes", default="")
+    parser.add_argument("--notes", default="", help="plain text, shown as one paragraph")
+    parser.add_argument("--notes-html", default="", help="ready-made HTML (see changelog.py appcast), used verbatim")
     parser.add_argument("--date", default=None, help="RFC 822 date; defaults to now (for tests)")
     parser.add_argument("--keep", default=10, type=int, help="older items to keep")
     args = parser.parse_args()
