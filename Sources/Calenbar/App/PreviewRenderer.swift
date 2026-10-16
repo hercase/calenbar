@@ -42,6 +42,7 @@ enum PreviewRenderer {
             ("panel", AnyView(PanelView(model: fixtures.model, state: state, openSettings: {}))),
             ("panel-done", AnyView(PanelView(model: fixtures.doneModel, state: PanelState(), openSettings: {}))),
             ("panel-no-calendars", AnyView(PanelView(model: fixtures.noCalendarsModel, state: PanelState(), openSettings: {}))),
+            ("panel-no-account", AnyView(PanelView(model: fixtures.noAccountModel, state: PanelState(), openSettings: {}))),
             ("panel-access-needed", AnyView(PanelView(model: fixtures.accessNeededModel, state: PanelState(), openSettings: {}))),
         ]
     }
@@ -146,6 +147,7 @@ struct PreviewFixtures {
     let model: AppModel
     let doneModel: AppModel
     let noCalendarsModel: AppModel
+    let noAccountModel: AppModel
     let accessNeededModel: AppModel
 
     init() {
@@ -170,12 +172,17 @@ struct PreviewFixtures {
             url: URL(string: "https://teams.microsoft.com/l/meetup-join/19%3ameeting_abc%40thread.v2/0"),
             attendees: Array(people.prefix(2)), status: .accepted)
         let calendars = [
-            CalendarInfo(id: "work", title: "me@example.com", colorHex: "#3B82F6", sourceTitle: "Google"),
-            CalendarInfo(id: "personal", title: "Personal", colorHex: "#34C759", sourceTitle: "iCloud"),
+            CalendarInfo(id: "work", title: "me@example.com", colorHex: "#3B82F6", sourceTitle: "Google", isFromAccount: true),
+            CalendarInfo(id: "personal", title: "Personal", colorHex: "#34C759", sourceTitle: "iCloud", isFromAccount: true),
+        ]
+        let localOnly = [
+            CalendarInfo(id: "home", title: "Home", colorHex: "#3B82F6", sourceTitle: "On My Mac", isFromAccount: false),
+            CalendarInfo(id: "birthdays", title: "Birthdays", colorHex: "#8E8E93", sourceTitle: "Other", isFromAccount: false),
         ]
         model = Self.model(events: [past, meeting, oneOnOne, gym, offsite, planning], calendars: calendars)
         doneModel = Self.model(events: [past, offsite, planning], calendars: calendars)
         noCalendarsModel = Self.model(events: [], calendars: [])
+        noAccountModel = Self.model(events: [], calendars: localOnly)
         accessNeededModel = Self.model(events: [], calendars: [], access: .notDetermined)
     }
 

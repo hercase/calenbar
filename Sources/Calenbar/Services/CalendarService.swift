@@ -9,6 +9,9 @@ struct CalendarInfo: Identifiable, Hashable {
     let title: String
     let colorHex: String
     let sourceTitle: String
+    /// True for calendars synced from an account (Google, Exchange, iCloud); false for local,
+    /// subscribed and birthday calendars, which exist on every Mac and prove nothing.
+    let isFromAccount: Bool
 }
 
 /// Reads events from the macOS Calendar database and keeps them fresh.
@@ -27,6 +30,10 @@ final class CalendarService {
     private(set) var access: Access
     /// When events were last read from the system calendar database.
     private(set) var lastReload: Date?
+
+    /// Whether any calendar comes from a signed-in account. Without one, the empty panel is almost
+    /// always "the Google account isn't added to the Mac yet", not "a free week".
+    var hasAccountCalendar: Bool { calendars.contains(where: \.isFromAccount) }
 
     @ObservationIgnored private let store = EKEventStore()
     /// Maps our per-occurrence id to EventKit's identifier, for "Open in Calendar". Also holds ids of
@@ -96,7 +103,8 @@ final class CalendarService {
                     id: calendar.calendarIdentifier,
                     title: calendar.title,
                     colorHex: calendar.color.hexString,
-                    sourceTitle: calendar.source.title
+                    sourceTitle: calendar.source.title,
+                    isFromAccount: [.calDAV, .exchange, .mobileMe].contains(calendar.source.sourceType)
                 )
             }
             .sorted { ($0.sourceTitle, $0.title) < ($1.sourceTitle, $1.title) }

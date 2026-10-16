@@ -54,6 +54,22 @@ private struct AccessRequiredView: View {
     }
 }
 
+/// Shown under the done state when the Mac has no Google, Exchange or iCloud calendar.
+private struct AccountHintView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: PanelStyle.small) {
+            Text("panel.accountHint")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button("Open Internet Accounts") { CalendarService.openInternetAccountsSettings() }
+                .controlSize(.small)
+        }
+        .padding(.horizontal, PanelStyle.inset)
+        .padding(.bottom, PanelStyle.medium)
+    }
+}
+
 /// Access is granted but macOS has no calendars: the account step from the setup guide.
 private struct NoCalendarsView: View {
     let model: AppModel
@@ -162,6 +178,11 @@ private struct DoneForTodayView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
+                } else if !model.calendar.hasAccountCalendar {
+                    // Only local or birthday calendars: the account step from the setup guide was skipped.
+                    Text("No calendar account on this Mac yet")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 } else {
                     Text("Nothing scheduled this week")
                         .font(.caption)
@@ -172,6 +193,9 @@ private struct DoneForTodayView: View {
         }
         .padding(.horizontal, PanelStyle.inset)
         .padding(.vertical, PanelStyle.medium)
+        if next == nil, !model.calendar.hasAccountCalendar {
+            AccountHintView()
+        }
     }
 
     /// First upcoming event beyond the menu bar's horizon (skipped and declined ones excluded).
