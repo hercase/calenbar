@@ -42,10 +42,13 @@ final class CalendarService {
     @ObservationIgnored private var observers: [NSObjectProtocol] = []
     @ObservationIgnored private var safetyTimer: Timer?
     @ObservationIgnored private let network = NWPathMonitor()
+    /// Previews answer date-range queries from `upcoming` instead of EventKit.
+    @ObservationIgnored private var isFixture = false
 
     /// Fixed data for previews: no EventKit, no observers, no timers.
     init(fixture: [CalendarEvent], calendars: [CalendarInfo], access: Access = .granted) {
         self.access = access
+        isFixture = true
         upcoming = fixture
         self.calendars = calendars
         lastReload = Date()
@@ -125,6 +128,9 @@ final class CalendarService {
 
     func events(from start: Date, to end: Date) -> [CalendarEvent] {
         guard access == .granted else { return [] }
+        if isFixture {
+            return upcoming.filter { $0.start < end && $0.end > start }
+        }
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)
         let events = store.events(matching: predicate)
             .map(makeEvent)

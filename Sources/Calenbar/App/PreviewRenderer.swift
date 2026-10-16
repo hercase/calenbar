@@ -19,6 +19,7 @@ enum PreviewRenderer {
             try write(view.frame(width: PanelStyle.width), named: name, in: directory)
         }
         fixtures.model.settings.showMonthCalendar = true
+        fixtures.model.settings.showWeekNumbers = true
         try write(
             PanelView(model: fixtures.model, state: PanelState(), openSettings: {}).frame(width: PanelStyle.width),
             named: "panel-month", in: directory)
@@ -167,6 +168,8 @@ struct PreviewFixtures {
         let gym = Self.event("Gym", start: Self.at(19, 0), minutes: 60, id: "gym", calendar: ("personal", "#34C759"))
         let offsite = Self.event(
             "Company offsite", start: Self.at(0, 0, dayOffset: 1), minutes: 24 * 60, id: "offsite", isAllDay: true)
+        let vacation = Self.event(
+            "Out of office", start: Self.at(0, 0, dayOffset: 3), minutes: 2 * 24 * 60, id: "ooo", isAllDay: true)
         let planning = Self.event(
             "Sprint planning", start: Self.at(10, 0, dayOffset: 1), minutes: 60, id: "planning",
             url: URL(string: "https://teams.microsoft.com/l/meetup-join/19%3ameeting_abc%40thread.v2/0"),
@@ -179,7 +182,7 @@ struct PreviewFixtures {
             CalendarInfo(id: "home", title: "Home", colorHex: "#3B82F6", sourceTitle: "On My Mac", isFromAccount: false),
             CalendarInfo(id: "birthdays", title: "Birthdays", colorHex: "#8E8E93", sourceTitle: "Other", isFromAccount: false),
         ]
-        model = Self.model(events: [past, meeting, oneOnOne, gym, offsite, planning], calendars: calendars)
+        model = Self.model(events: [past, meeting, oneOnOne, gym, offsite, planning, vacation], calendars: calendars)
         doneModel = Self.model(events: [past, offsite, planning], calendars: calendars)
         noCalendarsModel = Self.model(events: [], calendars: [])
         noAccountModel = Self.model(events: [], calendars: localOnly)

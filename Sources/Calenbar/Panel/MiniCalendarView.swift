@@ -7,7 +7,6 @@ struct MiniCalendarView: View {
     let state: PanelState
 
     private let calendar = Calendar.current
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
 
     private var isExpanded: Bool { model.settings.showMonthCalendar }
 
@@ -65,9 +64,14 @@ struct MiniCalendarView: View {
 
     private var grid: some View {
         // Computed once per render: it queries EventKit, so it must not run per cell.
-        let markedDays = daysWithEvents
-        let gridDays = days
+        let marked = markedDays
+        let weeks = stride(from: 0, to: days.count, by: 7).map { Array(days[$0..<min($0 + 7, days.count)]) }
+        let showsWeeks = model.settings.showWeekNumbers
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: showsWeeks ? 8 : 7)
         return LazyVGrid(columns: columns, spacing: PanelStyle.tight) {
+            if showsWeeks {
+                Color.clear.frame(height: 18)
+            }
             // Indexed: symbols repeat (T, S), and duplicate ids make SwiftUI drop cells.
             ForEach(Array(weekdaySymbols.enumerated()), id: \.offset) { _, symbol in
                 Text(symbol)
@@ -75,15 +79,28 @@ struct MiniCalendarView: View {
                     .foregroundStyle(.tertiary)
                     .frame(height: 18)
             }
-            ForEach(gridDays, id: \.self) { day in
-                DayCell(
-                    day: day,
-                    isInMonth: calendar.isDate(day, equalTo: state.displayedMonth, toGranularity: .month),
-                    isToday: calendar.isDateInToday(day),
-                    isSelected: calendar.isDate(day, inSameDayAs: state.selectedDay),
-                    hasEvents: markedDays.contains(calendar.startOfDay(for: day))
-                ) {
-                    state.selectedDay = calendar.startOfDay(for: day)
+            ForEach(Array(weeks.enumerated()), id: \.offset) { _, week in
+                if showsWeeks, let first = week.first {
+                    let number = calendar.component(.weekOfYear, from: first)
+                    Text(verbatim: "\(number)")
+                        .font(.caption2.monospacedDigit())
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 28)
+                        .accessibilityLabel(String(localized: "Week \(number)"))
+                }
+                ForEach(week, id: \.self) { day in
+                    let start = calendar.startOfDay(for: day)
+                    DayCell(
+                        day: day,
+                        isInMonth: calendar.isDate(day, equalTo: state.displayedMonth, toGranularity: .month),
+                        isToday: calendar.isDateInToday(day),
+                        isSelected: calendar.isDate(day, inSameDayAs: state.selectedDay),
+                        hasEvents: marked.events.contains(start),
+                        isDayOff: marked.off.contains(start)
+                    ) {
+                        state.selectedDay = start
+                    }
                 }
             }
         }
@@ -112,13 +129,24 @@ struct MiniCalendarView: View {
         return (0..<cells).compactMap { calendar.date(byAdding: .day, value: $0, to: gridStart) }
     }
 
-    private var daysWithEvents: Set<Date> {
+    /// Days with any event (a dot), and days that are time off or a holiday (tinted). A week of
+    /// vacation tints every day it covers.
+    private var markedDays: (events: Set<Date>, off: Set<Date>) {
         let days = days
         guard let first = days.first, let last = days.last,
             let end = calendar.date(byAdding: .day, value: 1, to: last)
-        else { return [] }
+        else { return ([], []) }
         let events = model.settings.eventFilter.apply(model.calendar.events(from: first, to: end), for: .list)
-        return Set(events.map { calendar.startOfDay(for: $0.start) })
+        var off: Set<Date> = []
+        for event in events where event.dayOff != nil {
+            var day = calendar.startOfDay(for: max(event.start, first))
+            while day < min(event.end, end) {
+                off.insert(day)
+                guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
+                day = next
+            }
+        }
+        return (Set(events.map { calendar.startOfDay(for: $0.start) }), off)
     }
 }
 
@@ -128,6 +156,7 @@ private struct DayCell: View {
     let isToday: Bool
     let isSelected: Bool
     let hasEvents: Bool
+    let isDayOff: Bool
     let select: () -> Void
 
     var body: some View {
@@ -139,12 +168,18 @@ private struct DayCell: View {
                 .background {
                     if isToday {
                         Circle().fill(Color.accentColor)
-                    } else if isSelected {
-                        Circle().strokeBorder(Color.accentColor, lineWidth: 1.2)
+                    } else {
+                        if isDayOff {
+                            Circle().fill(Color.accentColor.opacity(0.16))
+                        }
+                        if isSelected {
+                            Circle().strokeBorder(Color.accentColor, lineWidth: 1.2)
+                        }
                     }
                 }
                 .overlay(alignment: .bottom) {
-                    if hasEvents, !isToday {
+                    // The tint already says the day is taken; no dot on top of it.
+                    if hasEvents, !isToday, !isDayOff {
                         Circle().fill(Color.secondary).frame(width: 3, height: 3).offset(y: 4)
                     }
                 }
@@ -153,9 +188,11 @@ private struct DayCell: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(day.formatted(date: .complete, time: .omitted))
+        .accessibilityLabel(isDayOff ? String(localized: "\(dayName), day off") : dayName)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
+
+    private var dayName: String { day.formatted(date: .complete, time: .omitted) }
 
     private var foreground: Color {
         if isToday {
