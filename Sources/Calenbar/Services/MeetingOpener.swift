@@ -13,19 +13,23 @@ enum MeetingOpener {
     static var browserBundleID = ""
     static var preferNativeApps = true
 
-    /// Meetings the user joined from Calenbar, by web URL, so the full-screen alert can stay quiet for them.
-    private static var joined: [URL: Date] = [:]
+    /// Occurrences the user joined from Calenbar, by event key, so the full-screen alert stays quiet
+    /// for them. Per occurrence, not per link: a meeting moved to a later time is a new key and alerts again.
+    private static var joined: [String: Date] = [:]
     private static let joinMemory: TimeInterval = 90 * 60
 
-    /// True when `link` was opened from Calenbar recently (the user is presumably in that call).
-    static func wasJoinedRecently(_ link: MeetingLink, now: Date = Date()) -> Bool {
-        guard let joinedAt = joined[link.webURL] else { return false }
+    /// True when this occurrence was joined from Calenbar recently (the user is presumably in that call).
+    static func wasJoinedRecently(eventKey: String, now: Date = Date()) -> Bool {
+        guard let joinedAt = joined[eventKey] else { return false }
         return now.timeIntervalSince(joinedAt) < joinMemory
     }
 
     /// Zoom/Teams links go to their app when installed (and preferred); everything else to the browser.
-    static func open(_ link: MeetingLink) {
-        joined[link.webURL] = Date()
+    /// Pass the event's key so the alert for that occurrence can be skipped.
+    static func open(_ link: MeetingLink, eventKey: String? = nil) {
+        if let eventKey {
+            joined[eventKey] = Date()
+        }
         if preferNativeApps, let native = link.nativeURL, NSWorkspace.shared.urlForApplication(toOpen: native) != nil {
             NSWorkspace.shared.open(native)
         } else {

@@ -16,6 +16,7 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         static let eventCategory = "EVENT"
         static let joinAction = "JOIN"
         static let linkKey = "link"
+        static let eventKey = "eventKey"
     }
 
     @ObservationIgnored private let model: AppModel
@@ -102,7 +103,7 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
             content.sound = .default
             if let link = event.meetingLink {
                 content.categoryIdentifier = Identifier.meetingCategory
-                content.userInfo = [Identifier.linkKey: link.webURL.absoluteString]
+                content.userInfo = [Identifier.linkKey: link.webURL.absoluteString, Identifier.eventKey: event.key]
             } else {
                 content.categoryIdentifier = Identifier.eventCategory
             }
@@ -129,10 +130,12 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         let isJoin =
             response.actionIdentifier == Identifier.joinAction
             || response.actionIdentifier == UNNotificationDefaultActionIdentifier
+        let userInfo = response.notification.request.content.userInfo
         guard isJoin,
-            let string = response.notification.request.content.userInfo[Identifier.linkKey] as? String,
+            let string = userInfo[Identifier.linkKey] as? String,
             let link = MeetingLinkDetector.detect(url: URL(string: string), location: nil, notes: nil)
         else { return }
-        await MainActor.run { MeetingOpener.open(link) }
+        let eventKey = userInfo[Identifier.eventKey] as? String
+        await MainActor.run { MeetingOpener.open(link, eventKey: eventKey) }
     }
 }

@@ -35,11 +35,11 @@ final class AppModel {
 
     /// Joins it, or beeps when there's nothing to join.
     func joinNextMeeting() {
-        guard let link = nextMeeting?.meetingLink else {
+        guard let event = nextMeeting, let link = event.meetingLink else {
             NSSound.beep()
             return
         }
-        MeetingOpener.open(link)
+        MeetingOpener.open(link, eventKey: event.key)
     }
 
     /// Opens the service's instant-meeting page in the user's meeting browser.

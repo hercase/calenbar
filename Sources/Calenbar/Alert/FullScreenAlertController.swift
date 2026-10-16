@@ -28,7 +28,7 @@ final class FullScreenAlertController {
                 return false
             }
             // Already joined from Calenbar: no need to take over the screen.
-            if let link = event.meetingLink, MeetingOpener.wasJoinedRecently(link) {
+            if MeetingOpener.wasJoinedRecently(eventKey: event.key) {
                 return false
             }
             return AlertTiming.isDue(event: event, now: now, lead: lead, snoozedUntil: snoozedUntil[event.key])
@@ -63,7 +63,7 @@ final class FullScreenAlertController {
                 model: model,
                 event: event,
                 join: { [weak self] link in
-                    MeetingOpener.open(link)
+                    MeetingOpener.open(link, eventKey: event.key)
                     self?.dismiss()
                 },
                 snooze: { [weak self] until in

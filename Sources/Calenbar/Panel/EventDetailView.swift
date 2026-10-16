@@ -50,7 +50,7 @@ struct EventDetailView: View {
             if let link {
                 Divider()
                 Button {
-                    MeetingOpener.open(link)
+                    MeetingOpener.open(link, eventKey: event.key)
                 } label: {
                     HStack(spacing: 6) {
                         ProviderIconView(provider: link.provider, size: 16)

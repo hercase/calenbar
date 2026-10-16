@@ -106,7 +106,7 @@ private struct EventRow: View {
             }
             if let link, !isPast {
                 Button {
-                    MeetingOpener.open(link)
+                    MeetingOpener.open(link, eventKey: event.key)
                 } label: {
                     ProviderIconView(provider: link.provider, size: 18)
                         .frame(width: PanelStyle.iconHitSize, height: PanelStyle.iconHitSize)

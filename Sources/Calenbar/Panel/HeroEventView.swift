@@ -14,7 +14,7 @@ struct HeroEventView: View {
         HStack(alignment: .center, spacing: PanelStyle.medium) {
             if let link {
                 Button {
-                    MeetingOpener.open(link)
+                    MeetingOpener.open(link, eventKey: event.key)
                 } label: {
                     HStack(spacing: 6) {
                         ProviderIconView(provider: link.provider, size: 16)
@@ -68,7 +68,7 @@ struct EventContextMenu: View {
 
     var body: some View {
         if let link = event.meetingLink {
-            Button("Join \(link.provider.displayName)") { MeetingOpener.open(link) }
+            Button("Join \(link.provider.displayName)") { MeetingOpener.open(link, eventKey: event.key) }
             Button("Copy Meeting Link") { MeetingOpener.copy(link) }
             Divider()
         }
