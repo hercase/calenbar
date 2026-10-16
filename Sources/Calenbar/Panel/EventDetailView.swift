@@ -8,6 +8,7 @@ struct EventDetailView: View {
 
     var body: some View {
         let link = event.meetingLink
+        let location = displayLocation(link: link)
         VStack(alignment: .leading, spacing: PanelStyle.medium) {
             // Header: what, which calendar.
             VStack(alignment: .leading, spacing: PanelStyle.tight) {
@@ -61,17 +62,17 @@ struct EventDetailView: View {
                 .controlSize(.large)
             }
 
-            if !event.rooms.isEmpty || displayLocation(link: link) != nil || !event.people.isEmpty {
+            if !event.rooms.isEmpty || location != nil || !event.people.isEmpty {
                 Divider()
             }
-            if !event.rooms.isEmpty || displayLocation(link: link) != nil {
+            if !event.rooms.isEmpty || location != nil {
                 VStack(alignment: .leading, spacing: PanelStyle.tight) {
                     if !event.rooms.isEmpty {
                         DetailLine(systemImage: "door.left.hand.open") {
                             Text(event.rooms.joined(separator: ", ")).textSelection(.enabled)
                         }
                     }
-                    if let location = displayLocation(link: link) {
+                    if let location {
                         DetailLine(systemImage: "mappin.and.ellipse") {
                             Text(location).textSelection(.enabled)
                         }
@@ -80,7 +81,7 @@ struct EventDetailView: View {
             }
 
             if !event.people.isEmpty {
-                ParticipantsView(people: event.people, organizer: event.organizer)
+                ParticipantsView(people: event.people)
             }
 
             Divider()
@@ -102,14 +103,17 @@ struct EventDetailView: View {
         .frame(width: 300, alignment: .leading)
     }
 
-    /// The location field often just repeats the meeting URL; only show it when it adds something.
+    /// The location field often just repeats the meeting URL, or just names the service ("Microsoft
+    /// Teams Meeting"); only show it when it adds something. A real room called "Zoom Room 2" stays.
     private func displayLocation(link: MeetingLink?) -> String? {
         guard let location = event.location?.trimmingCharacters(in: .whitespacesAndNewlines), !location.isEmpty else {
             return nil
         }
         if let link {
             let service = link.provider.displayName.lowercased()
-            if location.contains(link.webURL.host ?? "\u{0}") || location.lowercased().contains(service) {
+            let normalized = location.lowercased()
+            let onlyTheService = [service, "\(service) meeting", "\(service) call"].contains(normalized)
+            if location.contains(link.webURL.host ?? "\u{0}") || onlyTheService {
                 return nil
             }
         }
@@ -136,7 +140,6 @@ private struct DetailLine<Content: View>: View {
 /// capped to keep the card short.
 private struct ParticipantsView: View {
     let people: [Attendee]
-    let organizer: Attendee?
     private let limit = 8
 
     var body: some View {

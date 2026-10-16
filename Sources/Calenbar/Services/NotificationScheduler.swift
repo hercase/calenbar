@@ -16,6 +16,7 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
     /// UserNotifications crashes outside an app bundle (e.g. `swift run`), so it is only touched when bundled.
     private let center: UNUserNotificationCenter? =
         Bundle.main.bundleIdentifier == nil ? nil : UNUserNotificationCenter.current()
+    private var zoneObserver: NSObjectProtocol?
 
     init(model: AppModel) {
         self.model = model
@@ -30,6 +31,11 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         ])
         // Reschedule only when events or settings change; deliberately not on every clock tick.
         observeContinuously { [weak self] in self?.reschedule() }
+        zoneObserver = NotificationCenter.default.addObserver(
+            forName: .NSSystemTimeZoneDidChange, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.reschedule() }
+        }
         // Ask for permission as soon as calendar access exists, whether it was granted at launch or
         // later from the panel's "Allow Access" button. The system only ever prompts once.
         observeContinuously { [weak self] in
@@ -73,7 +79,9 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
                 content.categoryIdentifier = Identifier.eventCategory
             }
             // A calendar trigger fires at the wall-clock moment, which survives sleep; an interval drifts.
-            let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: fireDate)
+            // The zone is attached so the instant is unambiguous; a zone change reschedules anyway.
+            var components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: fireDate)
+            components.timeZone = TimeZone.current
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             center.add(UNNotificationRequest(identifier: event.key, content: content, trigger: trigger))
         }

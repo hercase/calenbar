@@ -33,7 +33,7 @@ public enum TimeZoneMath {
         let there = remote.dateComponents([.year, .month, .day], from: date)
         let home = here.dateComponents([.year, .month, .day], from: date)
         // Compare the two civil dates on a neutral calendar so DST and offsets can't skew the count.
-        var neutral = Calendar(identifier: .gregorian)
+        var neutral = Calendar(identifier: calendar.identifier)
         neutral.timeZone = TimeZone(identifier: "UTC") ?? .gmt
         guard let thereDay = neutral.date(from: there), let homeDay = neutral.date(from: home) else { return 0 }
         return neutral.dateComponents([.day], from: homeDay, to: thereDay).day ?? 0

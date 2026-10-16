@@ -30,9 +30,9 @@ final class Updater: NSObject, SPUUpdaterDelegate {
     /// Updates only make sense for an installed bundle, not for `swift run` or a copy on a disk image.
     var isAvailable: Bool { controller != nil }
 
-    var automaticallyDownloads: Bool {
-        get { controller?.updater.automaticallyDownloadsUpdates ?? false }
-        set { controller?.updater.automaticallyDownloadsUpdates = newValue }
+    /// Mirrors Sparkle's setting so SwiftUI sees changes (the controller itself isn't observable).
+    var automaticallyDownloads = false {
+        didSet { controller?.updater.automaticallyDownloadsUpdates = automaticallyDownloads }
     }
 
     func start() {
@@ -45,6 +45,7 @@ final class Updater: NSObject, SPUUpdaterDelegate {
             MainActor.assumeIsolated { self?.canCheck = value }
         }
         controller.startUpdater()
+        automaticallyDownloads = controller.updater.automaticallyDownloadsUpdates
         lastCheck = controller.updater.lastUpdateCheckDate
     }
 

@@ -11,11 +11,9 @@ enum InstallLocation {
         if path.contains("/AppTranslocation/") {
             return true
         }
+        // Disk images mount read-only; an app kept on an external drive is a fine permanent home.
         let values = try? URL(fileURLWithPath: path).resourceValues(forKeys: [.volumeIsReadOnlyKey])
-        if values?.volumeIsReadOnly == true {
-            return true
-        }
-        return path.hasPrefix("/Volumes/")
+        return values?.volumeIsReadOnly == true
     }
 
     /// Offers to copy the app into Applications and relaunch from there. Returns true when the app
@@ -43,19 +41,20 @@ enum InstallLocation {
                 try FileManager.default.removeItem(at: destination)
             }
             try FileManager.default.copyItem(at: source, to: destination)
-            // Downloaded files carry a quarantine flag; the copy is ours now.
-            try? FileManager.default.setAttributes([.extensionHidden: true], ofItemAtPath: destination.path)
+            // The user already let this very app open; the copy shouldn't make Gatekeeper ask again.
+            var copy = destination
+            var values = URLResourceValues()
+            values.quarantineProperties = nil
+            try? copy.setResourceValues(values)
         } catch {
             let failure = NSAlert(error: error)
             failure.messageText = String(localized: "Calenbar couldn’t be moved")
             failure.runModal()
             return false
         }
-        let configuration = NSWorkspace.OpenConfiguration()
-        configuration.createsNewApplicationInstance = true
-        NSWorkspace.shared.openApplication(at: destination, configuration: configuration) { _, _ in
-            DispatchQueue.main.async { NSApp.terminate(nil) }
-        }
+        // Quit first: a second copy that finds this one still running exits (SingleInstance).
+        LoginLaunch.relaunchDetached(bundlePath: destination.path)
+        NSApp.terminate(nil)
         return true
     }
 }

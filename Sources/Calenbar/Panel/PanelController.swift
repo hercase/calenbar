@@ -29,6 +29,7 @@ final class PanelController {
 
     func toggle(from button: NSStatusBarButton) {
         if popover.isShown {
+            state.isPanelPinned = false
             popover.performClose(nil)
         } else {
             state.resetToToday()

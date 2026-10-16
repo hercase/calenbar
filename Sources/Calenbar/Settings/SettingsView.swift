@@ -217,7 +217,7 @@ private struct NotificationSettings: View {
 }
 
 private struct AboutView: View {
-    let updater: Updater
+    @Bindable var updater: Updater
     private let website = URL(string: "https://hercase.vercel.app/?utm_source=calenbar&utm_medium=app&utm_campaign=about")
     private let repository = URL(string: "https://github.com/hercase/calenbar")
     private let issues = URL(string: "https://github.com/hercase/calenbar/issues/new")
@@ -245,10 +245,7 @@ private struct AboutView: View {
             Section("Updates") {
                 UpdateStatusView(updater: updater)
                 if updater.isAvailable {
-                    Toggle(
-                        "Download and install updates automatically",
-                        isOn: Binding(get: { updater.automaticallyDownloads }, set: { updater.automaticallyDownloads = $0 })
-                    )
+                    Toggle("Download and install updates automatically", isOn: $updater.automaticallyDownloads)
                 }
             }
             Section {

@@ -134,7 +134,7 @@ private struct EventRow: View {
             state.toggleDetail(eventID: event.id)
             return .handled
         }
-        .accessibilityElement(children: .ignore)
+        .accessibilityElement(children: .contain)
         .accessibilityLabel(accessibilityLabel(isPast: isPast, isSkipped: isSkipped))
         .accessibilityAddTraits(.isButton)
         .accessibilityAction { state.toggleDetail(eventID: event.id) }

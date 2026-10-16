@@ -29,7 +29,8 @@ final class CalendarService {
     private(set) var lastReload: Date?
 
     @ObservationIgnored private let store = EKEventStore()
-    /// Maps our per-occurrence id to EventKit's identifier, for "Open in Calendar".
+    /// Maps our per-occurrence id to EventKit's identifier, for "Open in Calendar". Also holds ids of
+    /// occurrences fetched for other days, so a reload must not clear it; a few hundred short strings.
     @ObservationIgnored private var eventIdentifiers: [String: String] = [:]
     @ObservationIgnored private var observers: [NSObjectProtocol] = []
     @ObservationIgnored private var safetyTimer: Timer?
@@ -103,8 +104,6 @@ final class CalendarService {
         lastReload = Date()
         let startOfToday = Calendar.current.startOfDay(for: Date())
         let end = Calendar.current.date(byAdding: .day, value: 14, to: startOfToday) ?? startOfToday
-        // Browsing other months fills the id map; keep only what the current window needs.
-        eventIdentifiers = [:]
         let freshEvents = events(from: startOfToday, to: end)
         // Assign only on change: every observer (status item, notifications, alerts) re-runs on assignment,
         // and the 5-minute nudge usually finds nothing new.

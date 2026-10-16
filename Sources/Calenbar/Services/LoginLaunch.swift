@@ -35,16 +35,18 @@ enum LoginLaunch {
         } else {
             // Unloading the agent stops the process it manages; reopen the app outside launchd first.
             if isManagedByLaunchd {
-                relaunchDetached()
+                relaunchDetached(bundlePath: Bundle.main.bundlePath)
             }
             try? agent.unregister()
         }
     }
 
-    private static func relaunchDetached() {
+    /// Opens the app at `bundlePath` a second later, from outside this process, so it starts after we
+    /// are gone (used when launchd would otherwise kill it, and when handing over to a moved copy).
+    static func relaunchDetached(bundlePath: String) {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/sh")
-        process.arguments = ["-c", "sleep 1; /usr/bin/open -n \"$0\"", Bundle.main.bundlePath]
+        process.arguments = ["-c", "sleep 1; /usr/bin/open -n \"$0\"", bundlePath]
         try? process.run()
     }
 }
