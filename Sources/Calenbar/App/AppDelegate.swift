@@ -25,6 +25,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onClick: { button in panel.toggle(from: button) }
         )
         notifications = NotificationScheduler(model: model)
+        model.notifications = notifications
         alerts = FullScreenAlertController(model: model)
         model.updater.start()
         observeContinuously {

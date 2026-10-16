@@ -10,6 +10,8 @@ final class AppModel {
     let calendar: CalendarService
     let clock: MinuteClock
     let updater = Updater()
+    /// Set by the app delegate once the scheduler exists; Settings reads the permission state from it.
+    var notifications: NotificationScheduler?
 
     init(settings: AppSettings, calendar: CalendarService, clock: MinuteClock) {
         self.settings = settings

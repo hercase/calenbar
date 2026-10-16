@@ -152,6 +152,9 @@
 /* Settings: Notifications */
 "Notification" = "Notificación";
 "Notify before events" = "Avisar antes de los eventos";
+"Notifications are turned off for Calenbar in macOS" = "Las notificaciones de Calenbar están desactivadas en macOS";
+"Allow them in System Settings › Notifications › Calenbar to get a heads-up before meetings." = "Activalas en Ajustes del Sistema › Notificaciones › Calenbar para recibir el aviso antes de cada reunión.";
+"Open Notification Settings" = "Abrir ajustes de notificaciones";
 "When" = "Cuándo";
 "At start time" = "Al empezar";
 "%lld min before" = "%lld min antes";

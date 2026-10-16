@@ -1,10 +1,16 @@
+import AppKit
 import CalenbarCore
 import Foundation
+import Observation
 import UserNotifications
 
 /// Schedules a system notification shortly before each event, with a Join action for meetings.
 @MainActor
+@Observable
 final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
+    /// macOS's answer to "may Calenbar notify?", refreshed when the app becomes active.
+    private(set) var isDeniedBySystem = false
+
     private enum Identifier {
         static let meetingCategory = "MEETING"
         static let eventCategory = "EVENT"
@@ -12,11 +18,11 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         static let linkKey = "link"
     }
 
-    private let model: AppModel
+    @ObservationIgnored private let model: AppModel
     /// UserNotifications crashes outside an app bundle (e.g. `swift run`), so it is only touched when bundled.
-    private let center: UNUserNotificationCenter? =
+    @ObservationIgnored private let center: UNUserNotificationCenter? =
         Bundle.main.bundleIdentifier == nil ? nil : UNUserNotificationCenter.current()
-    private var zoneObserver: NSObjectProtocol?
+    @ObservationIgnored private var observers: [NSObjectProtocol] = []
 
     init(model: AppModel) {
         self.model = model
@@ -31,11 +37,18 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         ])
         // Reschedule only when events or settings change; deliberately not on every clock tick.
         observeContinuously { [weak self] in self?.reschedule() }
-        zoneObserver = NotificationCenter.default.addObserver(
-            forName: .NSSystemTimeZoneDidChange, object: nil, queue: .main
-        ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.reschedule() }
-        }
+        let zoneChanged = Notification.Name.NSSystemTimeZoneDidChange
+        observers.append(
+            NotificationCenter.default.addObserver(forName: zoneChanged, object: nil, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.reschedule() }
+            })
+        // The user may flip the permission in System Settings; look again whenever they come back.
+        let becameActive = NSApplication.didBecomeActiveNotification
+        observers.append(
+            NotificationCenter.default.addObserver(forName: becameActive, object: nil, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.refreshAuthorization() }
+            })
+        refreshAuthorization()
         // Ask for permission as soon as calendar access exists, whether it was granted at launch or
         // later from the panel's "Allow Access" button. The system only ever prompts once.
         observeContinuously { [weak self] in
@@ -46,6 +59,21 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
 
     func requestAuthorization() async {
         _ = try? await center?.requestAuthorization(options: [.alert, .sound])
+        refreshAuthorization()
+    }
+
+    func refreshAuthorization() {
+        guard let center else { return }
+        Task { [weak self] in
+            let status = await center.notificationSettings().authorizationStatus
+            self?.isDeniedBySystem = status == .denied
+        }
+    }
+
+    static func openNotificationSettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension") {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     private func reschedule() {

@@ -24,7 +24,7 @@ enum SettingsWindow {
             Page(title: String(localized: "Calendars"), symbol: "calendar", view: AnyView(CalendarSettings(model: model))),
             Page(
                 title: String(localized: "Notifications"), symbol: "bell.badge",
-                view: AnyView(NotificationSettings(settings: model.settings))),
+                view: AnyView(NotificationSettings(settings: model.settings, scheduler: model.notifications))),
             Page(
                 title: String(localized: "Time Zones"), symbol: "globe",
                 view: AnyView(WorldClockSettings(settings: model.settings, uiState: uiState))),
@@ -230,9 +230,20 @@ private struct CalendarSettings: View {
 
 private struct NotificationSettings: View {
     @Bindable var settings: AppSettings
+    let scheduler: NotificationScheduler?
 
     var body: some View {
         Form {
+            if scheduler?.isDeniedBySystem == true {
+                Section {
+                    LabeledContent {
+                        Button("Open Notification Settings") { NotificationScheduler.openNotificationSettings() }
+                    } label: {
+                        Label("Notifications are turned off for Calenbar in macOS", systemImage: "bell.slash")
+                        Text("Allow them in System Settings › Notifications › Calenbar to get a heads-up before meetings.")
+                    }
+                }
+            }
             Section("Notification") {
                 Toggle("Notify before events", isOn: $settings.notificationsEnabled)
                 Picker("When", selection: $settings.notifyLeadMinutes) {
