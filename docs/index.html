@@ -190,6 +190,10 @@
       <dd>Calenbar isn't registered with Apple's developer program, so macOS shows that warning for the first launch. Opening it through System Settings › Privacy &amp; Security › Open Anyway is a one-time step; <a href="install.html">the guide shows where</a>. Updates afterwards install themselves without it.</dd>
       <dt>Where does my data go?</dt>
       <dd>Nowhere. Events are read on your Mac and never sent anywhere. Calenbar goes online for two things only: a daily check for a new version, and looking a city up in Apple Maps when you add a world clock.</dd>
+      <dt>Does it use battery or data?</dt>
+      <dd>Barely. Calenbar doesn't sync anything itself: it reads the Mac's calendar database, wakes up once a minute to update the countdown, and every five minutes asks macOS to refresh accounts. The heavy lifting (talking to Google or Exchange) is done by the system, as it already is for the Calendar app.</dd>
+      <dt>Can I install it from the terminal?</dt>
+      <dd>Yes: <code>brew install --cask hercase/calenbar/calenbar</code>. Updates still come through the app itself.</dd>
       <dt>What does it cost?</dt>
       <dd>Nothing. It's MIT-licensed and the <a href="https://github.com/hercase/calenbar">source is on GitHub</a>.</dd>
     </dl>
@@ -204,6 +208,10 @@
       <dd>Calenbar no está registrada en el programa de desarrolladores de Apple, así que macOS muestra ese aviso la primera vez. Abrirla desde Ajustes del Sistema › Privacidad y seguridad › Abrir de todas formas se hace una sola vez; <a href="install.html">la guía muestra dónde</a>. Las actualizaciones después se instalan solas.</dd>
       <dt>¿A dónde van mis datos?</dt>
       <dd>A ningún lado. Los eventos se leen en tu Mac y no se envían. Calenbar se conecta solo para dos cosas: ver una vez por día si hay versión nueva, y buscar la ciudad en Apple Maps cuando agregás un reloj del mundo.</dd>
+      <dt>¿Gasta batería o datos?</dt>
+      <dd>Casi nada. Calenbar no sincroniza por su cuenta: lee la base de datos del calendario de la Mac, se despierta una vez por minuto para actualizar la cuenta regresiva y cada cinco minutos le pide a macOS que refresque las cuentas. El trabajo pesado (hablar con Google o Exchange) lo hace el sistema, como ya lo hace para la app Calendario.</dd>
+      <dt>¿Se puede instalar desde la terminal?</dt>
+      <dd>Sí: <code>brew install --cask hercase/calenbar/calenbar</code>. Las actualizaciones siguen llegando por la app.</dd>
       <dt>¿Cuánto cuesta?</dt>
       <dd>Nada. Tiene licencia MIT y el <a href="https://github.com/hercase/calenbar">código está en GitHub</a>.</dd>
     </dl>

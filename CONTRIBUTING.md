@@ -42,7 +42,7 @@ Plain Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`), sm
 
 ## Releasing
 
-`scripts/release.sh X.Y.Z "What changed"` runs the gates, bumps `VERSION`, tags, builds the universal DMG, signs it with the Sparkle EdDSA key from the login keychain, pushes, creates the GitHub Release (with a stable `Calenbar.dmg` copy for the site's Download button), and only then prepends the release to `docs/appcast.xml` and pushes that. GitHub Pages serves `docs/`, so the appcast goes live about a minute later and every installed copy picks the update up on its next daily check.
+Write the version's notes in `CHANGELOG.md` under `## Unreleased` (English bullets, optional `### es` block), then run `scripts/release.sh X.Y.Z`. It runs the gates, turns the Unreleased section into the version (with today's date), adds the entry to `docs/whats-new.html`, bumps `VERSION`, tags, builds the universal DMG, signs it with the Sparkle EdDSA key from the login keychain, pushes, creates the GitHub Release with those notes (plus a stable `Calenbar.dmg` copy for the site's Download button), updates the Homebrew cask in `hercase/homebrew-calenbar`, and only then prepends the release to `docs/appcast.xml` and pushes that. GitHub Pages serves `docs/`, so the appcast goes live about a minute later and every installed copy picks the update up on its next daily check.
 
 The release machine needs:
 
