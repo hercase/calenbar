@@ -42,24 +42,28 @@ struct EventDetailView: View {
                 }
                 if !event.isAllDay, model.settings.showClocksInEventDetails {
                     OtherTimeZonesView(event: event, clocks: model.settings.worldClocks)
-                        .padding(.top, 2)
+                        .padding(.top, PanelStyle.tight)
                 }
             }
 
             if let link {
+                Divider()
                 Button {
                     MeetingOpener.open(link)
                 } label: {
                     HStack(spacing: 6) {
-                        ProviderIconView(provider: link.provider, size: 14)
+                        ProviderIconView(provider: link.provider, size: 16)
                         Text("Join \(link.provider.displayName)")
                     }
-                    .padding(.horizontal, 2)
+                    .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.regular)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
 
+            if !event.rooms.isEmpty || displayLocation(link: link) != nil || !event.people.isEmpty {
+                Divider()
+            }
             if !event.rooms.isEmpty || displayLocation(link: link) != nil {
                 VStack(alignment: .leading, spacing: PanelStyle.tight) {
                     if !event.rooms.isEmpty {
@@ -79,7 +83,8 @@ struct EventDetailView: View {
                 ParticipantsView(people: event.people, organizer: event.organizer)
             }
 
-            EventActionsRow(model: model, event: event)
+            Divider()
+            EventActionsRow(model: model, event: event, hasPrimaryJoin: link != nil)
 
             if let notes = NotesCleaner.clean(event.notes) {
                 Divider()
@@ -102,8 +107,11 @@ struct EventDetailView: View {
         guard let location = event.location?.trimmingCharacters(in: .whitespacesAndNewlines), !location.isEmpty else {
             return nil
         }
-        if let link, location.contains(link.webURL.host ?? "\u{0}") {
-            return nil
+        if let link {
+            let service = link.provider.displayName.lowercased()
+            if location.contains(link.webURL.host ?? "\u{0}") || location.lowercased().contains(service) {
+                return nil
+            }
         }
         return location
     }
@@ -224,6 +232,8 @@ private struct ParticipantsView: View {
 struct EventActionsRow: View {
     let model: AppModel
     let event: CalendarEvent
+    /// When the card already has a prominent Join, answering/opening steps back to a plain button.
+    var hasPrimaryJoin = false
 
     var body: some View {
         let destination = model.eventDestinationName(event)
@@ -231,7 +241,6 @@ struct EventActionsRow: View {
             if !event.needsResponse, event.myStatus != .unknown {
                 RSVPStatusLine(event: event)
             }
-            Divider()
             HStack(spacing: PanelStyle.small) {
                 if event.start > model.now {
                     SkipButton(model: model, event: event, showsLabel: true)
@@ -244,6 +253,7 @@ struct EventActionsRow: View {
                         Label(String(localized: "Answer in \(destination)"), systemImage: "arrow.up.forward")
                     }
                     .buttonStyle(.borderedProminent)
+                    .tint(hasPrimaryJoin ? .secondary : .accentColor)
                     .help("You haven't answered this invitation yet")
                 } else {
                     Button {
