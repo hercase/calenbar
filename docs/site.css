@@ -164,6 +164,7 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 .step p b { color: var(--ink); }
 .step figure { margin: 0; }
 .step figure img { display: block; width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+.step figure img[src*="gatekeeper"] { width: 220px; margin: 0 auto; box-shadow: var(--shadow); border-radius: 14px; }
 @media (max-width: 560px) { .step { grid-template-columns: 1fr; gap: 16px; } .step figure { max-width: 300px; } }
 .win { background: var(--win); border-radius: 10px; box-shadow: 0 0 0 1px var(--win-rule), 0 6px 18px rgba(0,0,0,.08); font-size: 11.5px; overflow: hidden; color: var(--ink); }
 .win .head { background: var(--win-head); padding: 7px 10px; font-weight: 600; border-bottom: 1px solid var(--win-rule); display: flex; align-items: center; gap: 6px; }

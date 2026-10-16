@@ -69,13 +69,19 @@
       <div>
         <p class="num">2</p>
         <h3>Tell macOS it's OK to open</h3>
-        <p>The first time, macOS shows “Apple could not verify Calenbar”. Click <b>Done</b>. Open <b>System Settings › Privacy &amp; Security</b>, scroll to the bottom and click <b>Open Anyway</b>, then confirm with your password. Only once: updates install themselves.</p>
+        <p>The first time, macOS says <b>“Calenbar” Not Opened</b> and offers to move it to the Trash. Don't: click <b>Done</b>. Then open <b>System Settings › Privacy &amp; Security</b>, scroll to the bottom and click <b>Open Anyway</b>; confirm with your password and open Calenbar again. Only once: updates install themselves.</p>
       </div>
       <figure aria-hidden="true">
-        <div class="win">
+        <div class="win dialog">
+          <div class="body">
+            <div><b>“Calenbar” Not Opened</b></div>
+            <div class="muted">Apple could not verify “Calenbar” is free of malware that may harm your Mac or compromise your privacy.</div>
+            <div class="buttons"><span class="btn">Move to Trash</span><span class="btn plain">Done ←</span></div>
+          </div>
+        </div>
+        <div class="win" style="margin-top:12px">
           <div class="head"><span class="lights"><i></i><i></i><i></i></span>Privacy &amp; Security</div>
           <div class="body">
-            <div class="muted">Security</div>
             <div>“Calenbar” was blocked to protect your Mac.</div>
             <div class="row"><span class="muted">Apple could not verify it.</span><span class="btn">Open Anyway</span></div>
           </div>
@@ -145,13 +151,13 @@
       <div>
         <p class="num">2</p>
         <h3>Decile a macOS que está bien abrirla</h3>
-        <p>La primera vez macOS muestra “Apple no pudo verificar Calenbar”. Tocá <b>Listo</b>. Abrí <b>Ajustes del Sistema › Privacidad y seguridad</b>, bajá hasta el final y tocá <b>Abrir de todas formas</b> (o <b>Abrir igualmente</b>, según el idioma del sistema); confirmá con tu contraseña. Una sola vez: las actualizaciones se instalan solas.</p>
+        <p>La primera vez macOS dice <b>No se abrió “Calenbar”</b> y te ofrece moverla al basurero. No lo hagas: tocá <b>Listo</b>. Después abrí <b>Ajustes del Sistema › Privacidad y seguridad</b>, bajá hasta el final y tocá <b>Abrir de todas formas</b> (o <b>Abrir igualmente</b>, según el idioma del sistema); confirmá con tu contraseña y volvé a abrir Calenbar. Una sola vez: las actualizaciones se instalan solas.</p>
       </div>
-      <figure aria-hidden="true">
-        <div class="win">
+      <figure>
+        <img src="img/gatekeeper-es.png" alt="El aviso de macOS: No se abrió Calenbar. Apple no pudo verificar que no contenga software malicioso. Botones: Mover al basurero y Listo." width="294" height="280">
+        <div class="win" style="margin-top:12px" aria-hidden="true">
           <div class="head"><span class="lights"><i></i><i></i><i></i></span>Privacidad y seguridad</div>
           <div class="body">
-            <div class="muted">Seguridad</div>
             <div>Se bloqueó “Calenbar” para proteger la Mac.</div>
             <div class="row"><span class="muted">Apple no pudo verificarla.</span><span class="btn">Abrir de todas formas</span></div>
           </div>
