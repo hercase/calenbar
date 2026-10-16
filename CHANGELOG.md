@@ -10,11 +10,11 @@ section into the release. Bullets are English; an optional `### es` block carrie
 Quieter notifications, and install from the terminal.
 
 - Settings › Notifications says when macOS has notifications turned off for Calenbar, with a button to fix it.
-- Install with Homebrew: `brew install --cask hercase/calenbar/calenbar`.
+- Install with Homebrew: `brew install --cask hercase/calenbar/calenbar` (trust the tap when asked).
 
 ### es
 - Ajustes › Notificaciones avisa cuando macOS tiene las notificaciones de Calenbar desactivadas, con un botón para arreglarlo.
-- Instalación con Homebrew: `brew install --cask hercase/calenbar/calenbar`.
+- Instalación con Homebrew: `brew install --cask hercase/calenbar/calenbar` (confiá en el tap cuando lo pida).
 
 ## 0.4.1 - 2026-10-16
 
