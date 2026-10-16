@@ -24,7 +24,8 @@ enum SettingsWindow {
             Page(title: String(localized: "Calendars"), symbol: "calendar", view: AnyView(CalendarSettings(model: model))),
             Page(
                 title: String(localized: "Notifications"), symbol: "bell.badge",
-                view: AnyView(NotificationSettings(settings: model.settings, scheduler: model.notifications))),
+                view: AnyView(
+                    NotificationSettings(settings: model.settings, scheduler: model.notifications, alerts: model.alerts))),
             Page(
                 title: String(localized: "Time Zones"), symbol: "globe",
                 view: AnyView(WorldClockSettings(settings: model.settings, uiState: uiState))),
@@ -197,6 +198,7 @@ struct SettingsFooter<Content: View>: View {
 private struct NotificationSettings: View {
     @Bindable var settings: AppSettings
     let scheduler: NotificationScheduler?
+    let alerts: FullScreenAlertController?
 
     var body: some View {
         Form {
@@ -219,6 +221,10 @@ private struct NotificationSettings: View {
                     }
                 }
                 .disabled(!settings.notificationsEnabled)
+                LabeledContent("Preview") {
+                    Button("Send Test Notification") { scheduler?.sendTest() }
+                }
+                .disabled(!settings.notificationsEnabled || scheduler == nil)
             }
             Section("Grab attention when an event is close") {
                 Toggle("Flash red in the menu bar", isOn: $settings.flashEnabled)
@@ -249,6 +255,10 @@ private struct NotificationSettings: View {
                     }
                 }
                 .disabled(!settings.alertEnabled)
+                LabeledContent("Preview") {
+                    Button("Show Test Alert") { alerts?.showPreview() }
+                }
+                .disabled(!settings.alertEnabled || alerts == nil)
             } header: {
                 Text("Alert")
             } footer: {

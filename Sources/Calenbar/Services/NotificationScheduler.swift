@@ -71,6 +71,17 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         }
     }
 
+    /// Settings' "Send Test Notification": one banner right now, so people can see what to expect.
+    func sendTest() {
+        guard let center else { return }
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "This is how a notification looks")
+        content.body = String(localized: "Calenbar sends one like this before each meeting, with a Join button.")
+        content.sound = .default
+        content.categoryIdentifier = Identifier.eventCategory
+        center.add(UNNotificationRequest(identifier: "test", content: content, trigger: nil))
+    }
+
     static func openNotificationSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension") {
             NSWorkspace.shared.open(url)

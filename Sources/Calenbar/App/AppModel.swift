@@ -13,6 +13,8 @@ final class AppModel {
     let updater = Updater()
     /// Set by the app delegate once the scheduler exists; Settings reads the permission state from it.
     var notifications: NotificationScheduler?
+    /// Set by the app delegate; Settings uses it for the test alert.
+    var alerts: FullScreenAlertController?
 
     init(settings: AppSettings, calendar: CalendarService, clock: MinuteClock) {
         self.settings = settings

@@ -28,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         notifications = NotificationScheduler(model: model)
         model.notifications = notifications
         alerts = FullScreenAlertController(model: model)
+        model.alerts = alerts
         model.updater.start()
         observeContinuously {
             MeetingOpener.browserBundleID = model.settings.meetingBrowserID

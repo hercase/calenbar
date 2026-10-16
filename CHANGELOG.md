@@ -15,7 +15,8 @@ Quieter notifications, and install from the terminal.
 - The full-screen alert shows the room, who organized the meeting and how many accepted, and counts down live. Snooze for 1, 5 or 10 minutes, or until the meeting starts.
 - Settings › Menu Bar explains how to move the item next to the clock.
 - Join the next meeting from anywhere with ⌃⌘J (change or remove it in Settings › General). Also in the menu bar item's right-click menu and the panel's ••• menu.
-- The alert has two styles: a small card in the top-right corner (new, and the default), over every desktop and full-screen app, or the full-screen takeover. Both leave on their own when the meeting ends.
+- The alert is on from the start again, as a small card in the top-right corner, over every desktop and full-screen app. Full screen stays as the opt-in style. Both leave on their own when the meeting ends.
+- Settings › Notifications has “Send Test Notification” and “Show Test Alert”, to see each one before deciding.
 - When an update is waiting, the menu bar icon gets a dot and both menus offer “Update to…” or “Restart to Update”.
 - Sharing your screen? Hide event titles and the menu bar says “Meeting • in 12m” until you turn it back on.
 - Start a new Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.
@@ -31,7 +32,8 @@ Quieter notifications, and install from the terminal.
 - La alerta a pantalla completa muestra la sala, quién organiza y cuántos aceptaron, y la cuenta regresiva se actualiza. Posponer por 1, 5 o 10 minutos, o hasta que empiece.
 - Ajustes › Barra de menús explica cómo mover el ítem junto al reloj.
 - Entrá a la próxima reunión desde cualquier app con ⌃⌘J (cambialo o quitalo en Ajustes › General). También en el clic derecho del ítem y en el menú ••• del panel.
-- La alerta tiene dos estilos: una tarjeta chica arriba a la derecha (nueva, y la predeterminada), sobre todos los escritorios y apps a pantalla completa, o la pantalla completa. Las dos se van solas cuando termina la reunión.
+- La alerta vuelve a estar activa desde el inicio, como una tarjeta chica arriba a la derecha, sobre todos los escritorios y apps a pantalla completa. Pantalla completa queda como estilo opcional. Las dos se van solas cuando termina la reunión.
+- Ajustes › Notificaciones tiene “Enviar notificación de prueba” y “Mostrar alerta de prueba”, para ver cada una antes de decidir.
 - Cuando hay una actualización esperando, el ícono de la barra muestra un punto y los dos menús ofrecen “Actualizar a…” o “Reiniciar para actualizar”.
 - ¿Compartiendo pantalla? Ocultá los títulos y la barra dice “Reunión • en 12m” hasta que lo desactives.
 - Iniciá una reunión nueva de Google Meet, Zoom o Microsoft Teams desde el menú ••• del panel.

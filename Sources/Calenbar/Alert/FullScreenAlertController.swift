@@ -43,9 +43,26 @@ final class FullScreenAlertController {
         }
     }
 
+    /// Settings' "Show Test Alert": the current style with a made-up meeting, so people can decide
+    /// whether they want it. Its buttons only close it.
+    func showPreview() {
+        dismiss()
+        let now = Date()
+        let sample = CalendarEvent(
+            id: "preview", externalID: "preview", title: String(localized: "This is how an alert looks"),
+            start: now, end: now.addingTimeInterval(30 * 60), isAllDay: false, calendarID: "preview",
+            calendarTitle: "Calenbar", calendarColorHex: "#4C4ED6", isDeclined: false, hasOtherAttendees: false,
+            url: URL(string: "https://meet.google.com/abc-defg-hij"), location: nil, notes: nil)
+        let close = AlertActions(
+            join: { [weak self] _ in self?.dismiss() },
+            snooze: { [weak self] _ in self?.dismiss() },
+            dismiss: { [weak self] in self?.dismiss() }
+        )
+        present(sample, actions: close)
+    }
+
     private func show(_ event: CalendarEvent) {
         shownKeys.insert(event.key)
-        guard let screen = Self.screen(for: model.settings.alertDisplayID) else { return }
         let actions = AlertActions(
             join: { [weak self] link in
                 MeetingOpener.open(link, eventKey: event.key)
@@ -58,6 +75,11 @@ final class FullScreenAlertController {
             },
             dismiss: { [weak self] in self?.dismiss() }
         )
+        present(event, actions: actions)
+    }
+
+    private func present(_ event: CalendarEvent, actions: AlertActions) {
+        guard let screen = Self.screen(for: model.settings.alertDisplayID) else { return }
         shownEvent = event
         switch model.settings.alertStyle {
         case .fullScreen: panel = showFullScreen(event, actions: actions, on: screen)

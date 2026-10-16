@@ -244,3 +244,9 @@
 "Small card in the corner" = "Tarjeta chica en la esquina";
 "Full screen" = "Pantalla completa";
 "Alert" = "Alerta";
+"This is how an alert looks" = "Así se ve una alerta";
+"This is how a notification looks" = "Así se ve una notificación";
+"Calenbar sends one like this before each meeting, with a Join button." = "Calenbar manda una así antes de cada reunión, con un botón Unirse.";
+"Preview" = "Vista previa";
+"Send Test Notification" = "Enviar notificación de prueba";
+"Show Test Alert" = "Mostrar alerta de prueba";

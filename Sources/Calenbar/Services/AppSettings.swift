@@ -104,8 +104,8 @@ final class AppSettings {
         attentionSound = Self.load(.attentionSound, from: defaults) ?? false
         notificationsEnabled = Self.load(.notificationsEnabled, from: defaults) ?? true
         notifyLeadMinutes = Self.load(.notifyLeadMinutes, from: defaults) ?? 1
-        // Off by default: taking over the screen is a strong move that people should opt into.
-        alertEnabled = Self.load(.alertEnabled, from: defaults) ?? false
+        // On by default as the corner card; the full-screen takeover is the opt-in step up.
+        alertEnabled = Self.load(.alertEnabled, from: defaults) ?? true
         alertLeadMinutes = Self.load(.alertLeadMinutes, from: defaults) ?? 0
         alertOnlyWithLink = Self.load(.alertOnlyWithLink, from: defaults) ?? true
         // The gentle one first; the takeover is a step up for those who want it.
