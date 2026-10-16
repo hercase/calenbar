@@ -2,4 +2,5 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://hercase.github.io/calenbar/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
   <url><loc>https://hercase.github.io/calenbar/install.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://hercase.github.io/calenbar/whats-new.html</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
 </urlset>

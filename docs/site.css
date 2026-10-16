@@ -92,6 +92,40 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 .screen .strip { display: block; width: calc(100% - 40px); height: auto; margin: 22px auto 0; border-radius: 9px; box-shadow: 0 10px 30px rgba(28, 29, 70, .18); }
 @media (max-width: 560px) { .menubar .menus span:nth-child(n+3), .menubar .sys { display: none; } .screen .panel { margin: 10px auto 0; } }
 
+/* Eyebrow above section titles */
+.eyebrow { display: block; color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 10px; }
+.section-head { text-align: center; max-width: 60ch; margin: 0 auto 36px; }
+.section-head h2 { font-size: 34px; line-height: 1.12; letter-spacing: -0.022em; margin: 0 0 10px; }
+.section-head p { color: var(--ink-2); margin: 0; font-size: 18px; }
+
+/* Three sizes of the same thing */
+.trio { padding: 64px 0; border-top: 1px solid var(--rule); }
+.trio .shots { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 28px; align-items: start; }
+.trio figure { margin: 0; }
+.trio figure img, .trio figure picture { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow); }
+.trio figure picture img { box-shadow: none; }
+.trio figcaption { font-size: 14px; color: var(--ink-2); margin-top: 12px; line-height: 1.45; }
+.trio figcaption b { color: var(--ink); }
+.trio .barshot { border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); background: var(--wallpaper); padding-bottom: 36px; }
+@media (max-width: 760px) { .trio .shots { grid-template-columns: 1fr; } }
+
+/* Small things, as cards */
+.cards { padding: 64px 0; border-top: 1px solid var(--rule); }
+.cards .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.cards .card { background: var(--win); border: 1px solid var(--rule); border-radius: 14px; padding: 20px 22px; }
+.cards h3 { margin: 0 0 6px; font-size: 17px; letter-spacing: -0.01em; }
+.cards p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+@media (max-width: 760px) { .cards .grid { grid-template-columns: 1fr; } }
+
+/* What's new */
+.release { display: grid; grid-template-columns: 160px 1fr; gap: 24px; padding: 32px 0; border-top: 1px solid var(--rule); }
+.release time { color: var(--ink-3); font-size: 15px; padding-top: 6px; }
+.release h2 { font-size: 26px; letter-spacing: -0.02em; margin: 0 0 8px; line-height: 1.2; }
+.release p { color: var(--ink-2); margin: 0 0 12px; }
+.release ul { margin: 0; padding-left: 18px; color: var(--ink-2); display: grid; gap: 6px; }
+.release .ver { display: inline-block; font-size: 13px; color: var(--ink-3); margin-left: 8px; font-weight: 500; }
+@media (max-width: 640px) { .release { grid-template-columns: 1fr; gap: 6px; } }
+
 /* Features: text and a screenshot, alternating sides. */
 .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 64px 0; border-top: 1px solid var(--rule); }
 .feature.flip > .text { order: 2; }
