@@ -2,11 +2,12 @@ import AppKit
 import CalenbarCore
 import SwiftUI
 
-/// Full-screen reminder when a meeting starts. Checked on every minute tick.
+/// Reminder when a meeting starts, as a full-screen takeover or a corner card. Checked on every minute tick.
 @MainActor
 final class FullScreenAlertController {
     private let model: AppModel
-    private var panel: AlertPanel?
+    private var panel: NSPanel?
+    private var shownEvent: CalendarEvent?
     private var shownKeys: Set<String> = []
     private var snoozedUntil: [String: Date] = [:]
 
@@ -19,6 +20,10 @@ final class FullScreenAlertController {
         let now = model.now
         let settings = model.settings
         let events = model.events(for: .alert)
+        // Whatever is showing goes away by itself once its meeting is over.
+        if let shownEvent, shownEvent.end <= now {
+            dismiss()
+        }
         guard settings.alertEnabled, panel == nil else { return }
 
         let lead = TimeInterval(settings.alertLeadMinutes * 60)
@@ -41,8 +46,27 @@ final class FullScreenAlertController {
     private func show(_ event: CalendarEvent) {
         shownKeys.insert(event.key)
         guard let screen = Self.screen(for: model.settings.alertDisplayID) else { return }
+        let actions = AlertActions(
+            join: { [weak self] link in
+                MeetingOpener.open(link, eventKey: event.key)
+                self?.dismiss()
+            },
+            snooze: { [weak self] until in
+                self?.snoozedUntil[event.key] = until
+                self?.shownKeys.remove(event.key)
+                self?.dismiss()
+            },
+            dismiss: { [weak self] in self?.dismiss() }
+        )
+        shownEvent = event
+        switch model.settings.alertStyle {
+        case .fullScreen: panel = showFullScreen(event, actions: actions, on: screen)
+        case .card: panel = showCard(event, actions: actions, on: screen)
+        }
+    }
 
-        let panel = AlertPanel(
+    private func showFullScreen(_ event: CalendarEvent, actions: AlertActions, on screen: NSScreen) -> NSPanel {
+        let panel = KeyPanel(
             contentRect: screen.frame,
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
@@ -58,21 +82,7 @@ final class FullScreenAlertController {
         blur.material = .fullScreenUI
         blur.blendingMode = .behindWindow
         blur.state = .active
-        let content = NSHostingView(
-            rootView: AlertView(
-                model: model,
-                event: event,
-                join: { [weak self] link in
-                    MeetingOpener.open(link, eventKey: event.key)
-                    self?.dismiss()
-                },
-                snooze: { [weak self] until in
-                    self?.snoozedUntil[event.key] = until
-                    self?.shownKeys.remove(event.key)
-                    self?.dismiss()
-                },
-                dismiss: { [weak self] in self?.dismiss() }
-            ))
+        let content = NSHostingView(rootView: AlertView(model: model, event: event, actions: actions))
         content.frame = blur.bounds
         content.autoresizingMask = [.width, .height]
         blur.addSubview(content)
@@ -80,7 +90,34 @@ final class FullScreenAlertController {
 
         NSApp.activate()
         panel.makeKeyAndOrderFront(nil)
-        self.panel = panel
+        return panel
+    }
+
+    /// Top-right corner, under the menu bar, above everything, without taking focus from the current app.
+    private func showCard(_ event: CalendarEvent, actions: AlertActions, on screen: NSScreen) -> NSPanel {
+        let content = NSHostingView(rootView: AlertCardView(model: model, event: event, actions: actions))
+        let size = content.fittingSize
+        let margin: CGFloat = 12
+        let origin = NSPoint(
+            x: screen.visibleFrame.maxX - size.width - margin, y: screen.visibleFrame.maxY - size.height - margin)
+        // Can become key (so its buttons take the first click) without activating Calenbar.
+        let panel = KeyPanel(
+            contentRect: NSRect(origin: origin, size: size),
+            styleMask: [.borderless, .nonactivatingPanel],
+            backing: .buffered,
+            defer: false
+        )
+        panel.isReleasedWhenClosed = false
+        panel.level = .statusBar
+        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
+        panel.isOpaque = false
+        panel.backgroundColor = .clear
+        panel.hasShadow = true
+        panel.isMovableByWindowBackground = true
+        content.frame = NSRect(origin: .zero, size: size)
+        panel.contentView = content
+        panel.orderFrontRegardless()
+        return panel
     }
 
     /// The chosen display if it is connected; otherwise the screen with the pointer, which is where
@@ -96,6 +133,7 @@ final class FullScreenAlertController {
     private func dismiss() {
         guard let panel else { return }
         self.panel = nil
+        shownEvent = nil
         panel.orderOut(nil)
         // Called from a button inside the window: let the click finish before the window goes away.
         DispatchQueue.main.async { panel.close() }
@@ -109,17 +147,22 @@ extension NSScreen {
     }
 }
 
-private final class AlertPanel: NSPanel {
+private final class KeyPanel: NSPanel {
     override var canBecomeKey: Bool { true }
+}
+
+/// What the alert's buttons do; the same for both styles.
+struct AlertActions {
+    let join: (MeetingLink) -> Void
+    /// Called with the moment the alert should come back.
+    let snooze: (Date) -> Void
+    let dismiss: () -> Void
 }
 
 struct AlertView: View {
     let model: AppModel
     let event: CalendarEvent
-    let join: (MeetingLink) -> Void
-    /// Called with the moment the alert should come back.
-    let snooze: (Date) -> Void
-    let dismiss: () -> Void
+    let actions: AlertActions
 
     var body: some View {
         let now = model.now
@@ -154,7 +197,7 @@ struct AlertView: View {
             HStack(spacing: 12) {
                 if let link = event.meetingLink {
                     Button {
-                        join(link)
+                        actions.join(link)
                     } label: {
                         HStack(spacing: 8) {
                             ProviderIconView(provider: link.provider, size: 18)
@@ -164,16 +207,9 @@ struct AlertView: View {
                     .keyboardShortcut(.defaultAction)
                     .buttonStyle(.borderedProminent)
                 }
-                Menu("Snooze") {
-                    if event.start.timeIntervalSince(now) > 60 {
-                        Button("When it starts") { snooze(event.start) }
-                    }
-                    ForEach(AlertTiming.snoozeMinutes, id: \.self) { minutes in
-                        Button("\(minutes) min") { snooze(Date().addingTimeInterval(TimeInterval(minutes * 60))) }
-                    }
-                }
-                .fixedSize()
-                Button("Dismiss", action: dismiss)
+                SnoozeMenu(event: event, now: now, snooze: actions.snooze)
+                    .fixedSize()
+                Button("Dismiss", action: actions.dismiss)
                     .keyboardShortcut(.cancelAction)
             }
             .controlSize(.extraLarge)
@@ -184,13 +220,39 @@ struct AlertView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    private var place: String? { AlertFacts.place(event) }
+    private var people: String? { AlertFacts.people(event) }
+
+    static func headline(event: CalendarEvent, now: Date) -> String { AlertFacts.headline(event: event, now: now) }
+}
+
+/// Snooze choices shared by both alert styles.
+struct SnoozeMenu: View {
+    let event: CalendarEvent
+    let now: Date
+    let snooze: (Date) -> Void
+
+    var body: some View {
+        Menu("Snooze") {
+            if event.start.timeIntervalSince(now) > 60 {
+                Button("When it starts") { snooze(event.start) }
+            }
+            ForEach(AlertTiming.snoozeMinutes, id: \.self) { minutes in
+                Button("\(minutes) min") { snooze(Date().addingTimeInterval(TimeInterval(minutes * 60))) }
+            }
+        }
+    }
+}
+
+/// The lines both alert styles print about the meeting.
+enum AlertFacts {
     /// Rooms first (they're what you walk to); otherwise the free-text location when it says something.
-    private var place: String? {
+    static func place(_ event: CalendarEvent) -> String? {
         event.rooms.isEmpty ? event.displayLocation : event.rooms.joined(separator: ", ")
     }
 
     /// "Organized by Ana · 6 guests · 4 accepted"; nothing for an event with no other guests.
-    private var people: String? {
+    static func people(_ event: CalendarEvent) -> String? {
         let others = event.people.filter { !$0.isCurrentUser }
         guard !others.isEmpty else { return nil }
         let accepted = event.people.filter { $0.status == .accepted }.count

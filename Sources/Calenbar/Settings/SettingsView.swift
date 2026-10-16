@@ -226,8 +226,13 @@ private struct NotificationSettings: View {
                     .disabled(!settings.flashEnabled)
                 Toggle("Play a sound at 5 min and 30 s", isOn: $settings.attentionSound)
             }
-            Section("Full-screen alert") {
-                Toggle("Show full-screen alert", isOn: $settings.alertEnabled)
+            Section {
+                Toggle("Show an alert when a meeting starts", isOn: $settings.alertEnabled)
+                Picker("Style", selection: $settings.alertStyle) {
+                    Text("Small card in the corner").tag(AlertStyle.card)
+                    Text("Full screen").tag(AlertStyle.fullScreen)
+                }
+                .disabled(!settings.alertEnabled)
                 Picker("When", selection: $settings.alertLeadMinutes) {
                     ForEach(AppSettings.notifyLeadOptions, id: \.self) { minutes in
                         Text(minutes == 0 ? String(localized: "At start time") : String(localized: "\(minutes) min before")).tag(
@@ -244,6 +249,10 @@ private struct NotificationSettings: View {
                     }
                 }
                 .disabled(!settings.alertEnabled)
+            } header: {
+                Text("Alert")
+            } footer: {
+                SettingsFooter { Text("settings.alert.footer") }
             }
         }
         .formStyle(.grouped)

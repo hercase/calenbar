@@ -10,6 +10,14 @@ enum EventDestination: String, Codable, CaseIterable {
     case googleWeb
 }
 
+/// How the alert takes the screen when a meeting starts.
+enum AlertStyle: String, Codable, CaseIterable {
+    /// Whole screen, blurred: impossible to miss.
+    case fullScreen
+    /// A small card in the top-right corner, over every Space and full-screen app.
+    case card
+}
+
 struct WorldClock: Codable, Hashable, Identifiable {
     var id = UUID()
     var timeZoneID: String
@@ -44,6 +52,7 @@ final class AppSettings {
     var alertEnabled: Bool { didSet { store(alertEnabled, .alertEnabled) } }
     var alertLeadMinutes: Int { didSet { store(alertLeadMinutes, .alertLeadMinutes) } }
     var alertOnlyWithLink: Bool { didSet { store(alertOnlyWithLink, .alertOnlyWithLink) } }
+    var alertStyle: AlertStyle { didSet { store(alertStyle, .alertStyle) } }
     /// Display for the full-screen alert (`NSScreenNumber`); nil means the screen under the pointer.
     var alertDisplayID: UInt32? { didSet { store(alertDisplayID, .alertDisplayID) } }
 
@@ -68,7 +77,8 @@ final class AppSettings {
     private enum Key: String {
         case titleRule, titleHorizon, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar, joinShortcut, openEventsIn,
             meetingBrowserID, preferNativeMeetingApps, flashEnabled, flashFromFiveMinutes, attentionSound
-        case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID
+        case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
+            alertStyle
         case disabledCalendars, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel, showClocksInEventDetails
     }
 
@@ -98,6 +108,8 @@ final class AppSettings {
         alertEnabled = Self.load(.alertEnabled, from: defaults) ?? false
         alertLeadMinutes = Self.load(.alertLeadMinutes, from: defaults) ?? 0
         alertOnlyWithLink = Self.load(.alertOnlyWithLink, from: defaults) ?? true
+        // The gentle one first; the takeover is a step up for those who want it.
+        alertStyle = Self.load(.alertStyle, from: defaults) ?? .card
         let storedDisplay: UInt32?? = Self.load(.alertDisplayID, from: defaults)
         alertDisplayID = storedDisplay.flatMap { $0 }
         disabledCalendars = Self.load(.disabledCalendars, from: defaults) ?? [:]

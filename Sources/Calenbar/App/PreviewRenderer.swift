@@ -11,6 +11,8 @@ enum PreviewRenderer {
         return URL(fileURLWithPath: arguments[index + 1], isDirectory: true)
     }
 
+    private static let noActions = AlertActions(join: { _ in }, snooze: { _ in }, dismiss: {})
+
     static func renderAll(to directory: URL) throws {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         let fixtures = PreviewFixtures()
@@ -25,9 +27,12 @@ enum PreviewRenderer {
             named: "panel-month", in: directory)
         try write(EventDetailView(model: fixtures.model, event: fixtures.meeting), named: "detail-card", in: directory)
         try write(
-            AlertView(model: fixtures.model, event: fixtures.meeting, join: { _ in }, snooze: { _ in }, dismiss: {})
+            AlertView(model: fixtures.model, event: fixtures.meeting, actions: Self.noActions)
                 .frame(width: 900, height: 420),
             named: "alert", in: directory)
+        try write(
+            AlertCardView(model: fixtures.model, event: fixtures.meeting, actions: Self.noActions), named: "alert-card",
+            in: directory)
         for page in SettingsWindow.pages(model: fixtures.model, uiState: SettingsUIState()) {
             try write(
                 page.view.frame(width: SettingsWindow.pageSize.width, height: SettingsWindow.pageSize.height),
