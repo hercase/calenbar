@@ -13,7 +13,7 @@ final class FullScreenAlertController {
 
     /// Cards stack from the chosen corner; more than this and they'd march across the screen.
     private static let maxCards = 3
-    private static let margin: CGFloat = 12
+    private static let margin: CGFloat = 24
     private static let gap: CGFloat = 8
 
     private let model: AppModel
