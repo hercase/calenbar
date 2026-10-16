@@ -10,46 +10,32 @@ section into the release. Bullets are English; an optional `### es` block carrie
 A shortcut to join, an alert that doesn't take over, and days off on the calendar.
 Un atajo para entrar, una alerta que no tapa todo, y los días libres en el calendario.
 
-- Settings › Notifications says when macOS has notifications turned off for Calenbar, with a button to fix it.
-- Install with Homebrew: `brew install --cask hercase/calenbar/calenbar` (trust the tap when asked).
-- Up to five world clocks, and the same time zone can't be added twice.
-- The full-screen alert shows the room, who organized the meeting and how many accepted, and counts down live. Snooze for 1, 5 or 10 minutes, or until the meeting starts.
-- Settings › Menu Bar explains how to move the item next to the clock.
-- No more Accessibility permission. On displays without a notch the title width is Automatic (it learns how much room the apps you use leave) or a fixed Short, Medium or Long.
-- Join the next meeting from anywhere with ⌃⌘J (change or remove it in Settings › General). Also in the menu bar item's right-click menu and the panel's ••• menu.
-- The alert is on from the start again, as a small card in a corner of the screen (top left by default, where the eye starts; any corner can be picked), over every desktop and full-screen app. Full screen stays as the opt-in style. Overlapping meetings each get a card, stacked. Both styles leave on their own when the meeting ends.
-- Settings › Notifications has “Send Test Notification” and “Show Test Alert”, to see each one before deciding.
-- When an update is waiting, the menu bar icon gets a dot and both menus offer “Update to…” or “Restart to Update”.
-- Sharing your screen? Hide event titles and the menu bar says “Meeting • in 12m” until you turn it back on.
-- Start a new Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.
-- Time off and holidays stand out: a tinted day in the month view and an icon in the list, for events named Out of office, PTO, vacation and their equivalents in Spanish, Portuguese, German, Dutch, French, Italian, Danish, Swedish and Polish, and for holiday calendars (recognised by name; the ••• button in Settings › Calendars changes that).
-- Settings › Calendars: unchecking List drops a calendar from Calenbar in one click.
-- A personal event mirrored into a work calendar shows once, even when the copy says just “Busy” or carries a tag like “[Personal]”; the card says which other calendar has it.
-- Week numbers in the month calendar, optional.
-- The dots under each day now say how busy it is: one for a meeting or two, two for three or four, three for five or more.
-- Fixed: after joining a meeting from Calenbar, the full-screen alert stayed quiet for any later meeting with the same link, including the same meeting moved to a later time. It now only skips the occurrence you joined.
-- Settings › Calendars groups calendars by account, with a header row and a hint on each checkbox. Right-click a calendar to hide it from Calenbar in one go.
+- **⌃⌘J joins the next meeting from any app.** Change or remove the shortcut in Settings › General. The same action is in the menu bar item's right-click menu and the panel's ••• menu.
+- **The alert is a small card now.** It appears in a corner of the screen when a meeting starts, over every desktop and full-screen app, with a live countdown, the room, who's coming, Join and Snooze (1, 5 or 10 minutes, or until it starts). Overlapping meetings stack their cards. Full screen is still there as a choice. Both styles leave on their own when the meeting ends.
+- **Try before you decide.** Settings › Notifications has “Send Test Notification” and “Show Test Alert”.
+- **Days off on the calendar.** Time off (Out of office, PTO, vacation and their equivalents in nine languages) and holiday calendars tint their days in the month view and get an icon in the list.
+- **How busy is that day.** One, two or three dots under each day, and optional week numbers.
+- **Calendars, by account.** Settings › Calendars groups them by account; unchecking List drops a calendar from Calenbar in one click, and the ••• button hides it, shows it everywhere or marks it as a holidays calendar.
+- **Mirrored events show once.** A personal event copied into a work calendar is one row, even when the copy says just “Busy” or carries a tag; the card names the other calendar.
+- **Sharing your screen?** Hide event titles and the menu bar says “Meeting • in 12m” until you turn it back on.
+- **New meeting, now.** Start a Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.
+- **Updates you can see.** When one is waiting, the menu bar icon gets a dot and both menus offer “Update to…” or “Restart to Update”.
+- **No Accessibility permission.** On displays without a notch, the title width is Automatic (it learns how much room your apps leave) or Short, Medium or Long.
+- Up to five world clocks, with no duplicates. Settings › Notifications says when macOS has notifications turned off for Calenbar. Install with Homebrew: `brew install --cask hercase/calenbar/calenbar --no-quarantine`.
 
 ### es
-- Ajustes › Notificaciones avisa cuando macOS tiene las notificaciones de Calenbar desactivadas, con un botón para arreglarlo.
-- Instalación con Homebrew: `brew install --cask hercase/calenbar/calenbar` (confiá en el tap cuando lo pida).
-- Hasta cinco relojes del mundo, y la misma zona horaria no se puede agregar dos veces.
-- La alerta a pantalla completa muestra la sala, quién organiza y cuántos aceptaron, y la cuenta regresiva se actualiza. Posponer por 1, 5 o 10 minutos, o hasta que empiece.
-- Ajustes › Barra de menús explica cómo mover el ítem junto al reloj.
-- Ya no hace falta el permiso de Accesibilidad. En pantallas sin notch, el ancho del título es Automático (aprende cuánto lugar dejan las apps que usás) o fijo: Corto, Medio o Largo.
-- Entrá a la próxima reunión desde cualquier app con ⌃⌘J (cambialo o quitalo en Ajustes › General). También en el clic derecho del ítem y en el menú ••• del panel.
-- La alerta vuelve a estar activa desde el inicio, como una tarjeta chica en una esquina (arriba a la izquierda por defecto, donde empieza la mirada; se puede elegir cualquier esquina), sobre todos los escritorios y apps a pantalla completa. Pantalla completa queda como estilo opcional. Si hay reuniones superpuestas, cada una tiene su tarjeta, apiladas. Los dos estilos se van solos cuando termina la reunión.
-- Ajustes › Notificaciones tiene “Enviar notificación de prueba” y “Mostrar alerta de prueba”, para ver cada una antes de decidir.
-- Cuando hay una actualización esperando, el ícono de la barra muestra un punto y los dos menús ofrecen “Actualizar a…” o “Reiniciar para actualizar”.
-- ¿Compartiendo pantalla? Ocultá los títulos y la barra dice “Reunión • en 12m” hasta que lo desactives.
-- Iniciá una reunión nueva de Google Meet, Zoom o Microsoft Teams desde el menú ••• del panel.
-- Los días libres y feriados se destacan: el día teñido en el mes y un ícono en la lista, para eventos llamados Out of office, PTO, vacaciones y sus equivalentes en portugués, alemán, holandés, francés, italiano, danés, sueco y polaco, y para los calendarios de feriados (se reconocen por el nombre; el botón ••• en Ajustes › Calendarios lo cambia).
-- Ajustes › Calendarios: desmarcar Lista saca un calendario de Calenbar con un solo clic.
-- Un evento personal reflejado en el calendario de trabajo aparece una sola vez, aunque la copia diga solo “Ocupado” o lleve una etiqueta como “[Personal]”; la tarjeta dice en qué otro calendario está.
-- Números de semana en el calendario del mes, opcional.
-- Los puntos debajo de cada día ahora dicen qué tan cargado está: uno para una o dos reuniones, dos para tres o cuatro, tres para cinco o más.
-- Corregido: después de entrar a una reunión desde Calenbar, la alerta a pantalla completa no aparecía para ninguna reunión posterior con el mismo link, incluida la misma reunión movida más tarde. Ahora solo omite la ocurrencia a la que entraste.
-- Ajustes › Calendarios agrupa los calendarios por cuenta, con fila de encabezado y una ayuda en cada casilla. Clic derecho en un calendario para ocultarlo de Calenbar de una.
+- **⌃⌘J entra a la próxima reunión desde cualquier app.** Cambiá o quitá el atajo en Ajustes › General. La misma acción está en el clic derecho del ítem de la barra y en el menú ••• del panel.
+- **La alerta ahora es una tarjeta chica.** Aparece en una esquina de la pantalla cuando empieza una reunión, sobre todos los escritorios y apps a pantalla completa, con cuenta regresiva, la sala, quién viene, Unirse y Posponer (1, 5 o 10 minutos, o hasta que empiece). Las reuniones superpuestas apilan sus tarjetas. Pantalla completa sigue como opción. Las dos se van solas cuando termina la reunión.
+- **Probá antes de decidir.** Ajustes › Notificaciones tiene “Enviar notificación de prueba” y “Mostrar alerta de prueba”.
+- **Días libres en el calendario.** Los días libres (Out of office, PTO, vacaciones y sus equivalentes en nueve idiomas) y los calendarios de feriados tiñen sus días en el mes y llevan un ícono en la lista.
+- **Qué tan cargado está el día.** Uno, dos o tres puntos debajo de cada día, y números de semana opcionales.
+- **Calendarios, por cuenta.** Ajustes › Calendarios los agrupa por cuenta; desmarcar Lista saca un calendario de Calenbar con un clic, y el botón ••• lo oculta, lo muestra en todos lados o lo marca como calendario de feriados.
+- **Los eventos reflejados aparecen una vez.** Un evento personal copiado al calendario de trabajo es una sola fila, aunque la copia diga solo “Ocupado” o lleve una etiqueta; la tarjeta dice en qué otro calendario está.
+- **¿Compartiendo pantalla?** Ocultá los títulos y la barra dice “Reunión • en 12m” hasta que lo desactives.
+- **Reunión nueva, ya.** Iniciá una llamada de Google Meet, Zoom o Microsoft Teams desde el menú ••• del panel.
+- **Actualizaciones que se ven.** Cuando hay una esperando, el ícono de la barra muestra un punto y los dos menús ofrecen “Actualizar a…” o “Reiniciar para actualizar”.
+- **Sin permiso de Accesibilidad.** En pantallas sin notch, el ancho del título es Automático (aprende cuánto lugar dejan tus apps) o Corto, Medio o Largo.
+- Hasta cinco relojes del mundo, sin duplicados. Ajustes › Notificaciones avisa cuando macOS tiene las notificaciones de Calenbar desactivadas. Instalación con Homebrew: `brew install --cask hercase/calenbar/calenbar --no-quarantine`.
 
 ## 0.4.1 - 2026-10-16
 
