@@ -42,7 +42,9 @@ final class FullScreenAlertController {
 
     private func show(_ event: CalendarEvent) {
         shownKeys.insert(event.key)
-        guard let screen = NSScreen.main else { return }
+        // The screen with the pointer is where the user is looking, not necessarily the one with the key window.
+        let mouse = NSEvent.mouseLocation
+        guard let screen = NSScreen.screens.first(where: { $0.frame.contains(mouse) }) ?? NSScreen.main else { return }
 
         let panel = AlertPanel(
             contentRect: screen.frame,
@@ -62,6 +64,7 @@ final class FullScreenAlertController {
         let content = NSHostingView(
             rootView: AlertView(
                 event: event,
+                now: model.now,
                 join: { [weak self] link in
                     MeetingOpener.open(link)
                     self?.dismiss()
@@ -95,16 +98,18 @@ private final class AlertPanel: NSPanel {
 
 private struct AlertView: View {
     let event: CalendarEvent
+    let now: Date
     let join: (MeetingLink) -> Void
     let snooze: () -> Void
     let dismiss: () -> Void
 
     var body: some View {
         VStack(spacing: 18) {
-            Text(event.start > Date() ? String(localized: "Starting soon") : String(localized: "Starting now"))
+            Text(event.start > now ? String(localized: "Starting soon") : String(localized: "Starting now"))
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(.secondary)
             Text(TitleFormatter.displayTitle(event))
+                // A full-screen takeover; fixed size on purpose, well above `.largeTitle`.
                 .font(.system(size: 44, weight: .bold))
                 .multilineTextAlignment(.center)
                 .lineLimit(3)

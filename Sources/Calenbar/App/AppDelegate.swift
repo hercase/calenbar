@@ -29,9 +29,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if model.calendar.access == .notDetermined {
                 await model.calendar.requestAccess()
             }
-            if model.calendar.access == .granted {
-                await notifications?.requestAuthorization()
-            }
             LoginLaunch.enableOnFirstRun()
         }
     }

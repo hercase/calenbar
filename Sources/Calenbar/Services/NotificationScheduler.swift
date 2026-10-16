@@ -30,6 +30,12 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         ])
         // Reschedule only when events or settings change; deliberately not on every clock tick.
         observeContinuously { [weak self] in self?.reschedule() }
+        // Ask for permission as soon as calendar access exists, whether it was granted at launch or
+        // later from the panel's "Allow Access" button. The system only ever prompts once.
+        observeContinuously { [weak self] in
+            guard let self, model.calendar.access == .granted else { return }
+            Task { await self.requestAuthorization() }
+        }
     }
 
     func requestAuthorization() async {
@@ -66,7 +72,9 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
             } else {
                 content.categoryIdentifier = Identifier.eventCategory
             }
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
+            // A calendar trigger fires at the wall-clock moment, which survives sleep; an interval drifts.
+            let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: fireDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             center.add(UNNotificationRequest(identifier: event.key, content: content, trigger: trigger))
         }
     }

@@ -81,7 +81,7 @@ final class CalendarService {
             calendars = []
             return
         }
-        calendars = store.calendars(for: .event)
+        let freshCalendars = store.calendars(for: .event)
             .map { calendar in
                 CalendarInfo(
                     id: calendar.calendarIdentifier,
@@ -95,7 +95,17 @@ final class CalendarService {
         lastReload = Date()
         let startOfToday = Calendar.current.startOfDay(for: Date())
         let end = Calendar.current.date(byAdding: .day, value: 14, to: startOfToday) ?? startOfToday
-        upcoming = events(from: startOfToday, to: end)
+        // Browsing other months fills the id map; keep only what the current window needs.
+        eventIdentifiers = [:]
+        let freshEvents = events(from: startOfToday, to: end)
+        // Assign only on change: every observer (status item, notifications, alerts) re-runs on assignment,
+        // and the 5-minute nudge usually finds nothing new.
+        if freshCalendars != calendars {
+            calendars = freshCalendars
+        }
+        if freshEvents != upcoming {
+            upcoming = freshEvents
+        }
     }
 
     func events(from start: Date, to end: Date) -> [CalendarEvent] {
