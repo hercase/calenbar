@@ -39,6 +39,8 @@ final class AppSettings {
     var alertEnabled: Bool { didSet { store(alertEnabled, .alertEnabled) } }
     var alertLeadMinutes: Int { didSet { store(alertLeadMinutes, .alertLeadMinutes) } }
     var alertOnlyWithLink: Bool { didSet { store(alertOnlyWithLink, .alertOnlyWithLink) } }
+    /// Display for the full-screen alert (`NSScreenNumber`); nil means the screen under the pointer.
+    var alertDisplayID: UInt32? { didSet { store(alertDisplayID, .alertDisplayID) } }
 
     var disabledCalendars: [CalendarPurpose: Set<String>] { didSet { store(disabledCalendars, .disabledCalendars) } }
     /// Keys of skipped occurrences.
@@ -61,7 +63,7 @@ final class AppSettings {
     private enum Key: String {
         case titleRule, titleHorizon, showMonthCalendar, openEventsIn, meetingBrowserID, preferNativeMeetingApps,
             flashEnabled, flashFromFiveMinutes, attentionSound
-        case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink
+        case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID
         case disabledCalendars, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel, showClocksInEventDetails
     }
 
@@ -82,9 +84,12 @@ final class AppSettings {
         attentionSound = Self.load(.attentionSound, from: defaults) ?? false
         notificationsEnabled = Self.load(.notificationsEnabled, from: defaults) ?? true
         notifyLeadMinutes = Self.load(.notifyLeadMinutes, from: defaults) ?? 1
-        alertEnabled = Self.load(.alertEnabled, from: defaults) ?? true
+        // Off by default: taking over the screen is a strong move that people should opt into.
+        alertEnabled = Self.load(.alertEnabled, from: defaults) ?? false
         alertLeadMinutes = Self.load(.alertLeadMinutes, from: defaults) ?? 0
         alertOnlyWithLink = Self.load(.alertOnlyWithLink, from: defaults) ?? true
+        let storedDisplay: UInt32?? = Self.load(.alertDisplayID, from: defaults)
+        alertDisplayID = storedDisplay.flatMap { $0 }
         disabledCalendars = Self.load(.disabledCalendars, from: defaults) ?? [:]
         mutedKeys = Self.load(.mutedKeys, from: defaults) ?? []
         worldClocks = Self.load(.worldClocks, from: defaults) ?? []

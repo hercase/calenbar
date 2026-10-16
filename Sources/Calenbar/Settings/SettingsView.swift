@@ -260,6 +260,13 @@ private struct NotificationSettings: View {
                 .disabled(!settings.alertEnabled)
                 Toggle("Only for events with a meeting link", isOn: $settings.alertOnlyWithLink)
                     .disabled(!settings.alertEnabled)
+                Picker("Show it on", selection: $settings.alertDisplayID) {
+                    Text("The screen with the pointer").tag(UInt32?.none)
+                    ForEach(NSScreen.screens, id: \.displayID) { screen in
+                        Text(screen.localizedName).tag(screen.displayID)
+                    }
+                }
+                .disabled(!settings.alertEnabled)
             }
         }
         .formStyle(.grouped)

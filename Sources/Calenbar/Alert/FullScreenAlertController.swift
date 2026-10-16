@@ -29,6 +29,10 @@ final class FullScreenAlertController {
             if settings.alertOnlyWithLink, event.meetingLink == nil {
                 return false
             }
+            // Already joined from Calenbar: no need to take over the screen.
+            if let link = event.meetingLink, MeetingOpener.wasJoinedRecently(link) {
+                return false
+            }
             if let until = snoozedUntil[event.key], now < until {
                 return false
             }
@@ -42,9 +46,7 @@ final class FullScreenAlertController {
 
     private func show(_ event: CalendarEvent) {
         shownKeys.insert(event.key)
-        // The screen with the pointer is where the user is looking, not necessarily the one with the key window.
-        let mouse = NSEvent.mouseLocation
-        guard let screen = NSScreen.screens.first(where: { $0.frame.contains(mouse) }) ?? NSScreen.main else { return }
+        guard let screen = Self.screen(for: model.settings.alertDisplayID) else { return }
 
         let panel = AlertPanel(
             contentRect: screen.frame,
@@ -86,9 +88,26 @@ final class FullScreenAlertController {
         self.panel = panel
     }
 
+    /// The chosen display if it is connected; otherwise the screen with the pointer, which is where
+    /// the user is looking (not necessarily the one with the key window).
+    static func screen(for displayID: UInt32?) -> NSScreen? {
+        if let displayID, let chosen = NSScreen.screens.first(where: { $0.displayID == displayID }) {
+            return chosen
+        }
+        let mouse = NSEvent.mouseLocation
+        return NSScreen.screens.first(where: { $0.frame.contains(mouse) }) ?? NSScreen.main
+    }
+
     private func dismiss() {
         panel?.orderOut(nil)
         panel = nil
+    }
+}
+
+extension NSScreen {
+    /// Stable id of the display (CoreGraphics `CGDirectDisplayID`), used to remember a chosen screen.
+    var displayID: UInt32? {
+        (deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value
     }
 }
 

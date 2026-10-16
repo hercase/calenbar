@@ -158,6 +158,8 @@
 "Full-screen alert" = "Alerta a pantalla completa";
 "Show full-screen alert" = "Mostrar alerta a pantalla completa";
 "Only for events with a meeting link" = "Solo para eventos con enlace de reunión";
+"Show it on" = "Mostrarla en";
+"The screen with the pointer" = "La pantalla donde está el puntero";
 
 /* Settings: World clocks */
 "No world clocks yet" = "Todavía no hay relojes";

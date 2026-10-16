@@ -19,9 +19,12 @@ final class StatusBarController {
     /// pushes the item left of the notch it doesn't bring it back on its own.
     private static let notchStartWidth = 160.0
     private static let learnedWidthKey = "notchTitleWidth"
+    /// AppKit remembers where the user put the item under this name, so hiding and re-showing it
+    /// (the notch search does that) and relaunching keep its place instead of sending it to the far left.
+    private static let autosaveName = "Calenbar"
 
     private let model: AppModel
-    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    private let statusItem: NSStatusItem
     private let onClick: (NSStatusBarButton) -> Void
     private let onOpenSettings: () -> Void
     private let warningIcon = NSImage(
@@ -51,6 +54,11 @@ final class StatusBarController {
         self.model = model
         self.onOpenSettings = onOpenSettings
         self.onClick = onClick
+
+        // macOS decides where third-party items go (new ones land at the far left); the user can
+        // Command-drag it next to the clock and, thanks to the autosave name, it stays there.
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem.autosaveName = Self.autosaveName
 
         if let button = statusItem.button {
             button.target = self
