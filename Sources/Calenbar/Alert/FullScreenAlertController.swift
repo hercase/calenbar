@@ -107,6 +107,10 @@ final class FullScreenAlertController {
         case .card:
             shown[event.key] = Shown(event: event, panel: makeCard(event, actions: actions), isCard: true)
             layoutCards(on: screen, entering: event.key)
+            // The ear has no corners: a short sound when the card lands, under the same switch as the pings.
+            if model.settings.attentionSound {
+                NSSound(named: "Pop")?.play()
+            }
         }
     }
 

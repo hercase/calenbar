@@ -144,7 +144,7 @@
 "Grab attention when an event is close" = "Llamar la atención cuando falta poco";
 "Flash red in the menu bar" = "Parpadear en rojo en la barra de menús";
 "Start 5 minutes before (flashes at the end of each minute)" = "Empezar 5 minutos antes (parpadea al final de cada minuto)";
-"Play a sound at 5 min and 30 s" = "Sonido a los 5 min y a los 30 s";
+"Play a sound at 5 min, at 30 s, and when the alert card appears" = "Sonido a los 5 min, a los 30 s y cuando aparece la tarjeta de alerta";
 
 /* Settings: Calendars */
 "List" = "Lista";

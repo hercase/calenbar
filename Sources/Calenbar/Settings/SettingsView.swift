@@ -226,7 +226,7 @@ private struct NotificationSettings: View {
                 Toggle("Flash red in the menu bar", isOn: $settings.flashEnabled)
                 Toggle("Start 5 minutes before (flashes at the end of each minute)", isOn: $settings.flashFromFiveMinutes)
                     .disabled(!settings.flashEnabled)
-                Toggle("Play a sound at 5 min and 30 s", isOn: $settings.attentionSound)
+                Toggle("Play a sound at 5 min, at 30 s, and when the alert card appears", isOn: $settings.attentionSound)
             }
             Section {
                 Toggle("Show an alert when a meeting starts", isOn: $settings.alertEnabled)
