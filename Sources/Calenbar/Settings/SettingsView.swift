@@ -205,31 +205,64 @@ private struct NotificationSettings: View {
 private struct AboutView: View {
     let updater: Updater
     private let website = URL(string: "https://hercase.vercel.app/")
+    private let repository = URL(string: "https://github.com/hercase/calenbar")
+    private let issues = URL(string: "https://github.com/hercase/calenbar/issues/new")
+    private let sparkle = URL(string: "https://sparkle-project.org")
 
     var body: some View {
-        VStack(spacing: PanelStyle.medium) {
-            Image(nsImage: NSApp.applicationIconImage)
-                .resizable()
-                .frame(width: 96, height: 96)
-            Text("Calenbar").font(.title.weight(.semibold))
-            Text("Version \(version)")
-                .font(.callout)
-                .foregroundStyle(.secondary)
-            Text("Your next meeting, always in the menu bar.")
-                .font(.callout)
-            UpdateStatusView(updater: updater)
-            VStack(spacing: PanelStyle.tight) {
-                Text("Made by Hernán Case")
-                    .font(.callout.weight(.medium))
-                if let website {
-                    Link("hercase.vercel.app", destination: website)
-                        .font(.callout)
+        Form {
+            Section {
+                HStack(spacing: PanelStyle.large) {
+                    Image(nsImage: NSApp.applicationIconImage)
+                        .resizable()
+                        .frame(width: 64, height: 64)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Calenbar").font(.title2.weight(.semibold))
+                        Text("Version \(version)")
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                        Text("Your next meeting, always in the menu bar.")
+                            .font(.callout)
+                            .padding(.top, 2)
+                    }
+                }
+                .padding(.vertical, PanelStyle.tight)
+            }
+            Section("Updates") {
+                UpdateStatusView(updater: updater)
+                if updater.isAvailable {
+                    Toggle(
+                        "Download and install updates automatically",
+                        isOn: Binding(get: { updater.automaticallyDownloads }, set: { updater.automaticallyDownloads = $0 })
+                    )
                 }
             }
-            .padding(.top, PanelStyle.small)
+            Section {
+                if let website {
+                    LabeledContent("Made by Hernan Case") { Link("hercase.vercel.app", destination: website) }
+                }
+                if let repository {
+                    LabeledContent("Source code") { Link("github.com/hercase/calenbar", destination: repository) }
+                }
+                if let issues {
+                    LabeledContent("Something wrong?") { Link("Report a problem", destination: issues) }
+                }
+            } header: {
+                Text("Links")
+            } footer: {
+                HStack(spacing: PanelStyle.tight) {
+                    Text("Updates are delivered with")
+                    if let sparkle {
+                        Link("Sparkle", destination: sparkle)
+                    }
+                    Text(verbatim: "· © 2026 Hernan Case")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.top, PanelStyle.tight)
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
+        .formStyle(.grouped)
     }
 
     private var version: String {
@@ -239,38 +272,36 @@ private struct AboutView: View {
     }
 }
 
-/// Sparkle status: one button that checks, downloads or installs depending on where things stand.
+/// One row: the state on the left ("Last checked 2 hours ago", "0.4.0 is ready to install"), the action
+/// on the right. The button checks, downloads or installs depending on where things stand.
 private struct UpdateStatusView: View {
     let updater: Updater
 
     var body: some View {
-        VStack(spacing: PanelStyle.small) {
-            HStack(spacing: PanelStyle.small) {
-                if let update = updater.pending {
-                    Button(
-                        update.isReadyToInstall
-                            ? String(localized: "Install \(update.version) and Relaunch")
-                            : String(localized: "Update to \(update.version)…")
-                    ) { updater.checkForUpdates() }
-                    .buttonStyle(.borderedProminent)
-                } else {
-                    if let last = updater.lastCheck {
-                        Text("Last checked \(last.formatted(.relative(presentation: .named)))")
-                            .foregroundStyle(.secondary)
-                    }
-                    Button("Check for Updates…") { updater.checkForUpdates() }
-                }
+        LabeledContent {
+            if let update = updater.pending {
+                Button(
+                    update.isReadyToInstall
+                        ? String(localized: "Install and Relaunch")
+                        : String(localized: "Update to \(update.version)…")
+                ) { updater.checkForUpdates() }
+                .buttonStyle(.borderedProminent)
+            } else {
+                Button("Check for Updates…") { updater.checkForUpdates() }
             }
-            .disabled(!updater.canCheck)
-            if updater.isAvailable {
-                Toggle(
-                    "Download and install updates automatically",
-                    isOn: Binding(get: { updater.automaticallyDownloads }, set: { updater.automaticallyDownloads = $0 })
-                )
-                .toggleStyle(.checkbox)
-                .font(.caption)
+        } label: {
+            Text("Updates")
+            if let update = updater.pending {
+                Text(
+                    update.isReadyToInstall
+                        ? String(localized: "Version \(update.version) is ready to install.")
+                        : String(localized: "Version \(update.version) is available."))
+            } else if let last = updater.lastCheck {
+                Text("Last checked \(last.formatted(.relative(presentation: .named)))")
+            } else if !updater.isAvailable {
+                Text("Not available in this build.")
             }
         }
-        .font(.callout)
+        .disabled(!updater.canCheck)
     }
 }

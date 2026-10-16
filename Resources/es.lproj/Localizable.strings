@@ -161,8 +161,17 @@
 /* Settings: About */
 "Version %@" = "Versión %@";
 "Your next meeting, always in the menu bar." = "Tu próxima reunión, siempre en la barra de menús.";
-"Made by Hernán Case" = "Hecho por Hernán Case";
-"Install %@ and Relaunch" = "Instalar %@ y reiniciar";
+"Made by Hernan Case" = "Hecho por Hernan Case";
+"Install and Relaunch" = "Instalar y reiniciar";
+"Version %@ is ready to install." = "La versión %@ está lista para instalarse.";
+"Version %@ is available." = "Hay una versión nueva: %@.";
+"Not available in this build." = "No disponible en esta compilación.";
+"Updates" = "Actualizaciones";
+"Links" = "Enlaces";
+"Source code" = "Código fuente";
+"Something wrong?" = "¿Algo anda mal?";
+"Report a problem" = "Reportar un problema";
+"Updates are delivered with" = "Las actualizaciones llegan con";
 "Update to %@…" = "Actualizar a %@…";
 "Last checked %@" = "Última comprobación: %@";
 "Check for Updates…" = "Buscar actualizaciones…";
