@@ -29,8 +29,8 @@ body {
 }
 a { color: var(--accent); }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
-.narrow { max-width: 760px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.narrow { max-width: 920px; }
 [hidden] { display: none !important; }
 b { font-weight: 600; }
 
@@ -41,9 +41,11 @@ b { font-weight: 600; }
 .top nav { display: flex; align-items: center; gap: 18px; font-size: 15px; }
 .top nav a { color: var(--ink-2); text-decoration: none; }
 .top nav a:hover { color: var(--ink); }
-.lang { display: flex; gap: 2px; }
-.lang button { background: none; border: 0; color: var(--ink-3); font: inherit; font-size: 14px; padding: 4px 8px; cursor: pointer; border-radius: 6px; }
-.lang button[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
+.lang { display: inline-flex; padding: 2px; border-radius: 999px; background: var(--win); box-shadow: inset 0 0 0 1px var(--rule); }
+.lang button { background: none; border: 0; color: var(--ink-3); font: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: .02em; padding: 4px 10px; cursor: pointer; border-radius: 999px; transition: background .15s, color .15s; }
+.lang button:hover { color: var(--ink); }
+.lang button[aria-pressed="true"] { color: var(--paper); background: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .lang button { transition: none; } }
 
 /* Hero */
 .hero { padding: 40px 0 24px; text-align: center; }
@@ -118,12 +120,14 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 @media (max-width: 760px) { .cards .grid { grid-template-columns: 1fr; } }
 
 /* What's new */
-.release { display: grid; grid-template-columns: 160px 1fr; gap: 24px; padding: 32px 0; border-top: 1px solid var(--rule); }
-.release time { color: var(--ink-3); font-size: 15px; padding-top: 6px; }
-.release h2 { font-size: 26px; letter-spacing: -0.02em; margin: 0 0 8px; line-height: 1.2; }
+.release { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; padding: 40px 0; border-top: 1px solid var(--rule); }
+.release time { color: var(--ink-3); font-size: 15px; padding-top: 7px; position: sticky; top: 24px; align-self: start; }
+.release > div { max-width: 68ch; }
+.release h2 { font-size: 27px; letter-spacing: -0.02em; margin: 0 0 10px; line-height: 1.2; }
 .release p { color: var(--ink-2); margin: 0 0 12px; }
-.release ul { margin: 0; padding-left: 18px; color: var(--ink-2); display: grid; gap: 6px; }
-.release .ver { display: inline-block; font-size: 13px; color: var(--ink-3); margin-left: 8px; font-weight: 500; }
+.release ul { margin: 0; padding-left: 18px; color: var(--ink-2); display: grid; gap: 7px; }
+.release .ver { display: inline-block; vertical-align: 3px; font-size: 12.5px; color: var(--ink-2); margin-left: 10px; font-weight: 600; letter-spacing: .01em; padding: 2px 9px; border-radius: 999px; background: var(--win); box-shadow: inset 0 0 0 1px var(--rule); font-variant-numeric: tabular-nums; }
+.release:first-of-type .ver { color: var(--accent); background: var(--band); box-shadow: none; }
 @media (max-width: 640px) { .release { grid-template-columns: 1fr; gap: 6px; } }
 
 /* Features: text and a screenshot, alternating sides. */
@@ -156,8 +160,26 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 /* Install guide page */
 .guide { padding: 32px 0 16px; }
 .guide h1 { text-align: left; margin: 0 0 12px; max-width: 20ch; font-size: 40px; }
-.guide .intro { color: var(--ink-2); margin: 0 0 24px; max-width: 56ch; }
-.step { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 28px; align-items: center; padding: 26px 0; border-top: 1px solid var(--rule); }
+.guide .intro { color: var(--ink-2); margin: 0 0 24px; max-width: 60ch; }
+/* Two ways in: the download, or one command. Equal weight; the steps below follow the download. */
+.ways { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0 8px; align-items: start; }
+.way { background: var(--win); border: 1px solid var(--rule); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+.way h2 { font-size: 19px; letter-spacing: -0.01em; margin: 0; line-height: 1.3; }
+.way p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+.way .download { align-self: flex-start; }
+.way ol { margin: 0; padding-left: 20px; color: var(--ink-2); font-size: 15px; display: grid; gap: 6px; }
+.way ol b { color: var(--ink); }
+.cmd { display: flex; align-items: flex-start; gap: 10px; background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 12px 10px 14px; }
+.cmd code { flex: 1; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; color: var(--ink); padding-top: 2px; }
+.cmd code::before { content: "$ "; color: var(--ink-3); }
+.cmd button { flex: none; background: var(--win); border: 1px solid var(--rule); color: var(--ink-2); font: inherit; font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 7px; cursor: pointer; }
+.cmd button:hover { color: var(--ink); }
+.cmd button[data-copied] { color: var(--accent); border-color: var(--accent); }
+@media (max-width: 760px) { .ways { grid-template-columns: 1fr; } }
+.steps-head { margin: 40px 0 4px; font-size: 22px; letter-spacing: -0.015em; }
+.steps-head + p { color: var(--ink-2); margin: 0 0 8px; max-width: 60ch; }
+.step { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 36px; align-items: center; padding: 28px 0; border-top: 1px solid var(--rule); }
+.step > div { max-width: 62ch; }
 .step .num { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; margin: 0 0 4px; font-size: 15px; }
 .step h3 { font-size: 19px; line-height: 1.3; margin: 0 0 8px; letter-spacing: -0.01em; }
 .step p { margin: 0; color: var(--ink-2); font-size: 16px; }

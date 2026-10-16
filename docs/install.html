@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Install Calenbar on your Mac</title>
-<meta name="description" content="Four steps to install Calenbar: drag to Applications, allow it in Privacy & Security, give it calendar access, add your Google or Exchange account.">
+<meta name="description" content="Install Calenbar with a download or one Homebrew command, then allow it in Privacy & Security, give it calendar access and add your Google or Exchange account.">
 <link rel="canonical" href="https://hercase.github.io/calenbar/install.html">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#4c4ed6">
@@ -12,7 +12,7 @@
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:site_name" content="Calenbar">
 <meta property="og:title" content="Install Calenbar on your Mac">
-<meta property="og:description" content="Four steps to install Calenbar: drag to Applications, allow it in Privacy & Security, give it calendar access, add your Google or Exchange account.">
+<meta property="og:description" content="Install Calenbar with a download or one Homebrew command, then allow it in Privacy & Security, give it calendar access and add your Google or Exchange account.">
 <meta property="og:url" content="https://hercase.github.io/calenbar/install.html">
 <meta property="og:image" content="https://hercase.github.io/calenbar/img/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -22,7 +22,7 @@
 <meta property="og:locale:alternate" content="es_AR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Install Calenbar on your Mac">
-<meta name="twitter:description" content="Four steps to install Calenbar: drag to Applications, allow it in Privacy & Security, give it calendar access, add your Google or Exchange account.">
+<meta name="twitter:description" content="Install Calenbar with a download or one Homebrew command, then allow it in Privacy & Security, give it calendar access and add your Google or Exchange account.">
 <meta name="twitter:image" content="https://hercase.github.io/calenbar/img/og.jpg">
 <meta name="twitter:image:width" content="1200">
 <meta name="twitter:image:height" content="600">
@@ -40,21 +40,39 @@
       <a href="whats-new.html"><span data-en>What's new</span><span data-es hidden>Novedades</span></a>
       <a href="https://github.com/hercase/calenbar">GitHub</a>
       <div class="lang" role="group" aria-label="Language">
-        <button type="button" data-lang="en" aria-pressed="true">English</button>
-        <button type="button" data-lang="es" aria-pressed="false">Español</button>
+        <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+        <button type="button" data-lang="es" aria-pressed="false" lang="es">ES</button>
       </div>
     </nav>
   </header>
 
   <section class="guide" data-en>
-    <h1>Install in four steps</h1>
-    <p class="intro">Two minutes, no account, nothing to configure. The second step looks scary and isn't: macOS says it the same way for every app that isn't registered with Apple.</p>
-    <p class="cta" style="align-items:flex-start">
-      <a class="download" href="https://github.com/hercase/calenbar/releases/latest/download/Calenbar.dmg">
-        <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v9.6l2.9-2.9a1 1 0 1 1 1.4 1.4l-4.6 4.6a1 1 0 0 1-1.4 0L6.7 12.1a1 1 0 0 1 1.4-1.4l2.9 2.9V4a1 1 0 0 1 1-1zM5 17a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/></svg>
-        Download Calenbar.dmg
-      </a>
-    </p>
+    <h1>Install Calenbar</h1>
+    <p class="intro">Two minutes, no account, nothing to configure. Pick whichever you prefer: the download, or one command if you already use Homebrew.</p>
+
+    <div class="ways">
+      <div class="way">
+        <h2>Download the app</h2>
+        <p>The usual way: open the disk image and drag Calenbar to Applications. The four steps below walk you through it.</p>
+        <a class="download" href="https://github.com/hercase/calenbar/releases/latest/download/Calenbar.dmg">
+          <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v9.6l2.9-2.9a1 1 0 1 1 1.4 1.4l-4.6 4.6a1 1 0 0 1-1.4 0L6.7 12.1a1 1 0 0 1 1.4-1.4l2.9 2.9V4a1 1 0 0 1 1-1zM5 17a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/></svg>
+          Download Calenbar.dmg
+        </a>
+      </div>
+      <div class="way">
+        <h2>Or from the terminal</h2>
+        <p>With Homebrew, one command installs it and skips steps 1 and 2:</p>
+        <div class="cmd"><code>brew install --cask hercase/calenbar/calenbar --no-quarantine</code><button type="button" data-copied="Copied">Copy</button></div>
+        <ol>
+          <li>Homebrew asks you to <b>trust the tap</b> the first time. Say yes.</li>
+          <li><code>--no-quarantine</code> is what skips the <b>Open Anyway</b> step. Leave it out and step 2 applies as usual.</li>
+          <li>Afterwards Calenbar updates itself; no <code>brew upgrade</code> needed. Continue at <b>step 3</b>.</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2 class="steps-head">After downloading: four steps</h2>
+    <p>The second one looks scary and isn't: macOS says it the same way for every app that isn't registered with Apple.</p>
 
     <div class="step">
       <div>
@@ -127,21 +145,35 @@
 
     <p class="after">That's it. Calenbar lives in the top-right corner, starts with your Mac, and keeps itself current: when a new version is ready it shows <b>Update available</b> in its panel.</p>
 
-    <h2 style="margin-top:48px">From the terminal</h2>
-    <p class="intro">If you use Homebrew, this does steps 1 and 2 in one go:</p>
-    <pre><code>brew install --cask hercase/calenbar/calenbar</code></pre>
-    <p class="intro">Homebrew asks you to trust the tap the first time; say yes (or run <code>brew trust hercase/calenbar</code> once). Add <code>--no-quarantine</code> to skip the Open Anyway step too. Calenbar updates itself afterwards; no <code>brew upgrade</code> needed.</p>
   </section>
 
   <section class="guide" data-es hidden>
-    <h1>Instalación en cuatro pasos</h1>
-    <p class="intro">Dos minutos, sin cuenta, nada que configurar. El segundo paso asusta y no es para tanto: macOS lo dice igual para toda app que no está registrada en Apple.</p>
-    <p class="cta" style="align-items:flex-start">
-      <a class="download" href="https://github.com/hercase/calenbar/releases/latest/download/Calenbar.dmg">
-        <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v9.6l2.9-2.9a1 1 0 1 1 1.4 1.4l-4.6 4.6a1 1 0 0 1-1.4 0L6.7 12.1a1 1 0 0 1 1.4-1.4l2.9 2.9V4a1 1 0 0 1 1-1zM5 17a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/></svg>
-        Descargar Calenbar.dmg
-      </a>
-    </p>
+    <h1>Instalar Calenbar</h1>
+    <p class="intro">Dos minutos, sin cuenta, nada que configurar. Elegí lo que prefieras: la descarga, o un comando si ya usás Homebrew.</p>
+
+    <div class="ways">
+      <div class="way">
+        <h2>Descargar la app</h2>
+        <p>Lo de siempre: abrí la imagen de disco y arrastrá Calenbar a Aplicaciones. Los cuatro pasos de abajo te guían.</p>
+        <a class="download" href="https://github.com/hercase/calenbar/releases/latest/download/Calenbar.dmg">
+          <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v9.6l2.9-2.9a1 1 0 1 1 1.4 1.4l-4.6 4.6a1 1 0 0 1-1.4 0L6.7 12.1a1 1 0 0 1 1.4-1.4l2.9 2.9V4a1 1 0 0 1 1-1zM5 17a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/></svg>
+          Descargar Calenbar.dmg
+        </a>
+      </div>
+      <div class="way">
+        <h2>O desde la terminal</h2>
+        <p>Con Homebrew, un comando la instala y se saltea los pasos 1 y 2:</p>
+        <div class="cmd"><code>brew install --cask hercase/calenbar/calenbar --no-quarantine</code><button type="button" data-copied="Copiado">Copiar</button></div>
+        <ol>
+          <li>La primera vez Homebrew pide <b>confiar en el tap</b>. Decí que sí.</li>
+          <li><code>--no-quarantine</code> es lo que saltea el paso de <b>Abrir de todas formas</b>. Sin eso, el paso 2 aplica igual.</li>
+          <li>Después Calenbar se actualiza sola; no hace falta <code>brew upgrade</code>. Seguí en el <b>paso 3</b>.</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2 class="steps-head">Después de descargar: cuatro pasos</h2>
+    <p>El segundo asusta y no es para tanto: macOS lo dice igual para toda app que no está registrada en Apple.</p>
 
     <div class="step">
       <div>
@@ -208,10 +240,6 @@
 
     <p class="after">Listo. Calenbar vive arriba a la derecha, arranca con tu Mac y se mantiene al día: cuando hay una versión nueva, el panel muestra <b>Actualización disponible</b>.</p>
 
-    <h2 style="margin-top:48px">Desde la terminal</h2>
-    <p class="intro">Si usás Homebrew, esto hace los pasos 1 y 2 de una:</p>
-    <pre><code>brew install --cask hercase/calenbar/calenbar</code></pre>
-    <p class="intro">La primera vez Homebrew pide confiar en el tap; decí que sí (o corré <code>brew trust hercase/calenbar</code> una vez). Agregá <code>--no-quarantine</code> para saltear también el paso de “Abrir de todas formas”. Después Calenbar se actualiza sola; no hace falta <code>brew upgrade</code>.</p>
   </section>
 
   <footer>

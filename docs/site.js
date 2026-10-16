@@ -23,6 +23,22 @@
     });
   }
   setLang(saved || (navigator.language && navigator.language.indexOf('es') === 0 ? 'es' : 'en'));
+
+  // "Copy" next to each command; falls back to selecting the text where the clipboard is unavailable.
+  document.querySelectorAll('.cmd').forEach(function (box) {
+    var code = box.querySelector('code'), button = box.querySelector('button');
+    if (!code || !button) return;
+    button.addEventListener('click', function () {
+      var text = code.textContent, done = function () {
+        var label = button.textContent;
+        button.textContent = button.dataset.copied || 'Copied';
+        button.setAttribute('data-copied', '');
+        setTimeout(function () { button.textContent = label; button.removeAttribute('data-copied'); }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, done);
+      else { var range = document.createRange(); range.selectNodeContents(code); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+    });
+  });
   setInterval(tick, 30000);
 
   // Latest version number, purely cosmetic; the Download link works without it.
