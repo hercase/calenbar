@@ -24,7 +24,7 @@ enum PreviewRenderer {
             named: "panel-month", in: directory)
         try write(EventDetailView(model: fixtures.model, event: fixtures.meeting), named: "detail-card", in: directory)
         try write(
-            AlertView(event: fixtures.meeting, now: fixtures.model.now, join: { _ in }, snooze: {}, dismiss: {})
+            AlertView(model: fixtures.model, event: fixtures.meeting, join: { _ in }, snooze: { _ in }, dismiss: {})
                 .frame(width: 900, height: 420),
             named: "alert", in: directory)
         for page in SettingsWindow.pages(model: fixtures.model, uiState: SettingsUIState()) {

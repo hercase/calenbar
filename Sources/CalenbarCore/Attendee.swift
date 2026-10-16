@@ -65,6 +65,23 @@ extension CalendarEvent {
     public var organizer: Attendee? {
         attendees.first { $0.isOrganizer }
     }
+
+    /// The location field often just repeats the meeting URL, or just names the service ("Microsoft
+    /// Teams Meeting"); only worth showing when it adds something. A real room called "Zoom Room 2" stays.
+    public var displayLocation: String? {
+        guard let location = location?.trimmingCharacters(in: .whitespacesAndNewlines), !location.isEmpty else {
+            return nil
+        }
+        if let link = meetingLink {
+            let service = link.provider.displayName.lowercased()
+            let normalized = location.lowercased()
+            let onlyTheService = [service, "\(service) meeting", "\(service) call"].contains(normalized)
+            if location.contains(link.webURL.host ?? "\u{0}") || onlyTheService {
+                return nil
+            }
+        }
+        return location
+    }
 }
 
 /// Builds a link that opens an event in Google Calendar on the web.

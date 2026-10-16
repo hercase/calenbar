@@ -81,9 +81,13 @@
 /* Notifications and full-screen alert */
 "Starting now · %@" = "Empieza ahora · %@";
 "In %@ · %@" = "En %@ · %@";
-"Starting soon" = "Empieza pronto";
 "Starting now" = "Empieza ahora";
-"Snooze 1 min" = "Posponer 1 min";
+"Snooze" = "Posponer";
+"When it starts" = "Cuando empiece";
+"%lld min" = "%lld min";
+"Starting in %@" = "Empieza en %@";
+"Started %@ ago" = "Empezó hace %@";
+"Organized by %@" = "Organiza %@";
 "Dismiss" = "Descartar";
 
 /* Settings: tabs */

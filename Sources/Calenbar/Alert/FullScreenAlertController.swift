@@ -5,8 +5,6 @@ import SwiftUI
 /// Full-screen reminder when a meeting starts. Checked on every minute tick.
 @MainActor
 final class FullScreenAlertController {
-    private static let window: TimeInterval = 5 * 60
-
     private let model: AppModel
     private var panel: AlertPanel?
     private var shownKeys: Set<String> = []
@@ -33,11 +31,7 @@ final class FullScreenAlertController {
             if let link = event.meetingLink, MeetingOpener.wasJoinedRecently(link) {
                 return false
             }
-            if let until = snoozedUntil[event.key], now < until {
-                return false
-            }
-            let fireAt = event.start.addingTimeInterval(-lead)
-            return now >= fireAt && now < event.start.addingTimeInterval(Self.window)
+            return AlertTiming.isDue(event: event, now: now, lead: lead, snoozedUntil: snoozedUntil[event.key])
         }
         if let due {
             show(due)
@@ -54,6 +48,7 @@ final class FullScreenAlertController {
             backing: .buffered,
             defer: false
         )
+        panel.isReleasedWhenClosed = false
         panel.level = .screenSaver
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         panel.isOpaque = false
@@ -65,14 +60,14 @@ final class FullScreenAlertController {
         blur.state = .active
         let content = NSHostingView(
             rootView: AlertView(
+                model: model,
                 event: event,
-                now: model.now,
                 join: { [weak self] link in
                     MeetingOpener.open(link)
                     self?.dismiss()
                 },
-                snooze: { [weak self] in
-                    self?.snoozedUntil[event.key] = Date().addingTimeInterval(60)
+                snooze: { [weak self] until in
+                    self?.snoozedUntil[event.key] = until
                     self?.shownKeys.remove(event.key)
                     self?.dismiss()
                 },
@@ -99,8 +94,11 @@ final class FullScreenAlertController {
     }
 
     private func dismiss() {
-        panel?.orderOut(nil)
-        panel = nil
+        guard let panel else { return }
+        self.panel = nil
+        panel.orderOut(nil)
+        // Called from a button inside the window: let the click finish before the window goes away.
+        DispatchQueue.main.async { panel.close() }
     }
 }
 
@@ -116,36 +114,65 @@ private final class AlertPanel: NSPanel {
 }
 
 struct AlertView: View {
+    let model: AppModel
     let event: CalendarEvent
-    let now: Date
     let join: (MeetingLink) -> Void
-    let snooze: () -> Void
+    /// Called with the moment the alert should come back.
+    let snooze: (Date) -> Void
     let dismiss: () -> Void
 
     var body: some View {
+        let now = model.now
         VStack(spacing: 18) {
-            Text(event.start > now ? String(localized: "Starting soon") : String(localized: "Starting now"))
+            Text(Self.headline(event: event, now: now))
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(.secondary)
+                .monospacedDigit()
+                .contentTransition(.numericText())
             Text(TitleFormatter.displayTitle(event))
                 // A full-screen takeover; fixed size on purpose, well above `.largeTitle`.
                 .font(.system(size: 44, weight: .bold))
                 .multilineTextAlignment(.center)
                 .lineLimit(3)
-            HStack(spacing: 8) {
-                Circle().fill(Color(hex: event.calendarColorHex)).frame(width: 10, height: 10)
-                Text(verbatim: "\(EventTimeText.range(event)) · \(event.calendarTitle)")
+            VStack(spacing: 8) {
+                HStack(spacing: 8) {
+                    Circle().fill(Color(hex: event.calendarColorHex)).frame(width: 10, height: 10)
+                    Text(verbatim: "\(EventTimeText.range(event)) · \(event.calendarTitle)")
+                }
+                if let place {
+                    Label(place, systemImage: event.rooms.isEmpty ? "mappin.and.ellipse" : "door.left.hand.open")
+                        .lineLimit(1)
+                }
+                if let people {
+                    Label(people, systemImage: "person.2")
+                        .lineLimit(1)
+                }
             }
             .font(.title3)
             .foregroundStyle(.secondary)
 
             HStack(spacing: 12) {
                 if let link = event.meetingLink {
-                    Button("Join \(link.provider.displayName)") { join(link) }
-                        .keyboardShortcut(.defaultAction)
-                        .buttonStyle(.borderedProminent)
+                    Button {
+                        join(link)
+                    } label: {
+                        HStack(spacing: 8) {
+                            ProviderIconView(provider: link.provider, size: 18)
+                            Text("Join \(link.provider.displayName)")
+                        }
+                    }
+                    .keyboardShortcut(.defaultAction)
+                    .buttonStyle(.borderedProminent)
                 }
-                Button("Snooze 1 min", action: snooze)
+                Menu("Snooze") {
+                    if event.start.timeIntervalSince(now) > 60 {
+                        Button("When it starts") { snooze(event.start) }
+                    }
+                    ForEach(AlertTiming.snoozeMinutes, id: \.self) { minutes in
+                        Button("\(minutes) min") { snooze(Date().addingTimeInterval(TimeInterval(minutes * 60))) }
+                    }
+                }
+                .fixedSize()
                 Button("Dismiss", action: dismiss)
                     .keyboardShortcut(.cancelAction)
             }
@@ -155,5 +182,34 @@ struct AlertView: View {
         .padding(60)
         .frame(maxWidth: 900)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    /// Rooms first (they're what you walk to); otherwise the free-text location when it says something.
+    private var place: String? {
+        event.rooms.isEmpty ? event.displayLocation : event.rooms.joined(separator: ", ")
+    }
+
+    /// "Organized by Ana · 6 guests · 4 accepted"; nothing for an event with no other guests.
+    private var people: String? {
+        let others = event.people.filter { !$0.isCurrentUser }
+        guard !others.isEmpty else { return nil }
+        let accepted = event.people.filter { $0.status == .accepted }.count
+        let counts = String(localized: "\(event.people.count) guests · \(accepted) accepted")
+        if let organizer = event.organizer, !organizer.isCurrentUser {
+            return String(localized: "Organized by \(organizer.displayName)") + " · " + counts
+        }
+        return counts
+    }
+
+    /// Live: "Starting in 2m", then "Starting now" for the first minute, then "Started 3m ago".
+    static func headline(event: CalendarEvent, now: Date) -> String {
+        let sinceStart = now.timeIntervalSince(event.start)
+        if sinceStart < 0 {
+            return String(localized: "Starting in \(TitleFormatter.compactDuration(-sinceStart))")
+        }
+        if sinceStart < 60 {
+            return String(localized: "Starting now")
+        }
+        return String(localized: "Started \(TitleFormatter.compactDuration(sinceStart)) ago")
     }
 }

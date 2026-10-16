@@ -8,7 +8,7 @@ struct EventDetailView: View {
 
     var body: some View {
         let link = event.meetingLink
-        let location = displayLocation(link: link)
+        let location = event.displayLocation
         VStack(alignment: .leading, spacing: PanelStyle.medium) {
             // Header: what, which calendar.
             VStack(alignment: .leading, spacing: PanelStyle.tight) {
@@ -101,23 +101,6 @@ struct EventDetailView: View {
         }
         .padding(PanelStyle.inset)
         .frame(width: 300, alignment: .leading)
-    }
-
-    /// The location field often just repeats the meeting URL, or just names the service ("Microsoft
-    /// Teams Meeting"); only show it when it adds something. A real room called "Zoom Room 2" stays.
-    private func displayLocation(link: MeetingLink?) -> String? {
-        guard let location = event.location?.trimmingCharacters(in: .whitespacesAndNewlines), !location.isEmpty else {
-            return nil
-        }
-        if let link {
-            let service = link.provider.displayName.lowercased()
-            let normalized = location.lowercased()
-            let onlyTheService = [service, "\(service) meeting", "\(service) call"].contains(normalized)
-            if location.contains(link.webURL.host ?? "\u{0}") || onlyTheService {
-                return nil
-            }
-        }
-        return location
     }
 }
 
