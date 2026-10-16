@@ -62,8 +62,10 @@ def notes(version):
 
 
 def inline(text):
-    """Markdown `code` to <code>, everything else escaped."""
-    return re.sub(r"`([^`]+)`", r"<code>\1</code>", html.escape(text, quote=False))
+    """Markdown `code` to <code> and **bold** to <b>, everything else escaped."""
+    escaped = html.escape(text, quote=False)
+    escaped = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", escaped)
+    return re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
 
 
 def html_entry(version):
