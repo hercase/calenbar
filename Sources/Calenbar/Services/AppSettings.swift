@@ -81,8 +81,8 @@ final class AppSettings {
     var alertDisplayID: UInt32? { didSet { store(alertDisplayID, .alertDisplayID) } }
 
     var disabledCalendars: [CalendarPurpose: Set<String>] { didSet { store(disabledCalendars, .disabledCalendars) } }
-    /// Calendars whose every event is a public holiday (marked by the user in Settings › Calendars).
-    var holidayCalendarIDs: Set<String> { didSet { store(holidayCalendarIDs, .holidayCalendarIDs) } }
+    /// Per-calendar answer to "is this a holidays calendar?", when the user overrode the name-based default.
+    var holidayCalendarChoices: [String: Bool] { didSet { store(holidayCalendarChoices, .holidayCalendarChoices) } }
     /// Keys of skipped occurrences.
     var mutedKeys: Set<String> { didSet { store(mutedKeys, .mutedKeys) } }
     /// Clocks shown in the panel, one row each; more than this and the panel gets tall.
@@ -106,7 +106,7 @@ final class AppSettings {
             meetingBrowserID, preferNativeMeetingApps, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
             alertStyle, alertCorner
-        case disabledCalendars, holidayCalendarIDs, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel,
+        case disabledCalendars, holidayCalendarChoices, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel,
             showClocksInEventDetails
     }
 
@@ -143,7 +143,7 @@ final class AppSettings {
         let storedDisplay: UInt32?? = Self.load(.alertDisplayID, from: defaults)
         alertDisplayID = storedDisplay.flatMap { $0 }
         disabledCalendars = Self.load(.disabledCalendars, from: defaults) ?? [:]
-        holidayCalendarIDs = Self.load(.holidayCalendarIDs, from: defaults) ?? []
+        holidayCalendarChoices = Self.load(.holidayCalendarChoices, from: defaults) ?? [:]
         mutedKeys = Self.load(.mutedKeys, from: defaults) ?? []
         worldClocks = Self.load(.worldClocks, from: defaults) ?? []
         showClocksInPanel = Self.load(.showClocksInPanel, from: defaults) ?? true
@@ -174,11 +174,16 @@ final class AppSettings {
         disabledCalendars[purpose] = ids
     }
 
-    func setHolidays(_ isHolidays: Bool, calendarID: String) {
-        if isHolidays {
-            holidayCalendarIDs.insert(calendarID)
+    /// Holiday calendars are recognised by name; this is the user's say over that guess.
+    func isHolidayCalendar(_ info: CalendarInfo) -> Bool {
+        holidayCalendarChoices[info.id] ?? DayOffDetector.looksLikeHolidayCalendar(info.title)
+    }
+
+    func setHolidays(_ isHolidays: Bool, calendar info: CalendarInfo) {
+        if isHolidays == DayOffDetector.looksLikeHolidayCalendar(info.title) {
+            holidayCalendarChoices.removeValue(forKey: info.id)
         } else {
-            holidayCalendarIDs.remove(calendarID)
+            holidayCalendarChoices[info.id] = isHolidays
         }
     }
 

@@ -71,7 +71,7 @@ private struct EventRow: View {
                     if isSkipped {
                         Image(systemName: "eye.slash").font(.caption2)
                     }
-                    if let kind = event.dayOff(holidayCalendars: model.settings.holidayCalendarIDs) {
+                    if let kind = event.dayOff(holidayCalendars: model.holidayCalendarIDs) {
                         Image(systemName: kind == .holiday ? "sun.max.fill" : "beach.umbrella.fill")
                             .font(.caption2)
                             .foregroundStyle(Color.accentColor)
@@ -168,7 +168,7 @@ private struct EventRow: View {
         if isSkipped {
             parts.append(String(localized: "Skipped"))
         }
-        if let kind = event.dayOff(holidayCalendars: model.settings.holidayCalendarIDs) {
+        if let kind = event.dayOff(holidayCalendars: model.holidayCalendarIDs) {
             parts.append(kind == .holiday ? String(localized: "Holiday") : String(localized: "Time off"))
         }
         return parts.joined(separator: ", ")

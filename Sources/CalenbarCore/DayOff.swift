@@ -7,9 +7,9 @@ public enum DayOffKind: Sendable, Hashable {
 }
 
 /// Spots time off from the words people and calendar apps actually use, in English and Spanish,
-/// whole words only ("laptop" is not PTO). Holidays come from calendars the user marked as such:
-/// holiday feeds mix public holidays with observances (Mother's Day, the clocks changing) that
-/// no wording can tell apart, so that is a choice, not a guess.
+/// whole words only ("laptop" is not PTO). Holidays come from holiday calendars, recognised by
+/// name and adjustable per calendar in Settings; the feeds mix public holidays with observances
+/// (Halloween, Mother's Day) and people do want those days to stand out too.
 public enum DayOffDetector {
     private static let timeOff = [
         "out of office", "ooo", "oof", "pto", "vacation", "vacations", "vacaciones", "fuera de la oficina", "day off",
@@ -18,6 +18,15 @@ public enum DayOffDetector {
     private static let holiday = ["holiday", "bank holiday", "public holiday", "feriado", "festivo"]
     /// Someone's birthday is never your day off, whatever their name is.
     private static let birthday = ["birthday", "cumpleanos", "cumple"]
+
+    private static let holidayCalendar = ["holiday", "holidays", "feriado", "feriados", "festivo", "festivos"]
+
+    /// "Holidays in Argentina", "Festivos en Estados Unidos", "US Holidays": the usual names of the
+    /// holiday feeds. The default for whether a calendar counts as holidays; the user can override it.
+    public static func looksLikeHolidayCalendar(_ calendarTitle: String) -> Bool {
+        let calendarWords = words(calendarTitle)
+        return holidayCalendar.contains { calendarWords.contains(" \($0) ") }
+    }
 
     public static func kind(title: String, isHolidayCalendar: Bool) -> DayOffKind? {
         if isHolidayCalendar {

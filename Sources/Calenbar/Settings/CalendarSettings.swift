@@ -85,7 +85,7 @@ struct CalendarSettings: View {
 
     private func row(_ info: CalendarInfo) -> some View {
         let listed = model.settings.isEnabled(calendarID: info.id, for: .list)
-        let isHolidays = model.settings.holidayCalendarIDs.contains(info.id)
+        let isHolidays = model.settings.isHolidayCalendar(info)
         return HStack(spacing: 0) {
             HStack(spacing: PanelStyle.small) {
                 Circle().fill(Color(hex: info.colorHex)).frame(width: 10, height: 10)
@@ -123,7 +123,7 @@ struct CalendarSettings: View {
             Divider()
             Toggle(
                 "Holidays Calendar",
-                isOn: Binding(get: { isHolidays }, set: { model.settings.setHolidays($0, calendarID: info.id) }))
+                isOn: Binding(get: { isHolidays }, set: { model.settings.setHolidays($0, calendar: info) }))
             Divider()
             Button("Manage in Calendar…") { model.calendar.openCalendarApp() }
         }

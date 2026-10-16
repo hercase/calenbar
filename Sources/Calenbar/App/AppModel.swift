@@ -56,6 +56,11 @@ final class AppModel {
         settings.hideTitlesInMenuBar ? TitleFormatter.privateTitle(event) : TitleFormatter.displayTitle(event)
     }
 
+    /// Calendars whose days are tinted as holidays, by name unless the user said otherwise.
+    var holidayCalendarIDs: Set<String> {
+        Set(calendar.calendars.filter { settings.isHolidayCalendar($0) }.map(\.id))
+    }
+
     func events(for purpose: CalendarPurpose) -> [CalendarEvent] {
         settings.eventFilter.apply(calendar.upcoming, for: purpose)
     }

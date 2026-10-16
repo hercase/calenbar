@@ -19,6 +19,14 @@ struct DayOffTests {
         #expect(DayOffDetector.kind(title: "Feriado puente", isHolidayCalendar: false) == .holiday)
     }
 
+    @Test func holidayCalendarsAreRecognisedByName() {
+        #expect(DayOffDetector.looksLikeHolidayCalendar("Holidays in Argentina"))
+        #expect(DayOffDetector.looksLikeHolidayCalendar("Festivos en Estados Unidos"))
+        #expect(DayOffDetector.looksLikeHolidayCalendar("US Holidays"))
+        #expect(!DayOffDetector.looksLikeHolidayCalendar("Personales"))
+        #expect(!DayOffDetector.looksLikeHolidayCalendar("me@example.com"))
+    }
+
     @Test func birthdaysAndOrdinaryTitlesAreNotDaysOff() {
         #expect(DayOffDetector.kind(title: "Cumpleaños de Braian Franco.", isHolidayCalendar: false) == nil)
         #expect(DayOffDetector.kind(title: "Birthday: Tomás (PTO manager)", isHolidayCalendar: false) == nil)
