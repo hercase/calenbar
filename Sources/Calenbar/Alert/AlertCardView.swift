@@ -59,13 +59,15 @@ struct AlertCardView: View {
                             Text("Join \(link.provider.displayName)")
                         }
                         .frame(maxWidth: .infinity)
+                        .padding(.vertical, 2)
                     }
                     .buttonStyle(.borderedProminent)
                 }
                 SnoozeMenu(event: event, now: now, snooze: actions.snooze)
                     .fixedSize()
             }
-            .controlSize(.regular)
+            .controlSize(.large)
+            .padding(.top, 2)
         }
         .padding(14)
         .frame(width: 340)
