@@ -152,20 +152,16 @@ private struct MenuBarSettings: View {
                 SettingsFooter { Text("settings.privacy.footer") }
             }
             Section {
-                LabeledContent("Use the free space after the app menus") {
-                    if AccessibilityTrust.shared.isTrusted {
-                        Label("On", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
-                    } else {
-                        Button("Allow…") {
-                            MenuBarSpace.requestTrust()
-                            MenuBarSpace.openAccessibilitySettings()
-                        }
-                    }
+                Picker("Title width", selection: $settings.titleWidth) {
+                    Text("Automatic").tag(TitleWidth.automatic)
+                    Text("Short").tag(TitleWidth.short)
+                    Text("Medium").tag(TitleWidth.medium)
+                    Text("Long").tag(TitleWidth.long)
                 }
             } header: {
                 Text("Width")
             } footer: {
-                SettingsFooter { Text("settings.menuSpace.footer") }
+                SettingsFooter { Text("settings.width.footer") }
             }
             Section {
                 Text("settings.position.row")

@@ -11,14 +11,11 @@ final class StatusBarController {
     private static let shrinkStep = 40.0
     /// Room taken by the video icon and the button's own padding.
     private static let chromeWidth = 32.0
-    /// Breathing room between the active app's last menu and the title.
-    private static let gapAfterAppMenus = 24.0
-    /// Used when the app menus can't be measured (no Accessibility permission).
-    private static let fallbackTitle = 200.0
     /// Starting width on a notched screen, before anything is learned. Deliberately modest: once macOS
     /// pushes the item left of the notch it doesn't bring it back on its own.
     private static let notchStartWidth = 160.0
     private static let learnedWidthKey = "notchTitleWidth"
+    private static let learnedWideWidthKey = "wideTitleWidth"
     /// AppKit remembers where the user put the item under this name, so hiding and re-showing it
     /// (the notch search does that) and relaunching keep its place instead of sending it to the far left.
     private static let autosaveName = "Calenbar"
@@ -46,6 +43,12 @@ final class StatusBarController {
         let saved = UserDefaults.standard.double(forKey: learnedWidthKey)
         return saved > 0 ? saved : notchStartWidth
     }()
+    /// Displays without a notch, "Automatic" width: the widest title known not to collide with the
+    /// menus of the apps in use (macOS hides the item when it would). Shrinks only, remembered.
+    private var wideBudget: Double = {
+        let saved = UserDefaults.standard.double(forKey: learnedWideWidthKey)
+        return saved > 0 ? saved : widestTitle
+    }()
     private var placementCheckPending = false
     private var renderedEventKey: String?
     private var attentionTimer: Timer?
@@ -69,7 +72,6 @@ final class StatusBarController {
             button.layer?.cornerRadius = 4
         }
         observeSpaceChanges()
-        watchAccessibility()
         observeContinuously { [weak self] in self?.render() }
     }
 
@@ -195,18 +197,16 @@ final class StatusBarController {
     /// How wide the title may get.
     /// - Notched MacBook: the learned width that keeps the item right of the notch, next to the other icons.
     ///   Wider and macOS moves it left of the notch among the app menus, or hides it.
-    /// - Other displays (or no room at all right of the notch): the space after the active app's menus,
-    ///   measured via Accessibility, or a fixed fallback without that permission.
+    /// - Other displays (or no room at all right of the notch): the width chosen in Settings, or with
+    ///   "Automatic" the learned width that macOS hasn't hidden for colliding with app menus.
     private var titleBudget: Double {
         if notchEdge != nil, let notchBudget {
             return notchBudget
         }
-        let window = statusItem.button?.window
-        let menusEnd = MenuBarSpace.appMenusMaxX()
-        if let window, let screen, let menusEnd, screen.frame.minX...screen.frame.maxX ~= menusEnd {
-            return clamp(Double(window.frame.maxX - menusEnd) - Self.gapAfterAppMenus - Self.chromeWidth)
+        if let fixed = model.settings.titleWidth.points {
+            return clamp(fixed)
         }
-        return clamp(Self.fallbackTitle)
+        return clamp(wideBudget)
     }
 
     private func clamp(_ width: Double) -> Double {
@@ -246,24 +246,13 @@ final class StatusBarController {
         }
     }
 
-    /// Re-measures as soon as Accessibility is granted or revoked. Tracks only that flag: observing
-    /// `refit()` itself would also track the clock and re-fit every minute.
-    private func watchAccessibility() {
-        withObservationTracking {
-            _ = AccessibilityTrust.shared.isTrusted
-        } onChange: { [weak self] in
-            Task { @MainActor in
-                self?.refit()
-                self?.watchAccessibility()
-            }
-        }
-    }
-
-    /// Displays changed (or permissions did): start again from the modest default width.
+    /// Displays changed: start again from the default widths; what fits may have changed either way.
     private func refit() {
         occlusionPenalty = 0
         if notchEdge != nil {
             setNotchBudget(Self.notchStartWidth)
+        } else {
+            setWideBudget(Self.widestTitle)
         }
         render()
     }
@@ -271,6 +260,11 @@ final class StatusBarController {
     private func setNotchBudget(_ width: Double?) {
         notchBudget = width
         UserDefaults.standard.set(width ?? 0, forKey: Self.learnedWidthKey)
+    }
+
+    private func setWideBudget(_ width: Double) {
+        wideBudget = width
+        UserDefaults.standard.set(width, forKey: Self.learnedWideWidthKey)
     }
 
     /// macOS lays the item out asynchronously; look at where it landed shortly after a change.
@@ -292,8 +286,13 @@ final class StatusBarController {
             let placed = isVisible && window.frame.minX >= edge - 1
             searchNotchBudget(current: current, placed: placed)
         } else if !isVisible, titleBudget > Self.narrowestTitle {
-            // Safety net for crowded menu bars without a notch: shrink until the item shows up.
-            occlusionPenalty += Self.shrinkStep
+            // Hidden by macOS: the title collided with the app menus (or the bar is just full).
+            // Automatic remembers the narrower width; a fixed width shrinks only for now.
+            if model.settings.titleWidth == .automatic {
+                setWideBudget(max(Self.narrowestTitle, wideBudget - Self.shrinkStep))
+            } else {
+                occlusionPenalty += Self.shrinkStep
+            }
             render()
         }
     }

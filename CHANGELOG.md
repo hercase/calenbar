@@ -14,6 +14,7 @@ Quieter notifications, and install from the terminal.
 - Up to five world clocks, and the same time zone can't be added twice.
 - The full-screen alert shows the room, who organized the meeting and how many accepted, and counts down live. Snooze for 1, 5 or 10 minutes, or until the meeting starts.
 - Settings › Menu Bar explains how to move the item next to the clock.
+- No more Accessibility permission. On displays without a notch the title width is Automatic (it learns how much room the apps you use leave) or a fixed Short, Medium or Long.
 - Join the next meeting from anywhere with ⌃⌘J (change or remove it in Settings › General). Also in the menu bar item's right-click menu and the panel's ••• menu.
 - The alert is on from the start again, as a small card in a corner of the screen (bottom right by default, so it never covers macOS notifications), over every desktop and full-screen app. Full screen stays as the opt-in style. Overlapping meetings each get a card, stacked. Both styles leave on their own when the meeting ends.
 - Settings › Notifications has “Send Test Notification” and “Show Test Alert”, to see each one before deciding.
@@ -31,6 +32,7 @@ Quieter notifications, and install from the terminal.
 - Hasta cinco relojes del mundo, y la misma zona horaria no se puede agregar dos veces.
 - La alerta a pantalla completa muestra la sala, quién organiza y cuántos aceptaron, y la cuenta regresiva se actualiza. Posponer por 1, 5 o 10 minutos, o hasta que empiece.
 - Ajustes › Barra de menús explica cómo mover el ítem junto al reloj.
+- Ya no hace falta el permiso de Accesibilidad. En pantallas sin notch, el ancho del título es Automático (aprende cuánto lugar dejan las apps que usás) o fijo: Corto, Medio o Largo.
 - Entrá a la próxima reunión desde cualquier app con ⌃⌘J (cambialo o quitalo en Ajustes › General). También en el clic derecho del ítem y en el menú ••• del panel.
 - La alerta vuelve a estar activa desde el inicio, como una tarjeta chica en una esquina (abajo a la derecha por defecto, así nunca tapa las notificaciones de macOS), sobre todos los escritorios y apps a pantalla completa. Pantalla completa queda como estilo opcional. Si hay reuniones superpuestas, cada una tiene su tarjeta, apiladas. Los dos estilos se van solos cuando termina la reunión.
 - Ajustes › Notificaciones tiene “Enviar notificación de prueba” y “Mostrar alerta de prueba”, para ver cada una antes de decidir.

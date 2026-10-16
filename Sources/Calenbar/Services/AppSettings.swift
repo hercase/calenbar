@@ -10,6 +10,22 @@ enum EventDestination: String, Codable, CaseIterable {
     case googleWeb
 }
 
+/// Room for the title on displays without a notch (a notched screen fits itself to the space right of it).
+enum TitleWidth: String, Codable, CaseIterable {
+    /// As wide as the apps in use allow: shrinks when macOS hides the item for colliding with their menus.
+    case automatic
+    case short, medium, long
+
+    var points: Double? {
+        switch self {
+        case .automatic: nil
+        case .short: 120
+        case .medium: 200
+        case .long: 320
+        }
+    }
+}
+
 /// How the alert takes the screen when a meeting starts.
 enum AlertStyle: String, Codable, CaseIterable {
     /// Whole screen, blurred: impossible to miss.
@@ -38,6 +54,7 @@ final class AppSettings {
     var titleRule: TitleRule { didSet { store(titleRule, .titleRule) } }
     /// How far ahead the menu bar looks for the next event.
     var titleHorizon: TitleHorizon { didSet { store(titleHorizon, .titleHorizon) } }
+    var titleWidth: TitleWidth { didSet { store(titleWidth, .titleWidth) } }
     var showMonthCalendar: Bool { didSet { store(showMonthCalendar, .showMonthCalendar) } }
     var showWeekNumbers: Bool { didSet { store(showWeekNumbers, .showWeekNumbers) } }
     /// Screen-sharing mode: the menu bar says "Meeting" instead of the event's title.
@@ -81,7 +98,8 @@ final class AppSettings {
     }
 
     private enum Key: String {
-        case titleRule, titleHorizon, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar, joinShortcut, openEventsIn,
+        case titleRule, titleHorizon, titleWidth, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar, joinShortcut,
+            openEventsIn,
             meetingBrowserID, preferNativeMeetingApps, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
             alertStyle, alertCorner
@@ -96,6 +114,7 @@ final class AppSettings {
         self.defaults = defaults
         titleRule = Self.load(.titleRule, from: defaults) ?? .switchBeforeNextStarts
         titleHorizon = Self.load(.titleHorizon, from: defaults) ?? .today
+        titleWidth = Self.load(.titleWidth, from: defaults) ?? .automatic
         showMonthCalendar = Self.load(.showMonthCalendar, from: defaults) ?? false
         showWeekNumbers = Self.load(.showWeekNumbers, from: defaults) ?? false
         hideTitlesInMenuBar = Self.load(.hideTitlesInMenuBar, from: defaults) ?? false
