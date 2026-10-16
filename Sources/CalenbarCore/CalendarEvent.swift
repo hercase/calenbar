@@ -21,6 +21,9 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
     /// Your own answer to the invitation.
     public let myStatus: ParticipationStatus
     public let isRecurring: Bool
+    /// Other calendars that carry a copy of this event (a mirror into a work calendar, a shared team
+    /// calendar); those copies are folded into this one by `deduplicated`.
+    public var alsoIn: [String] = []
 
     public init(
         id: String,
@@ -74,32 +77,66 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
         start <= now && now < end
     }
 
-    /// The same meeting often appears in several calendars (own, shared, team). Keeps one copy per
-    /// title + time, preferring the one with a meeting link, then the one with attendees.
-    /// Order of first appearance is preserved.
+    /// The same event often appears in several calendars: shared and team calendars, or a personal
+    /// event mirrored into a work one. Keeps one copy per time slot when the titles match once tags
+    /// and emoji are stripped, or when one copy is just a placeholder ("Busy", "Ocupado"). Prefers
+    /// the copy with a real title, then a meeting link, then attendees. Order of first appearance is
+    /// preserved, and the kept copy lists the other calendars in `alsoIn`.
     public static func deduplicated(_ events: [Self]) -> [Self] {
-        var order: [String] = []
-        var best: [String: Self] = [:]
+        var kept: [Self] = []
         for event in events {
-            let identity = event.duplicateIdentity
-            guard let current = best[identity] else {
-                order.append(identity)
-                best[identity] = event
+            guard let index = kept.firstIndex(where: { $0.isCopy(of: event) }) else {
+                kept.append(event)
                 continue
             }
-            if event.duplicatePreference > current.duplicatePreference {
-                best[identity] = event
-            }
+            let current = kept[index]
+            var winner = event.duplicatePreference > current.duplicatePreference ? event : current
+            let loser = winner.id == event.id ? current : event
+            winner.alsoIn = (current.alsoIn + event.alsoIn + [loser.calendarTitle])
+                .filter { $0 != winner.calendarTitle }
+                .reduce(into: [String]()) { if !$0.contains($1) { $0.append($1) } }
+            kept[index] = winner
         }
-        return order.compactMap { best[$0] }
+        return kept
     }
 
-    private var duplicateIdentity: String {
-        let normalizedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        return "\(normalizedTitle)|\(start.timeIntervalSince1970)|\(end.timeIntervalSince1970)"
+    private func isCopy(of other: Self) -> Bool {
+        guard start == other.start, end == other.end, isAllDay == other.isAllDay else { return false }
+        let mine = Self.comparableTitle(title)
+        let theirs = Self.comparableTitle(other.title)
+        return mine == theirs || Self.isPlaceholder(mine) || Self.isPlaceholder(theirs)
     }
 
+    /// What mirroring tools write when they hide the real title.
+    private static let placeholders: Set<String> = [
+        "busy", "ocupado", "ocupada", "personal", "private", "privado", "privada", "personal commitment",
+        "blocked", "bloqueado", "unavailable", "no disponible", "(no title)", "",
+    ]
+
+    private static func isPlaceholder(_ comparableTitle: String) -> Bool {
+        placeholders.contains(comparableTitle)
+    }
+
+    /// Lowercased, trimmed, with leading tags like "[Personal]", "(copy)" or "🔒" removed.
+    private static func comparableTitle(_ title: String) -> String {
+        var text = Substring(title.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
+        while let first = text.first {
+            if first == "[" || first == "(" {
+                let close: Character = first == "[" ? "]" : ")"
+                guard let end = text.firstIndex(of: close) else { break }
+                text = text[text.index(after: end)...]
+            } else if first.isLetter || first.isNumber {
+                break
+            } else {
+                text = text.dropFirst()
+            }
+            text = text.drop { $0.isWhitespace || $0 == ":" || $0 == "-" }
+        }
+        return String(text)
+    }
+
+    /// A real title beats a placeholder; then a meeting link; then attendees.
     private var duplicatePreference: Int {
-        (meetingLink == nil ? 0 : 2) + (hasOtherAttendees ? 1 : 0)
+        (Self.isPlaceholder(Self.comparableTitle(title)) ? 0 : 4) + (meetingLink == nil ? 0 : 2) + (hasOtherAttendees ? 1 : 0)
     }
 }

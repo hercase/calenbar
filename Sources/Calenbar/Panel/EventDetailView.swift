@@ -21,6 +21,11 @@ struct EventDetailView: View {
                         .frame(width: 7, height: 7)
                     Text(event.calendarTitle)
                         .lineLimit(1)
+                    if !event.alsoIn.isEmpty {
+                        let others = event.alsoIn.joined(separator: ", ")
+                        Text("· also in \(others)")
+                            .lineLimit(1)
+                    }
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)

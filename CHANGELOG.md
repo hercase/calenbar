@@ -23,6 +23,7 @@ Quieter notifications, and install from the terminal.
 - Start a new Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.
 - Time off and holidays stand out: a tinted day in the month view and an icon in the list, for events named Out of office, PTO or vacation, and for calendars you mark as holidays (right-click in Settings › Calendars).
 - Settings › Calendars: unchecking List drops a calendar from Calenbar in one click.
+- A personal event mirrored into a work calendar shows once, even when the copy says just “Busy” or carries a tag like “[Personal]”; the card says which other calendar has it.
 - Week numbers in the month calendar, optional.
 - Fixed: after joining a meeting from Calenbar, the full-screen alert stayed quiet for any later meeting with the same link, including the same meeting moved to a later time. It now only skips the occurrence you joined.
 - Settings › Calendars groups calendars by account, with a header row and a hint on each checkbox. Right-click a calendar to hide it from Calenbar in one go.
@@ -42,6 +43,7 @@ Quieter notifications, and install from the terminal.
 - Iniciá una reunión nueva de Google Meet, Zoom o Microsoft Teams desde el menú ••• del panel.
 - Los días libres y feriados se destacan: el día teñido en el mes y un ícono en la lista, para eventos llamados Out of office, PTO o vacaciones, y para los calendarios que marques como de feriados (clic derecho en Ajustes › Calendarios).
 - Ajustes › Calendarios: desmarcar Lista saca un calendario de Calenbar con un solo clic.
+- Un evento personal reflejado en el calendario de trabajo aparece una sola vez, aunque la copia diga solo “Ocupado” o lleve una etiqueta como “[Personal]”; la tarjeta dice en qué otro calendario está.
 - Números de semana en el calendario del mes, opcional.
 - Corregido: después de entrar a una reunión desde Calenbar, la alerta a pantalla completa no aparecía para ninguna reunión posterior con el mismo link, incluida la misma reunión movida más tarde. Ahora solo omite la ocurrencia a la que entraste.
 - Ajustes › Calendarios agrupa los calendarios por cuenta, con fila de encabezado y una ayuda en cada casilla. Clic derecho en un calendario para ocultarlo de Calenbar de una.
