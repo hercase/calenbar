@@ -34,7 +34,8 @@ enum AlertStyle: String, Codable, CaseIterable {
     case card
 }
 
-/// Where the alert card sits. Bottom corners stay clear of macOS notifications, which stack top-right.
+/// Where the alert card sits. Top left is where the eye starts; bottom corners stay clear of macOS
+/// notifications, which stack top-right.
 enum AlertCorner: String, Codable, CaseIterable {
     case topRight, bottomRight, topLeft, bottomLeft
 }
@@ -80,6 +81,8 @@ final class AppSettings {
     var alertDisplayID: UInt32? { didSet { store(alertDisplayID, .alertDisplayID) } }
 
     var disabledCalendars: [CalendarPurpose: Set<String>] { didSet { store(disabledCalendars, .disabledCalendars) } }
+    /// Calendars whose every event is a public holiday (marked by the user in Settings › Calendars).
+    var holidayCalendarIDs: Set<String> { didSet { store(holidayCalendarIDs, .holidayCalendarIDs) } }
     /// Keys of skipped occurrences.
     var mutedKeys: Set<String> { didSet { store(mutedKeys, .mutedKeys) } }
     /// Clocks shown in the panel, one row each; more than this and the panel gets tall.
@@ -103,7 +106,8 @@ final class AppSettings {
             meetingBrowserID, preferNativeMeetingApps, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
             alertStyle, alertCorner
-        case disabledCalendars, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel, showClocksInEventDetails
+        case disabledCalendars, holidayCalendarIDs, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel,
+            showClocksInEventDetails
     }
 
     static let notifyLeadOptions = [0, 1, 2, 5, 10]
@@ -135,10 +139,11 @@ final class AppSettings {
         alertOnlyWithLink = Self.load(.alertOnlyWithLink, from: defaults) ?? true
         // The gentle one first; the takeover is a step up for those who want it.
         alertStyle = Self.load(.alertStyle, from: defaults) ?? .card
-        alertCorner = Self.load(.alertCorner, from: defaults) ?? .bottomRight
+        alertCorner = Self.load(.alertCorner, from: defaults) ?? .topLeft
         let storedDisplay: UInt32?? = Self.load(.alertDisplayID, from: defaults)
         alertDisplayID = storedDisplay.flatMap { $0 }
         disabledCalendars = Self.load(.disabledCalendars, from: defaults) ?? [:]
+        holidayCalendarIDs = Self.load(.holidayCalendarIDs, from: defaults) ?? []
         mutedKeys = Self.load(.mutedKeys, from: defaults) ?? []
         worldClocks = Self.load(.worldClocks, from: defaults) ?? []
         showClocksInPanel = Self.load(.showClocksInPanel, from: defaults) ?? true
@@ -167,6 +172,14 @@ final class AppSettings {
             ids.insert(calendarID)
         }
         disabledCalendars[purpose] = ids
+    }
+
+    func setHolidays(_ isHolidays: Bool, calendarID: String) {
+        if isHolidays {
+            holidayCalendarIDs.insert(calendarID)
+        } else {
+            holidayCalendarIDs.remove(calendarID)
+        }
     }
 
     /// Adds a clock unless one for that time zone already exists.

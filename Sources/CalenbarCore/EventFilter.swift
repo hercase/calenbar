@@ -19,7 +19,8 @@ public struct EventFilter: Sendable {
     }
 
     public func apply(_ events: [CalendarEvent], for purpose: CalendarPurpose) -> [CalendarEvent] {
-        let disabled = disabledCalendars[purpose] ?? []
+        // A calendar taken out of the list is out everywhere: one click drops it from Calenbar.
+        let disabled = (disabledCalendars[purpose] ?? []).union(disabledCalendars[.list] ?? [])
         return events.filter { event in
             guard !event.isDeclined, !disabled.contains(event.calendarID) else { return false }
             switch purpose {

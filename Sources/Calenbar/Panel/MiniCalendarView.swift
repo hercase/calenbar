@@ -138,7 +138,8 @@ struct MiniCalendarView: View {
         else { return ([], []) }
         let events = model.settings.eventFilter.apply(model.calendar.events(from: first, to: end), for: .list)
         var off: Set<Date> = []
-        for event in events where event.dayOff != nil {
+        let holidayCalendars = model.settings.holidayCalendarIDs
+        for event in events where event.dayOff(holidayCalendars: holidayCalendars) != nil {
             var day = calendar.startOfDay(for: max(event.start, first))
             while day < min(event.end, end) {
                 off.insert(day)

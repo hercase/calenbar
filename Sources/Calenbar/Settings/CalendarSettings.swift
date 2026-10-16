@@ -84,22 +84,34 @@ struct CalendarSettings: View {
     }
 
     private func row(_ info: CalendarInfo) -> some View {
-        HStack(spacing: 0) {
+        let listed = model.settings.isEnabled(calendarID: info.id, for: .list)
+        let isHolidays = model.settings.holidayCalendarIDs.contains(info.id)
+        return HStack(spacing: 0) {
             HStack(spacing: PanelStyle.small) {
                 Circle().fill(Color(hex: info.colorHex)).frame(width: 10, height: 10)
                 Text(info.title).lineLimit(1).truncationMode(.middle)
+                if isHolidays {
+                    Image(systemName: "sun.max.fill")
+                        .font(.caption)
+                        .foregroundStyle(Color.accentColor)
+                        .help("Holidays calendar: its days are tinted in the month view")
+                }
             }
+            .opacity(listed ? 1 : 0.5)
             Spacer(minLength: PanelStyle.small)
             ForEach(Self.columns, id: \.purpose) { column in
+                // List is the master switch: off there means off everywhere, and the other boxes go quiet.
+                let isList = column.purpose == .list
                 Toggle(
                     column.title,
                     isOn: Binding(
-                        get: { model.settings.isEnabled(calendarID: info.id, for: column.purpose) },
+                        get: { (isList || listed) && model.settings.isEnabled(calendarID: info.id, for: column.purpose) },
                         set: { model.settings.setEnabled($0, calendarID: info.id, for: column.purpose) }
                     )
                 )
                 .toggleStyle(.checkbox)
                 .labelsHidden()
+                .disabled(!isList && !listed)
                 .frame(width: Self.columnWidth)
                 .help(column.help)
                 .accessibilityLabel("\(column.title): \(info.title)")
@@ -108,6 +120,10 @@ struct CalendarSettings: View {
         .contextMenu {
             Button("Hide from Calenbar") { setAll(false, for: info) }
             Button("Show Everywhere") { setAll(true, for: info) }
+            Divider()
+            Toggle(
+                "Holidays Calendar",
+                isOn: Binding(get: { isHolidays }, set: { model.settings.setHolidays($0, calendarID: info.id) }))
             Divider()
             Button("Manage in Calendar…") { model.calendar.openCalendarApp() }
         }

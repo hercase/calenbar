@@ -25,6 +25,17 @@ struct EventFilterTests {
         #expect(result.map(\.title) == ["Normal", "Holiday", "Gym"])
     }
 
+    @Test func calendarOutOfTheListIsOutEverywhere() {
+        let sut = filter(disabled: [.list: ["personal"]])
+        for purpose in CalendarPurpose.allCases {
+            #expect(sut.apply([normal, personal], for: purpose).map(\.title) == ["Normal"])
+        }
+        // Off for notifications only: still listed and in the menu bar.
+        let notifyOnly = filter(disabled: [.notify: ["personal"]])
+        #expect(notifyOnly.apply([personal], for: .notify).isEmpty)
+        #expect(notifyOnly.apply([personal], for: .list).count == 1)
+    }
+
     @Test func skippedEventIsGoneEverywhereButTheList() {
         let sut = filter(muted: [normal.key])
         #expect(sut.apply([normal], for: .title).isEmpty)

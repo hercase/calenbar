@@ -16,12 +16,13 @@ Quieter notifications, and install from the terminal.
 - Settings › Menu Bar explains how to move the item next to the clock.
 - No more Accessibility permission. On displays without a notch the title width is Automatic (it learns how much room the apps you use leave) or a fixed Short, Medium or Long.
 - Join the next meeting from anywhere with ⌃⌘J (change or remove it in Settings › General). Also in the menu bar item's right-click menu and the panel's ••• menu.
-- The alert is on from the start again, as a small card in a corner of the screen (bottom right by default, so it never covers macOS notifications), over every desktop and full-screen app. Full screen stays as the opt-in style. Overlapping meetings each get a card, stacked. Both styles leave on their own when the meeting ends.
+- The alert is on from the start again, as a small card in a corner of the screen (top left by default, where the eye starts; any corner can be picked), over every desktop and full-screen app. Full screen stays as the opt-in style. Overlapping meetings each get a card, stacked. Both styles leave on their own when the meeting ends.
 - Settings › Notifications has “Send Test Notification” and “Show Test Alert”, to see each one before deciding.
 - When an update is waiting, the menu bar icon gets a dot and both menus offer “Update to…” or “Restart to Update”.
 - Sharing your screen? Hide event titles and the menu bar says “Meeting • in 12m” until you turn it back on.
 - Start a new Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.
-- Time off and holidays stand out: a tinted day in the month view and an icon in the list, for events named Out of office, PTO or vacation, and for holiday calendars.
+- Time off and holidays stand out: a tinted day in the month view and an icon in the list, for events named Out of office, PTO or vacation, and for calendars you mark as holidays (right-click in Settings › Calendars).
+- Settings › Calendars: unchecking List drops a calendar from Calenbar in one click.
 - Week numbers in the month calendar, optional.
 - Fixed: after joining a meeting from Calenbar, the full-screen alert stayed quiet for any later meeting with the same link, including the same meeting moved to a later time. It now only skips the occurrence you joined.
 - Settings › Calendars groups calendars by account, with a header row and a hint on each checkbox. Right-click a calendar to hide it from Calenbar in one go.
@@ -34,12 +35,13 @@ Quieter notifications, and install from the terminal.
 - Ajustes › Barra de menús explica cómo mover el ítem junto al reloj.
 - Ya no hace falta el permiso de Accesibilidad. En pantallas sin notch, el ancho del título es Automático (aprende cuánto lugar dejan las apps que usás) o fijo: Corto, Medio o Largo.
 - Entrá a la próxima reunión desde cualquier app con ⌃⌘J (cambialo o quitalo en Ajustes › General). También en el clic derecho del ítem y en el menú ••• del panel.
-- La alerta vuelve a estar activa desde el inicio, como una tarjeta chica en una esquina (abajo a la derecha por defecto, así nunca tapa las notificaciones de macOS), sobre todos los escritorios y apps a pantalla completa. Pantalla completa queda como estilo opcional. Si hay reuniones superpuestas, cada una tiene su tarjeta, apiladas. Los dos estilos se van solos cuando termina la reunión.
+- La alerta vuelve a estar activa desde el inicio, como una tarjeta chica en una esquina (arriba a la izquierda por defecto, donde empieza la mirada; se puede elegir cualquier esquina), sobre todos los escritorios y apps a pantalla completa. Pantalla completa queda como estilo opcional. Si hay reuniones superpuestas, cada una tiene su tarjeta, apiladas. Los dos estilos se van solos cuando termina la reunión.
 - Ajustes › Notificaciones tiene “Enviar notificación de prueba” y “Mostrar alerta de prueba”, para ver cada una antes de decidir.
 - Cuando hay una actualización esperando, el ícono de la barra muestra un punto y los dos menús ofrecen “Actualizar a…” o “Reiniciar para actualizar”.
 - ¿Compartiendo pantalla? Ocultá los títulos y la barra dice “Reunión • en 12m” hasta que lo desactives.
 - Iniciá una reunión nueva de Google Meet, Zoom o Microsoft Teams desde el menú ••• del panel.
-- Los días libres y feriados se destacan: el día teñido en el mes y un ícono en la lista, para eventos llamados Out of office, PTO o vacaciones, y para calendarios de feriados.
+- Los días libres y feriados se destacan: el día teñido en el mes y un ícono en la lista, para eventos llamados Out of office, PTO o vacaciones, y para los calendarios que marques como de feriados (clic derecho en Ajustes › Calendarios).
+- Ajustes › Calendarios: desmarcar Lista saca un calendario de Calenbar con un solo clic.
 - Números de semana en el calendario del mes, opcional.
 - Corregido: después de entrar a una reunión desde Calenbar, la alerta a pantalla completa no aparecía para ninguna reunión posterior con el mismo link, incluida la misma reunión movida más tarde. Ahora solo omite la ocurrencia a la que entraste.
 - Ajustes › Calendarios agrupa los calendarios por cuenta, con fila de encabezado y una ayuda en cada casilla. Clic derecho en un calendario para ocultarlo de Calenbar de una.

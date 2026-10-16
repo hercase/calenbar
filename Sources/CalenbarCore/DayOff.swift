@@ -6,21 +6,27 @@ public enum DayOffKind: Sendable, Hashable {
     case holiday
 }
 
-/// Spots time off and holidays from the words people and calendar apps actually use, in English and
-/// Spanish. Whole words only, so "laptop" never counts as PTO.
+/// Spots time off from the words people and calendar apps actually use, in English and Spanish,
+/// whole words only ("laptop" is not PTO). Holidays come from calendars the user marked as such:
+/// holiday feeds mix public holidays with observances (Mother's Day, the clocks changing) that
+/// no wording can tell apart, so that is a choice, not a guess.
 public enum DayOffDetector {
     private static let timeOff = [
         "out of office", "ooo", "oof", "pto", "vacation", "vacations", "vacaciones", "fuera de la oficina", "day off",
-        "time off", "dia libre", "dias libres", "licencia", "sick day", "sick leave", "franco",
+        "time off", "dia libre", "dias libres", "licencia", "sick day", "sick leave",
     ]
-    private static let holiday = ["holiday", "holidays", "bank holiday", "feriado", "feriados", "festivo", "festivos"]
+    private static let holiday = ["holiday", "bank holiday", "public holiday", "feriado", "festivo"]
+    /// Someone's birthday is never your day off, whatever their name is.
+    private static let birthday = ["birthday", "cumpleanos", "cumple"]
 
-    public static func kind(title: String, calendarTitle: String) -> DayOffKind? {
-        let calendarWords = words(calendarTitle)
-        if holiday.contains(where: { calendarWords.contains(" \($0) ") }) {
+    public static func kind(title: String, isHolidayCalendar: Bool) -> DayOffKind? {
+        if isHolidayCalendar {
             return .holiday
         }
         let titleWords = words(title)
+        if birthday.contains(where: { titleWords.contains(" \($0) ") }) {
+            return nil
+        }
         if holiday.contains(where: { titleWords.contains(" \($0) ") }) {
             return .holiday
         }
@@ -39,8 +45,8 @@ public enum DayOffDetector {
 }
 
 extension CalendarEvent {
-    /// Time off or a holiday, judged from the event's title and its calendar's name.
-    public var dayOff: DayOffKind? {
-        DayOffDetector.kind(title: title, calendarTitle: calendarTitle)
+    /// Time off or a holiday, given which calendars the user marked as holiday calendars.
+    public func dayOff(holidayCalendars: Set<String>) -> DayOffKind? {
+        DayOffDetector.kind(title: title, isHolidayCalendar: holidayCalendars.contains(calendarID))
     }
 }
