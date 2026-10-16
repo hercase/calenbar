@@ -18,6 +18,9 @@ enum SettingsWindow {
             Page(
                 title: String(localized: "General"), symbol: "gearshape",
                 view: AnyView(GeneralSettings(settings: model.settings, calendar: model.calendar))),
+            Page(
+                title: String(localized: "Menu Bar"), symbol: "menubar.rectangle",
+                view: AnyView(MenuBarSettings(settings: model.settings))),
             Page(title: String(localized: "Calendars"), symbol: "calendar", view: AnyView(CalendarSettings(model: model))),
             Page(
                 title: String(localized: "Notifications"), symbol: "bell.badge",
@@ -68,26 +71,6 @@ private struct GeneralSettings: View {
                 Toggle("Show month calendar in the panel", isOn: $settings.showMonthCalendar)
             }
             Section {
-                Picker("Switch to the next event", selection: $settings.titleRule) {
-                    Text("5 min before it starts").tag(TitleRule.switchBeforeNextStarts)
-                    Text("5 min before the current one ends").tag(TitleRule.switchBeforeCurrentEnds)
-                }
-                LabeledContent("Use the free space after the app menus") {
-                    if AccessibilityTrust.shared.isTrusted {
-                        Label("On", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
-                    } else {
-                        Button("Allow…") {
-                            MenuBarSpace.requestTrust()
-                            MenuBarSpace.openAccessibilitySettings()
-                        }
-                    }
-                }
-            } header: {
-                Text("Menu bar title")
-            } footer: {
-                SettingsFooter { Text("settings.menuSpace.footer") }
-            }
-            Section {
                 LabeledContent {
                     Button("Refresh Now") { calendar.refreshSources() }
                 } label: {
@@ -118,6 +101,53 @@ private struct GeneralSettings: View {
                     Text("Calendar app").tag(EventDestination.calendarApp)
                     Text("Google Calendar (web)").tag(EventDestination.googleWeb)
                 }
+            }
+        }
+        .formStyle(.grouped)
+    }
+}
+
+/// What the menu bar shows and how much room it takes.
+private struct MenuBarSettings: View {
+    @Bindable var settings: AppSettings
+
+    var body: some View {
+        Form {
+            Section {
+                Picker("Show the next event up to", selection: $settings.titleHorizon) {
+                    Text("1 hour ahead").tag(TitleHorizon.oneHour)
+                    Text("2 hours ahead").tag(TitleHorizon.twoHours)
+                    Text("4 hours ahead").tag(TitleHorizon.fourHours)
+                    Text("8 hours ahead").tag(TitleHorizon.eightHours)
+                    Text("End of today").tag(TitleHorizon.today)
+                    Text("End of tomorrow").tag(TitleHorizon.throughTomorrow)
+                    Text("2 days ahead").tag(TitleHorizon.twoDays)
+                    Text("7 days ahead").tag(TitleHorizon.sevenDays)
+                }
+                Picker("Switch to the next event", selection: $settings.titleRule) {
+                    Text("5 min before it starts").tag(TitleRule.switchBeforeNextStarts)
+                    Text("5 min before the current one ends").tag(TitleRule.switchBeforeCurrentEnds)
+                }
+            } header: {
+                Text("Next event")
+            } footer: {
+                SettingsFooter { Text("settings.horizon.footer") }
+            }
+            Section {
+                LabeledContent("Use the free space after the app menus") {
+                    if AccessibilityTrust.shared.isTrusted {
+                        Label("On", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
+                    } else {
+                        Button("Allow…") {
+                            MenuBarSpace.requestTrust()
+                            MenuBarSpace.openAccessibilitySettings()
+                        }
+                    }
+                }
+            } header: {
+                Text("Width")
+            } footer: {
+                SettingsFooter { Text("settings.menuSpace.footer") }
             }
         }
         .formStyle(.grouped)

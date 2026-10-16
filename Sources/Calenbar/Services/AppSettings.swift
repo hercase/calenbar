@@ -23,6 +23,8 @@ struct WorldClock: Codable, Hashable, Identifiable {
 @Observable
 final class AppSettings {
     var titleRule: TitleRule { didSet { store(titleRule, .titleRule) } }
+    /// How far ahead the menu bar looks for the next event.
+    var titleHorizon: TitleHorizon { didSet { store(titleHorizon, .titleHorizon) } }
     var showMonthCalendar: Bool { didSet { store(showMonthCalendar, .showMonthCalendar) } }
     var openEventsIn: EventDestination { didSet { store(openEventsIn, .openEventsIn) } }
     /// Bundle id of the browser for meeting links; empty means the system default browser.
@@ -57,8 +59,8 @@ final class AppSettings {
     }
 
     private enum Key: String {
-        case titleRule, showMonthCalendar, openEventsIn, meetingBrowserID, preferNativeMeetingApps, flashEnabled,
-            flashFromFiveMinutes, attentionSound
+        case titleRule, titleHorizon, showMonthCalendar, openEventsIn, meetingBrowserID, preferNativeMeetingApps,
+            flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink
         case disabledCalendars, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel, showClocksInEventDetails
     }
@@ -70,6 +72,7 @@ final class AppSettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         titleRule = Self.load(.titleRule, from: defaults) ?? .switchBeforeNextStarts
+        titleHorizon = Self.load(.titleHorizon, from: defaults) ?? .today
         showMonthCalendar = Self.load(.showMonthCalendar, from: defaults) ?? false
         openEventsIn = Self.load(.openEventsIn, from: defaults) ?? .automatic
         meetingBrowserID = Self.load(.meetingBrowserID, from: defaults) ?? ""

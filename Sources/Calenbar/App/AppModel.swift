@@ -22,7 +22,7 @@ final class AppModel {
     /// The event shown in the menu bar, or nil when nothing qualifies.
     var titleEvent: CalendarEvent? {
         let candidates = settings.eventFilter.apply(calendar.upcoming, for: .title)
-        return TitleSelector(rule: settings.titleRule).select(from: candidates, now: now)
+        return TitleSelector(rule: settings.titleRule, horizon: settings.titleHorizon).select(from: candidates, now: now)
     }
 
     func events(for purpose: CalendarPurpose) -> [CalendarEvent] {

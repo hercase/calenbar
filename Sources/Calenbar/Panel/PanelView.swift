@@ -152,8 +152,11 @@ private struct DoneForTodayView: View {
                 .foregroundStyle(.green)
                 .frame(width: 32)
             VStack(alignment: .leading, spacing: 2) {
-                Text("No more events today")
-                    .font(.headline)
+                Text(
+                    model.settings.titleHorizon == .today
+                        ? String(localized: "No more events today") : String(localized: "Nothing coming up")
+                )
+                .font(.headline)
                 if let next {
                     Text(verbatim: "\(Self.when(next.start)) · \(TitleFormatter.displayTitle(next))")
                         .font(.caption)
@@ -171,15 +174,17 @@ private struct DoneForTodayView: View {
         .padding(.vertical, PanelStyle.medium)
     }
 
-    /// First upcoming event after today (skipped and declined ones excluded).
+    /// First upcoming event beyond the menu bar's horizon (skipped and declined ones excluded).
     private var next: CalendarEvent? {
-        let endOfToday = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: model.now))
-        return model.events(for: .title).first { event in endOfToday.map { event.start >= $0 } ?? false }
+        model.events(for: .title).first { $0.start > model.now }
     }
 
-    /// "Tomorrow 10:00 AM" or "Monday 10:00 AM".
+    /// "Tomorrow 10:00 AM", "Monday 10:00 AM", or just "4:00 PM" when it's still today.
     private static func when(_ date: Date) -> String {
         let time = date.formatted(date: .omitted, time: .shortened)
+        if Calendar.current.isDateInToday(date) {
+            return time
+        }
         let day =
             Calendar.current.isDateInTomorrow(date)
             ? String(localized: "Tomorrow")
