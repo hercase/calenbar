@@ -16,7 +16,7 @@ LANGUAGES = ["es"]
 # Identifier-style keys (long texts) have no English fallback, so they also need an English entry.
 ID_KEY = re.compile(r"^[a-z]+(\.[A-Za-z]+)+$")
 # Names and handles that stay the same in every language.
-NON_TRANSLATABLE = {"Calenbar", "hercase.vercel.app", "github.com/hercase/calenbar", "Sparkle"}
+NON_TRANSLATABLE = {"Calenbar", "hercase.vercel.app", "github.com/hercase/calenbar", "hercase.github.io/calenbar", "Sparkle"}
 LITERAL = r'"((?:[^"\\]|\\.)*)"'
 PATTERNS = [
     re.compile(r"String\(localized:\s*" + LITERAL),

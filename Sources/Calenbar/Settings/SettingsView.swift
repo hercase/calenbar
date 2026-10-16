@@ -294,7 +294,7 @@ private struct NotificationSettings: View {
 private struct AboutView: View {
     @Bindable var updater: Updater
     private let website = URL(string: "https://hercase.vercel.app/?utm_source=calenbar&utm_medium=app&utm_campaign=about")
-    private let repository = URL(string: "https://github.com/hercase/calenbar")
+    private let site = URL(string: "https://hercase.github.io/calenbar/?utm_source=calenbar&utm_medium=app&utm_campaign=about")
     private let issues = URL(string: "https://github.com/hercase/calenbar/issues/new")
 
     var body: some View {
@@ -326,8 +326,8 @@ private struct AboutView: View {
                 if let website {
                     LabeledContent("Made by Hernan Case") { Link("hercase.vercel.app", destination: website) }
                 }
-                if let repository {
-                    LabeledContent("Source code") { Link("github.com/hercase/calenbar", destination: repository) }
+                if let site {
+                    LabeledContent("Website") { Link("hercase.github.io/calenbar", destination: site) }
                 }
                 if let issues {
                     LabeledContent("Something wrong?") { Link("Report a problem", destination: issues) }
