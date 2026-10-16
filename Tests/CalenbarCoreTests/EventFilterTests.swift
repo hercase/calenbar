@@ -9,22 +9,18 @@ struct EventFilterTests {
     let declined = Fixture.event("Declined", Fixture.at(12, 0), Fixture.at(13, 0), isDeclined: true)
     let personal = Fixture.event("Gym", Fixture.at(18, 0), Fixture.at(19, 0), calendarID: "personal")
 
-    func filter(
-        disabled: [CalendarPurpose: Set<String>] = [:],
-        hidden: Set<String> = [],
-        muted: Set<String> = []
-    ) -> EventFilter {
-        EventFilter(disabledCalendars: disabled, hiddenKeys: hidden, mutedKeys: muted)
+    func filter(disabled: [CalendarPurpose: Set<String>] = [:], muted: Set<String> = []) -> EventFilter {
+        EventFilter(disabledCalendars: disabled, mutedKeys: muted)
     }
 
-    @Test func titleExcludesAllDayDeclinedAndHidden() {
-        let sut = filter(hidden: [personal.key])
+    @Test func titleExcludesAllDayDeclinedAndSkipped() {
+        let sut = filter(muted: [personal.key])
         let result = sut.apply([normal, allDay, declined, personal], for: .title)
         #expect(result.map(\.title) == ["Normal"])
     }
 
-    @Test func listKeepsAllDayAndHiddenButDropsDeclined() {
-        let sut = filter(hidden: [personal.key])
+    @Test func listKeepsAllDayAndSkippedButDropsDeclined() {
+        let sut = filter(muted: [personal.key])
         let result = sut.apply([normal, allDay, declined, personal], for: .list)
         #expect(result.map(\.title) == ["Normal", "Holiday", "Gym"])
     }

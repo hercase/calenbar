@@ -2,7 +2,7 @@ import CalenbarCore
 import Foundation
 import Observation
 
-/// Where "Open event" / "Respond…" take you.
+/// Where "Open in…" and "Answer in…" take you.
 enum EventDestination: String, Codable, CaseIterable {
     /// Google events in Google Calendar on the web, everything else in Calendar.app.
     case automatic
@@ -39,7 +39,7 @@ final class AppSettings {
     var alertOnlyWithLink: Bool { didSet { store(alertOnlyWithLink, .alertOnlyWithLink) } }
 
     var disabledCalendars: [CalendarPurpose: Set<String>] { didSet { store(disabledCalendars, .disabledCalendars) } }
-    var hiddenKeys: Set<String> { didSet { store(hiddenKeys, .hiddenKeys) } }
+    /// Keys of skipped occurrences.
     var mutedKeys: Set<String> { didSet { store(mutedKeys, .mutedKeys) } }
     /// Clocks shown in the panel footer; only this many fit on its single line.
     static let maxWorldClocks = 3
@@ -83,21 +83,20 @@ final class AppSettings {
         alertLeadMinutes = Self.load(.alertLeadMinutes, from: defaults) ?? 0
         alertOnlyWithLink = Self.load(.alertOnlyWithLink, from: defaults) ?? true
         disabledCalendars = Self.load(.disabledCalendars, from: defaults) ?? [:]
-        hiddenKeys = Self.load(.hiddenKeys, from: defaults) ?? []
         mutedKeys = Self.load(.mutedKeys, from: defaults) ?? []
         worldClocks = Self.load(.worldClocks, from: defaults) ?? []
         showClocksInPanel = Self.load(.showClocksInPanel, from: defaults) ?? true
         showClocksInEventDetails = Self.load(.showClocksInEventDetails, from: defaults) ?? true
-        pruneExpiredEventKeys()
-        // "Hide from menu bar" and "mute" were merged into a single Skip.
-        if !hiddenKeys.isEmpty {
-            mutedKeys.formUnion(hiddenKeys)
-            hiddenKeys = []
+        // 0.1.0 had separate "hide from menu bar" and "mute" sets; both became Skip.
+        if let legacyHidden: Set<String> = Self.load(.hiddenKeys, from: defaults) {
+            mutedKeys.formUnion(legacyHidden)
+            defaults.removeObject(forKey: Key.hiddenKeys.rawValue)
         }
+        pruneExpiredEventKeys()
     }
 
     var eventFilter: EventFilter {
-        EventFilter(disabledCalendars: disabledCalendars, hiddenKeys: hiddenKeys, mutedKeys: mutedKeys)
+        EventFilter(disabledCalendars: disabledCalendars, mutedKeys: mutedKeys)
     }
 
     func isEnabled(calendarID: String, for purpose: CalendarPurpose) -> Bool {
@@ -126,7 +125,6 @@ final class AppSettings {
             guard let stamp = key.split(separator: "|").last.flatMap({ TimeInterval($0) }) else { return true }
             return stamp >= cutoff
         }
-        hiddenKeys = hiddenKeys.filter(isFresh)
         mutedKeys = mutedKeys.filter(isFresh)
     }
 

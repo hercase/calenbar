@@ -231,7 +231,7 @@ private struct OtherTimeZonesView: View {
         if !others.isEmpty {
             VStack(alignment: .leading, spacing: PanelStyle.tight) {
                 ForEach(others) { clock in
-                    let isDay = WorldClocksView.isDaytime(in: clock.timeZone, at: event.start)
+                    let isDay = TimeZoneMath.isDaytime(in: clock.timeZone, at: event.start)
                     HStack(alignment: .firstTextBaseline, spacing: PanelStyle.small) {
                         Image(systemName: isDay ? "sun.max.fill" : "moon.fill")
                             .font(.caption)
@@ -255,17 +255,10 @@ private struct OtherTimeZonesView: View {
 
     /// "tomorrow" / "yesterday" when the meeting falls on another calendar day over there.
     private func dayNote(in zone: TimeZone) -> String? {
-        var remote = Calendar.current
-        remote.timeZone = zone
-        let there = remote.dateComponents([.year, .month, .day], from: event.start)
-        let here = Calendar.current.dateComponents([.year, .month, .day], from: event.start)
-        guard let thereDay = Calendar.current.date(from: there), let hereDay = Calendar.current.date(from: here) else {
-            return nil
-        }
-        switch Calendar.current.dateComponents([.day], from: hereDay, to: thereDay).day ?? 0 {
-        case 1: return String(localized: "tomorrow")
-        case -1: return String(localized: "yesterday")
-        default: return nil
+        switch TimeZoneMath.dayDifference(in: zone, at: event.start) {
+        case 1: String(localized: "tomorrow")
+        case -1: String(localized: "yesterday")
+        default: nil
         }
     }
 }

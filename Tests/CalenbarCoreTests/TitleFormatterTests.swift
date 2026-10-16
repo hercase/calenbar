@@ -42,9 +42,10 @@ struct TitleFormatterTests {
         #expect(TitleFormatter.displayTitle(untitled) == "(No title)")
     }
 
-    @Test func panelHeader() {
-        #expect(TitleFormatter.header(for: event, now: Fixture.at(13, 58)) == "Upcoming in 1h 2m")
-        #expect(TitleFormatter.header(for: event, now: Fixture.at(15, 48)) == "Ends in 12m")
+    @Test func panelStatusIsSentenceCase() {
+        #expect(TitleFormatter.status(for: event, now: Fixture.at(13, 58)) == "In 1h 2m")
+        #expect(TitleFormatter.status(for: event, now: Fixture.at(15, 0, 30)) == "Now")
+        #expect(TitleFormatter.status(for: event, now: Fixture.at(15, 48)) == "Ends in 12m")
     }
 }
 

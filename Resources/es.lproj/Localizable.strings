@@ -7,7 +7,6 @@
 "Now" = "Ahora";
 "In %@" = "En %@";
 "Ends in %@" = "Termina en %@";
-"Upcoming in %@" = "Empieza en %@";
 "(No title)" = "(Sin título)";
 "All day" = "Todo el día";
 "Calendar access" = "Acceso al calendario";
@@ -36,8 +35,6 @@
 "Skip Event" = "Omitir evento";
 "Bring this event back" = "Volver a mostrar este evento";
 "Skip: hide from the menu bar and don’t alert" = "Omitir: ocultar de la barra de menús y no avisar";
-"Hide from the menu bar and don’t alert" = "Ocultar de la barra de menús y no avisar";
-"Skip this event: hide it from the menu bar and don’t alert" = "Omitir este evento: ocultarlo de la barra de menús y no avisar";
 "Hide calendar" = "Ocultar calendario";
 "Show calendar" = "Mostrar calendario";
 "Calendar access needed" = "Se necesita acceso al calendario";
@@ -45,7 +42,6 @@
 "Allow Access" = "Permitir acceso";
 "Open Privacy Settings" = "Abrir ajustes de privacidad";
 "Update available · %@" = "Actualización disponible · %@";
-"Download the new version from GitHub" = "Descargar la nueva versión desde GitHub";
 "Open Calendar" = "Abrir Calendario";
 "Settings…" = "Ajustes…";
 "Quit Calenbar" = "Salir de Calenbar";
@@ -146,7 +142,10 @@
 "Version %@" = "Versión %@";
 "Your next meeting, always in the menu bar." = "Tu próxima reunión, siempre en la barra de menús.";
 "Made by Hernán Case" = "Hecho por Hernán Case";
-"Download %@" = "Descargar %@";
-"Checking…" = "Buscando…";
+"Hide from the menu bar and don’t alert" = "Ocultar de la barra de menús y no avisar";
+"Skip this event: hide it from the menu bar and don’t alert" = "Omitir este evento: ocultarlo de la barra de menús y no avisar";
 "Check for Updates" = "Buscar actualizaciones";
+"Checking…" = "Buscando…";
+"Download %@" = "Descargar %@";
+"Download the new version from GitHub" = "Descargar la nueva versión desde GitHub";
 "You’re up to date." = "Está todo actualizado.";

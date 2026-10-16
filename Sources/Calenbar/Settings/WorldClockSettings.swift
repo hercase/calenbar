@@ -1,3 +1,4 @@
+import CalenbarCore
 import SwiftUI
 
 struct WorldClockSettings: View {
@@ -74,7 +75,7 @@ private struct ClockRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            Text(Date().formatted(Self.timeStyle(clock.timeZone)))
+            Text(Date().formatted(WorldClocksView.timeStyle(in: clock.timeZone)))
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
             Button(role: .destructive, action: remove) {
@@ -89,13 +90,7 @@ private struct ClockRow: View {
 
     private var subtitle: String {
         let zone = clock.timeZoneID.replacingOccurrences(of: "_", with: " ")
-        return "\(zone) · \(WorldClocksView.offset(of: clock.timeZone, at: Date()))"
-    }
-
-    private static func timeStyle(_ zone: TimeZone) -> Date.FormatStyle {
-        var style = Date.FormatStyle(date: .omitted, time: .shortened)
-        style.timeZone = zone
-        return style
+        return "\(zone) · \(WorldClocksView.offsetText(of: clock.timeZone, at: Date()))"
     }
 }
 

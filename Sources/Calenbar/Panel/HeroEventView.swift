@@ -36,7 +36,7 @@ struct HeroEventView: View {
                     .font(.headline)
                     .lineLimit(1)
                 HStack(spacing: 0) {
-                    Text(Self.when(event, now: model.now))
+                    Text(TitleFormatter.status(for: event, now: model.now))
                     Text(verbatim: " · \(EventTimeText.range(event))")
                     if event.needsResponse {
                         Text(" · Not answered").foregroundStyle(.orange.opacity(0.9))
@@ -63,17 +63,6 @@ struct HeroEventView: View {
         .padding(.vertical, PanelStyle.medium)
         .contentShape(Rectangle())
         .contextMenu { EventContextMenu(model: model, event: event) }
-    }
-
-    /// "In 10 min" / "Ends in 6 min" / "Now".
-    static func when(_ event: CalendarEvent, now: Date) -> String {
-        if event.isOngoing(at: now) {
-            if now.timeIntervalSince(event.start) < 60 {
-                return String(localized: "Now")
-            }
-            return String(localized: "Ends in \(TitleFormatter.compactDuration(event.end.timeIntervalSince(now)))")
-        }
-        return String(localized: "In \(TitleFormatter.compactDuration(event.start.timeIntervalSince(now)))")
     }
 }
 

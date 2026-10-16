@@ -24,12 +24,15 @@ public enum TitleFormatter {
         displayTitle(event) + separator + suffix(for: event, now: now)
     }
 
-    /// Panel header: `Ends in 12m` or `Upcoming in 1h 2m`.
-    public static func header(for event: CalendarEvent, now: Date) -> String {
+    /// Sentence-case variant for the panel: `Now`, `Ends in 12m`, `In 1h 2m`.
+    public static func status(for event: CalendarEvent, now: Date) -> String {
         if event.isOngoing(at: now) {
+            if now.timeIntervalSince(event.start) < 60 {
+                return String(localized: "Now")
+            }
             return String(localized: "Ends in \(compactDuration(event.end.timeIntervalSince(now)))")
         }
-        return String(localized: "Upcoming in \(compactDuration(event.start.timeIntervalSince(now)))")
+        return String(localized: "In \(compactDuration(event.start.timeIntervalSince(now)))")
     }
 
     /// Rounds up to whole minutes (never shows `0m`): `1m`, `45m`, `1h`, `1h 4m`.
