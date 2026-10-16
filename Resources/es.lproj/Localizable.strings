@@ -13,6 +13,7 @@
 "No more events today" = "No hay más eventos hoy";
 "Warning" = "Advertencia";
 "Calendar" = "Calendario";
+"Calendar, day %lld" = "Calendario, día %lld";
 
 /* Panel */
 "Today" = "Hoy";
