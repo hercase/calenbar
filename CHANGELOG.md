@@ -7,7 +7,7 @@ section into the release. Bullets are English; an optional `### es` block carrie
 ## Unreleased
 
 ### Headline
-Quieter notifications, and install from the terminal.
+A shortcut to join, an alert that doesn't take over, and days off on the calendar.
 
 - Settings › Notifications says when macOS has notifications turned off for Calenbar, with a button to fix it.
 - Install with Homebrew: `brew install --cask hercase/calenbar/calenbar` (trust the tap when asked).

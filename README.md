@@ -28,7 +28,7 @@
 - **Always in view.** The menu bar shows today's date and the next event: `Weekly Sync • in 12m`, then `now`, then `25m left`. You choose how far ahead it looks, from the next hour to the whole week.
 - **One click to join.** Google Meet, Zoom, Microsoft Teams, Webex, Slack huddles and FaceTime. Zoom and Teams open in their apps when installed.
 - **A panel for the day.** Today and tomorrow, a month view, world clocks, and a card per event: the time in your other time zones, the room, who's coming and who said yes, the notes.
-- **Hard to miss.** A notification before each meeting, an optional full-screen alert when it starts, and the bar flashing red in the last minutes.
+- **Hard to miss.** A notification before each meeting, a card in the corner of the screen when it starts (or a full-screen alert, if you want it), and the bar flashing red in the last minutes. Press ⌃⌘J anywhere to join.
 - **Your calendars, as they are.** Works with any account the Mac's Calendar knows (Google, Exchange, iCloud). Events never leave your Mac.
 - **Low maintenance.** Updates itself. English and Spanish.
 
@@ -38,7 +38,7 @@
 2. The first time, macOS says it can't verify the app. Click **Done**, then **System Settings › Privacy & Security › Open Anyway**. Once.
 3. Allow access to Calendars and Notifications.
 
-Or, with Homebrew: `brew install --cask hercase/calenbar/calenbar`.
+Or, with Homebrew: `brew install --cask hercase/calenbar/calenbar --no-quarantine` (the flag skips step 2).
 
 Step-by-step with pictures: [the install guide](https://hercase.github.io/calenbar/install.html). Release notes: [What's new](https://hercase.github.io/calenbar/whats-new.html).
 
