@@ -29,8 +29,8 @@ body {
 }
 a { color: var(--accent); }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-.wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
-.narrow { max-width: 680px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+.narrow { max-width: 760px; }
 [hidden] { display: none !important; }
 b { font-weight: 600; }
 
@@ -67,7 +67,7 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 
 /* A slice of desktop: wallpaper, the menu bar on top, and whatever hangs from Calenbar's item. */
 .screen {
-  position: relative; margin: 44px auto 0; max-width: 780px; border-radius: 18px; overflow: hidden;
+  position: relative; margin: 44px auto 0; max-width: 920px; border-radius: 18px; overflow: hidden;
   background: var(--wallpaper);
   box-shadow: 0 0 0 1px var(--wallpaper-edge), 0 24px 60px rgba(28, 29, 70, .16);
   padding: 0 0 28px; text-align: left;
@@ -93,7 +93,7 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 @media (max-width: 560px) { .menubar .menus span:nth-child(n+3), .menubar .sys { display: none; } .screen .panel { margin: 10px auto 0; } }
 
 /* Features: text and a screenshot, alternating sides. */
-.feature { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 56px 0; border-top: 1px solid var(--rule); }
+.feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 64px 0; border-top: 1px solid var(--rule); }
 .feature.flip > .text { order: 2; }
 .feature h2 { font-size: 30px; line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 12px; }
 .feature p { margin: 0 0 14px; color: var(--ink-2); }
@@ -102,7 +102,7 @@ h1 { font-size: 48px; line-height: 1.06; letter-spacing: -0.028em; font-weight: 
 .feature li::before { content: ""; position: absolute; left: 0; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
 .feature img, .feature picture { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow); }
 .feature picture img { box-shadow: none; }
-.feature picture.card { max-width: 300px; margin: 0 auto; }
+.feature picture.card { max-width: 340px; margin: 0 auto; }
 .feature.wide { grid-template-columns: 1fr; gap: 24px; }
 .feature.wide .text { max-width: 60ch; }
 @media (max-width: 680px) { .feature { grid-template-columns: 1fr; gap: 24px; padding: 40px 0; } .feature.flip > .text { order: 0; } }
