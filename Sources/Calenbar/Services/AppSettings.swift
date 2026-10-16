@@ -83,8 +83,9 @@ final class AppSettings {
         showMonthCalendar = Self.load(.showMonthCalendar, from: defaults) ?? false
         showWeekNumbers = Self.load(.showWeekNumbers, from: defaults) ?? false
         hideTitlesInMenuBar = Self.load(.hideTitlesInMenuBar, from: defaults) ?? false
+        // Never set → the default; set to nothing (stored null) → none.
         let storedShortcut: KeyShortcut?? = Self.load(.joinShortcut, from: defaults)
-        joinShortcut = storedShortcut.flatMap { $0 }
+        joinShortcut = storedShortcut.map { $0 } ?? .defaultJoin
         openEventsIn = Self.load(.openEventsIn, from: defaults) ?? .automatic
         meetingBrowserID = Self.load(.meetingBrowserID, from: defaults) ?? ""
         preferNativeMeetingApps = Self.load(.preferNativeMeetingApps, from: defaults) ?? true

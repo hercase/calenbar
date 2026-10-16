@@ -122,7 +122,7 @@
 "Position" = "Posición";
 "settings.position.row" = "macOS pone los ítems nuevos a la izquierda de la barra de menús y son lo primero que esconde cuando está llena. Mantené ⌘ y arrastrá el ítem de Calenbar junto al reloj una vez; se queda ahí aunque relances o actualices.";
 "settings.privacy.footer" = "La barra de menús muestra “Reunión • en 12m” en vez del título, así una pantalla compartida o una grabación no lo revela. El panel no cambia. También está en el menú ••• del panel y en el clic derecho del ítem.";
-"settings.shortcut.footer" = "El atajo funciona en cualquier app. Entra a la reunión que muestra la barra, o a la próxima que tenga link.";
+"settings.shortcut.footer" = "⌃⌥J por defecto; grabá otro, o quitalo con la ×. Funciona en cualquier app y entra a la reunión que muestra la barra, o a la próxima que tenga link.";
 "settings.horizon.footer" = "Fuera de ese plazo la barra de menús muestra solo la fecha de hoy. Un evento en curso se muestra siempre.";
 "Nothing coming up" = "Nada en el horizonte";
 "Use the free space after the app menus" = "Usar el espacio libre después de los menús de la app";
@@ -238,3 +238,6 @@
 "Hide from Calenbar" = "Ocultar de Calenbar";
 "Show Everywhere" = "Mostrar en todos lados";
 "Manage in Calendar…" = "Administrar en Calendario…";
+"Restart to Update" = "Reiniciar para actualizar";
+"Calendar, day %lld, update available" = "Calendario, día %lld, actualización disponible";
+"Join %@ (Return, or %@ anywhere)" = "Unirse a %@ (Retorno, o %@ desde cualquier app)";

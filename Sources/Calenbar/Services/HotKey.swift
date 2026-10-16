@@ -1,5 +1,6 @@
 import AppKit
 import Carbon.HIToolbox
+import SwiftUI
 
 /// A key combination the user recorded: the key's code plus modifier flags.
 struct KeyShortcut: Codable, Hashable {
@@ -8,6 +9,16 @@ struct KeyShortcut: Codable, Hashable {
     let modifiers: UInt
     /// What the key prints, for display ("A", "Space", "F5").
     let keyLabel: String
+
+    /// ⌃⌥J: Control-Option combinations are left alone by macOS and by nearly every app.
+    static let defaultJoin = KeyShortcut(
+        keyCode: UInt32(kVK_ANSI_J), modifiers: NSEvent.ModifierFlags([.control, .option]).rawValue, keyLabel: "J")
+
+    init(keyCode: UInt32, modifiers: UInt, keyLabel: String) {
+        self.keyCode = keyCode
+        self.modifiers = modifiers
+        self.keyLabel = keyLabel
+    }
 
     /// nil unless the event is a real combination: a key plus ⌘, ⌃ or ⌥ (⇧ alone would collide with typing).
     init?(event: NSEvent) {
@@ -28,6 +39,42 @@ struct KeyShortcut: Codable, Hashable {
         if flags.contains(.shift) { text += "⇧" }
         if flags.contains(.command) { text += "⌘" }
         return text + keyLabel
+    }
+
+    /// The same combination for a SwiftUI menu item, when the key has a SwiftUI equivalent.
+    var keyboardShortcut: KeyboardShortcut? {
+        guard let key = keyEquivalent else { return nil }
+        var modifiers: SwiftUI.EventModifiers = []
+        if flags.contains(.command) { modifiers.insert(.command) }
+        if flags.contains(.option) { modifiers.insert(.option) }
+        if flags.contains(.control) { modifiers.insert(.control) }
+        if flags.contains(.shift) { modifiers.insert(.shift) }
+        return KeyboardShortcut(key, modifiers: modifiers)
+    }
+
+    /// The key for an `NSMenuItem`, which displays it next to the title.
+    var menuKeyEquivalent: String? {
+        if keyLabel == "Space" { return " " }
+        guard keyLabel.count == 1, let first = keyLabel.first, first.isLetter || first.isNumber || first.isPunctuation else {
+            return nil
+        }
+        return keyLabel.lowercased()
+    }
+
+    private var keyEquivalent: KeyEquivalent? {
+        switch keyLabel {
+        case "Space": return .space
+        case "↩": return .return
+        case "⇥": return .tab
+        case "⌫": return .delete
+        case "←": return .leftArrow
+        case "→": return .rightArrow
+        case "↑": return .upArrow
+        case "↓": return .downArrow
+        default:
+            guard keyLabel.count == 1, let first = keyLabel.lowercased().first else { return nil }
+            return KeyEquivalent(first)
+        }
     }
 
     var carbonModifiers: UInt32 {

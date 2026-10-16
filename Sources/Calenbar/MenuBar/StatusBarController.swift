@@ -34,7 +34,7 @@ final class StatusBarController {
     /// The app's icon in every state: a calendar showing today's date (with or without a title next to it).
     private var todayIcon: NSImage? {
         let day = Calendar.current.component(.day, from: model.now)
-        return DateIcon.image(day: day)
+        return DateIcon.image(day: day, showsBadge: model.updater.pending != nil)
     }
 
     /// Extra shrinking applied only if macOS still hides the item despite the computed budget.
@@ -90,7 +90,18 @@ final class StatusBarController {
     private func showMenu() {
         let menu = NSMenu()
         menu.autoenablesItems = false
-        let join = menu.addItem(withTitle: String(localized: "Join Next Meeting"), action: #selector(joinNext), keyEquivalent: "")
+        if let update = model.updater.pending {
+            let title =
+                update.isReadyToInstall
+                ? String(localized: "Restart to Update") : String(localized: "Update to \(update.version)…")
+            menu.addItem(withTitle: title, action: #selector(installUpdate), keyEquivalent: "").target = self
+            menu.addItem(.separator())
+        }
+        let shortcut = model.settings.joinShortcut
+        let join = menu.addItem(
+            withTitle: String(localized: "Join Next Meeting"), action: #selector(joinNext),
+            keyEquivalent: shortcut?.menuKeyEquivalent ?? "")
+        join.keyEquivalentModifierMask = shortcut?.flags ?? []
         join.target = self
         join.isEnabled = model.nextMeeting != nil
         menu.addItem(.separator())
@@ -111,6 +122,7 @@ final class StatusBarController {
     }
 
     @objc private func joinNext() { model.joinNextMeeting() }
+    @objc private func installUpdate() { model.updater.checkForUpdates() }
     @objc private func toggleHideTitles() { model.settings.hideTitlesInMenuBar.toggle() }
     @objc private func openCalendar() { model.calendar.openCalendarApp() }
     @objc private func openSettings() { onOpenSettings() }

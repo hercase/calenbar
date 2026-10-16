@@ -25,7 +25,11 @@ struct HeroEventView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.large)
                 .keyboardShortcut(.defaultAction)
-                .help("Join \(link.provider.displayName) (Return)")
+                .help(
+                    model.settings.joinShortcut.map {
+                        String(localized: "Join \(link.provider.displayName) (Return, or \($0.display) anywhere)")
+                    }
+                        ?? String(localized: "Join \(link.provider.displayName) (Return)"))
             } else {
                 CalendarColorBar(colorHex: event.calendarColorHex, needsResponse: event.needsResponse)
                     .frame(height: 32)

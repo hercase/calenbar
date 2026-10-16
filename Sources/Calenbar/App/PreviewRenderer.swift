@@ -34,6 +34,12 @@ enum PreviewRenderer {
                 named: "settings-\(page.title.lowercased().replacingOccurrences(of: " ", with: "-"))", in: directory)
         }
         try writeMenuBarStrip(fixtures, in: directory)
+        let badged = DateIcon.image(day: 16, showsBadge: true)
+        badged.isTemplate = false
+        let bitmap = badged.tiffRepresentation.flatMap(NSBitmapImageRep.init(data:))
+        if let png = bitmap?.representation(using: .png, properties: [:]) {
+            try png.write(to: directory.appendingPathComponent("menubar-icon-update.png"))
+        }
     }
 
     private static func panels(_ fixtures: PreviewFixtures) -> [(String, AnyView)] {

@@ -12,10 +12,16 @@ enum DateIcon {
     private static let cornerRadius: CGFloat = 3
     private static let fontSize: CGFloat = 10.5
 
-    private static var cache: [Int: NSImage] = [:]
+    /// Update badge: a dot on the top-right corner, with a gap in the outline so it reads as a dot.
+    private static let badgeRadius: CGFloat = 2.5
+    private static let badgeGap: CGFloat = 1.5
 
-    static func image(day: Int) -> NSImage {
-        if let cached = cache[day] {
+    private static var cache: [String: NSImage] = [:]
+
+    /// `showsBadge` marks that an update is waiting, the way apps badge their Dock icon.
+    static func image(day: Int, showsBadge: Bool = false) -> NSImage {
+        let key = "\(day)\(showsBadge ? "!" : "")"
+        if let cached = cache[key] {
             return cached
         }
         let font = NSFont.systemFont(ofSize: fontSize, weight: .semibold, width: day > 9 ? .condensed : .standard)
@@ -33,11 +39,26 @@ enum DateIcon {
             let baseline = rect.midY + font.capHeight / 2
             // In a flipped context `draw(at:)` takes the line box's top-left; the baseline sits one ascender below.
             text.draw(at: NSPoint(x: (rect.width - textWidth) / 2, y: baseline - font.ascender), withAttributes: attributes)
+            if showsBadge {
+                let center = NSPoint(x: rect.maxX - badgeRadius, y: rect.minY + badgeRadius)
+                let halo = badgeRadius + badgeGap
+                NSGraphicsContext.saveGraphicsState()
+                NSGraphicsContext.current?.compositingOperation = .clear
+                NSBezierPath(ovalIn: NSRect(x: center.x - halo, y: center.y - halo, width: halo * 2, height: halo * 2)).fill()
+                NSGraphicsContext.restoreGraphicsState()
+                NSColor.black.setFill()
+                NSBezierPath(
+                    ovalIn: NSRect(
+                        x: center.x - badgeRadius, y: center.y - badgeRadius, width: badgeRadius * 2, height: badgeRadius * 2)
+                ).fill()
+            }
             return true
         }
         image.isTemplate = true
-        image.accessibilityDescription = String(localized: "Calendar, day \(day)")
-        cache[day] = image
+        image.accessibilityDescription =
+            showsBadge
+            ? String(localized: "Calendar, day \(day), update available") : String(localized: "Calendar, day \(day)")
+        cache[key] = image
         return image
     }
 }

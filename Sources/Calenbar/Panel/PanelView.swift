@@ -136,7 +136,17 @@ private struct FooterView: View {
                 state.isPanelPinned.toggle()
             }
             Menu {
+                if let update = model.updater.pending {
+                    Button(
+                        update.isReadyToInstall
+                            ? String(localized: "Restart to Update") : String(localized: "Update to \(update.version)…")
+                    ) {
+                        model.updater.checkForUpdates()
+                    }
+                    Divider()
+                }
                 Button("Join Next Meeting") { model.joinNextMeeting() }
+                    .keyboardShortcut(model.settings.joinShortcut?.keyboardShortcut)
                     .disabled(model.nextMeeting == nil)
                 Menu("New Meeting") {
                     ForEach(MeetingProvider.instantMeetingProviders, id: \.self) { provider in
