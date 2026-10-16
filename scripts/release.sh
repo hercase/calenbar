@@ -49,20 +49,17 @@ git tag -a "v$VERSION" -m "Calenbar $VERSION"
 DMG="dist/Calenbar-$VERSION.dmg"
 DOWNLOAD_URL="https://github.com/$REPO/releases/download/v$VERSION/Calenbar-$VERSION.dmg"
 
-# Appcast: sign the DMG, then prepend the item (scripts/appcast.py keeps the previous entries).
 SIGNATURE=$("$TOOLS/sign_update" -p "$DMG")
+"$TOOLS/sign_update" --verify "$DMG" "$SIGNATURE" >/dev/null
 LENGTH=$(stat -f%z "$DMG")
 BUILD=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" .build/Calenbar.app/Contents/Info.plist)
 MIN_OS=$(/usr/libexec/PlistBuddy -c "Print :LSMinimumSystemVersion" .build/Calenbar.app/Contents/Info.plist)
-python3 scripts/appcast.py docs/appcast.xml \
-  --version "$VERSION" --build "$BUILD" --url "$DOWNLOAD_URL" --length "$LENGTH" \
-  --signature "$SIGNATURE" --minimum-system-version "$MIN_OS" --notes "$SUMMARY"
-"$TOOLS/sign_update" --verify "$DMG" "$SIGNATURE" >/dev/null
-git commit -qm "chore: appcast for v$VERSION" docs/appcast.xml
 
 # A stable copy for the landing page's Download button (…/releases/latest/download/Calenbar.dmg).
 cp "$DMG" dist/Calenbar.dmg
 
+# The release (with its DMG) goes up first; only then does the appcast point at it, so installed
+# copies never see an item whose download doesn't exist yet.
 git push -q origin main "v$VERSION"
 NOTES=$(mktemp)
 {
@@ -72,4 +69,10 @@ NOTES=$(mktemp)
 } > "$NOTES"
 gh release create "v$VERSION" "$DMG" "dist/Calenbar.dmg" --title "Calenbar $VERSION" --notes-file "$NOTES" --generate-notes
 rm -f "$NOTES" dist/Calenbar.dmg
+
+python3 scripts/appcast.py docs/appcast.xml \
+  --version "$VERSION" --build "$BUILD" --url "$DOWNLOAD_URL" --length "$LENGTH" \
+  --signature "$SIGNATURE" --minimum-system-version "$MIN_OS" --notes "$SUMMARY"
+git commit -qm "chore: appcast for v$VERSION" docs/appcast.xml
+git push -q origin main
 echo "Released v$VERSION; the appcast at $PAGES_URL/appcast.xml goes live when GitHub Pages redeploys (about a minute)."

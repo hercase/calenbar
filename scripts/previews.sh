@@ -4,7 +4,13 @@
 set -e
 cd "$(dirname "$0")/.."
 OUT="${1:-.notes/previews}"
-swift build 2>&1 | grep -E "error|warning: [^s]" || true
+LOG=$(mktemp)
+if ! swift build > "$LOG" 2>&1; then
+  grep -E "error" "$LOG" >&2
+  rm -f "$LOG"
+  exit 1
+fi
+rm -f "$LOG"
 BIN=$(swift build --show-bin-path)
 SPARKLE_DIR=$(dirname "$(find .build/artifacts -type d -name Sparkle.framework -path "*macos*" | head -n 1)")
 mkdir -p "$OUT"
