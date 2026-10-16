@@ -23,7 +23,7 @@ PATTERNS = [
     re.compile(r"\b(?:Text|Button|Label|Toggle|Section|LabeledContent|TextField|Picker|Menu|TableColumn|Link|SectionHeader|hint)\(\s*" + LITERAL),
     re.compile(r"\.(?:help|accessibilityLabel)\(\s*" + LITERAL),
 ]
-INTEGER_HINTS = re.compile(r"count|number|minutes|accepted|limit|Int\(|\bday\b")
+INTEGER_HINTS = re.compile(r"count|number|minutes|accepted|limit|Int\(|\bday\b", re.IGNORECASE)
 INTERPOLATION = re.compile(r"\\\((.*?)\)(?=[^)]*(?:\\\(|$))")
 
 

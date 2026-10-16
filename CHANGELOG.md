@@ -25,6 +25,7 @@ Quieter notifications, and install from the terminal.
 - Settings › Calendars: unchecking List drops a calendar from Calenbar in one click.
 - A personal event mirrored into a work calendar shows once, even when the copy says just “Busy” or carries a tag like “[Personal]”; the card says which other calendar has it.
 - Week numbers in the month calendar, optional.
+- The dots under each day now say how busy it is: one for a meeting or two, two for three or four, three for five or more.
 - Fixed: after joining a meeting from Calenbar, the full-screen alert stayed quiet for any later meeting with the same link, including the same meeting moved to a later time. It now only skips the occurrence you joined.
 - Settings › Calendars groups calendars by account, with a header row and a hint on each checkbox. Right-click a calendar to hide it from Calenbar in one go.
 
@@ -45,6 +46,7 @@ Quieter notifications, and install from the terminal.
 - Ajustes › Calendarios: desmarcar Lista saca un calendario de Calenbar con un solo clic.
 - Un evento personal reflejado en el calendario de trabajo aparece una sola vez, aunque la copia diga solo “Ocupado” o lleve una etiqueta como “[Personal]”; la tarjeta dice en qué otro calendario está.
 - Números de semana en el calendario del mes, opcional.
+- Los puntos debajo de cada día ahora dicen qué tan cargado está: uno para una o dos reuniones, dos para tres o cuatro, tres para cinco o más.
 - Corregido: después de entrar a una reunión desde Calenbar, la alerta a pantalla completa no aparecía para ninguna reunión posterior con el mismo link, incluida la misma reunión movida más tarde. Ahora solo omite la ocurrencia a la que entraste.
 - Ajustes › Calendarios agrupa los calendarios por cuenta, con fila de encabezado y una ayuda en cada casilla. Clic derecho en un calendario para ocultarlo de Calenbar de una.
 

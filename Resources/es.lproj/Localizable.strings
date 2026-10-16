@@ -260,3 +260,4 @@
 "Holidays Calendar" = "Calendario de feriados";
 "Holidays calendar: its days are tinted in the month view" = "Calendario de feriados: sus días se tiñen en el mes";
 "· also in %@" = "· también en %@";
+"%@, %lld events" = "%@, %lld eventos";

@@ -96,7 +96,7 @@ struct MiniCalendarView: View {
                         isInMonth: calendar.isDate(day, equalTo: state.displayedMonth, toGranularity: .month),
                         isToday: calendar.isDateInToday(day),
                         isSelected: calendar.isDate(day, inSameDayAs: state.selectedDay),
-                        hasEvents: marked.events.contains(start),
+                        eventCount: marked.counts[start] ?? 0,
                         isDayOff: marked.off.contains(start)
                     ) {
                         state.selectedDay = start
@@ -129,13 +129,13 @@ struct MiniCalendarView: View {
         return (0..<cells).compactMap { calendar.date(byAdding: .day, value: $0, to: gridStart) }
     }
 
-    /// Days with any event (a dot), and days that are time off or a holiday (tinted). A week of
-    /// vacation tints every day it covers.
-    private var markedDays: (events: Set<Date>, off: Set<Date>) {
+    /// How many timed events each day has (one to three dots), and days that are time off or a
+    /// holiday (tinted). A week of vacation tints every day it covers.
+    private var markedDays: (counts: [Date: Int], off: Set<Date>) {
         let days = days
         guard let first = days.first, let last = days.last,
             let end = calendar.date(byAdding: .day, value: 1, to: last)
-        else { return ([], []) }
+        else { return ([:], []) }
         let events = model.settings.eventFilter.apply(model.calendar.events(from: first, to: end), for: .list)
         var off: Set<Date> = []
         let holidayCalendars = model.holidayCalendarIDs
@@ -147,7 +147,11 @@ struct MiniCalendarView: View {
                 day = next
             }
         }
-        return (Set(events.map { calendar.startOfDay(for: $0.start) }), off)
+        var counts: [Date: Int] = [:]
+        for event in events where !event.isAllDay {
+            counts[calendar.startOfDay(for: event.start), default: 0] += 1
+        }
+        return (counts, off)
     }
 }
 
@@ -156,7 +160,8 @@ private struct DayCell: View {
     let isInMonth: Bool
     let isToday: Bool
     let isSelected: Bool
-    let hasEvents: Bool
+    /// Timed events that day; shown as one dot (1–2), two (3–4) or three (5+).
+    let eventCount: Int
     let isDayOff: Bool
     let select: () -> Void
 
@@ -179,9 +184,14 @@ private struct DayCell: View {
                     }
                 }
                 .overlay(alignment: .bottom) {
-                    // The tint already says the day is taken; no dot on top of it.
-                    if hasEvents, !isToday, !isDayOff {
-                        Circle().fill(Color.secondary).frame(width: 3, height: 3).offset(y: 4)
+                    // The tint already says the day is taken; no dots on top of it.
+                    if eventCount > 0, !isToday, !isDayOff {
+                        HStack(spacing: 2) {
+                            ForEach(0..<min(3, (eventCount + 1) / 2), id: \.self) { _ in
+                                Circle().fill(Color.secondary).frame(width: 3, height: 3)
+                            }
+                        }
+                        .offset(y: 4)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -189,11 +199,18 @@ private struct DayCell: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(isDayOff ? String(localized: "\(dayName), day off") : dayName)
+        .accessibilityLabel(accessibilityText)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private var dayName: String { day.formatted(date: .complete, time: .omitted) }
+
+    private var accessibilityText: String {
+        if isDayOff {
+            return String(localized: "\(dayName), day off")
+        }
+        return eventCount > 0 ? String(localized: "\(dayName), \(eventCount) events") : dayName
+    }
 
     private var foreground: Color {
         if isToday {
