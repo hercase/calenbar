@@ -23,8 +23,11 @@ struct WorldClockSettings: View {
                     .padding(.vertical, PanelStyle.large)
                 } else {
                     ForEach($settings.worldClocks) { $clock in
+                        // Read the id first: reading `clock` inside removeAll would overlap the write to the
+                        // same array and trip Swift's exclusivity check (a crash, not a warning).
+                        let id = clock.id
                         ClockRow(clock: $clock) {
-                            settings.worldClocks.removeAll { $0.id == clock.id }
+                            settings.worldClocks.removeAll { $0.id == id }
                         }
                     }
                     .onMove { settings.worldClocks.move(fromOffsets: $0, toOffset: $1) }
