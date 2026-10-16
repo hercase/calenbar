@@ -19,10 +19,24 @@ struct DayOffTests {
         #expect(DayOffDetector.kind(title: "Feriado puente", isHolidayCalendar: false) == .holiday)
     }
 
+    @Test func timeOffInTheCompanysOtherLanguages() {
+        for title in ["Urlaub", "Vakantie 🏖", "Congés", "Férias", "In ferie", "Ferie", "Urlop", "Afwezig", "Krank"] {
+            #expect(DayOffDetector.kind(title: title, isHolidayCalendar: false) == .timeOff, "\(title)")
+        }
+        // Weekday abbreviations and school terms are not days off.
+        #expect(DayOffDetector.kind(title: "Fri standup", isHolidayCalendar: false) == nil)
+        #expect(DayOffDetector.kind(title: "Semester planning", isHolidayCalendar: false) == nil)
+        #expect(DayOffDetector.kind(title: "Geburtstag Lena", isHolidayCalendar: false) == nil)
+    }
+
     @Test func holidayCalendarsAreRecognisedByName() {
         #expect(DayOffDetector.looksLikeHolidayCalendar("Holidays in Argentina"))
         #expect(DayOffDetector.looksLikeHolidayCalendar("Festivos en Estados Unidos"))
         #expect(DayOffDetector.looksLikeHolidayCalendar("US Holidays"))
+        #expect(DayOffDetector.looksLikeHolidayCalendar("Feiertage in Deutschland"))
+        #expect(DayOffDetector.looksLikeHolidayCalendar("Feestdagen in Nederland"))
+        #expect(DayOffDetector.looksLikeHolidayCalendar("Jours fériés en France"))
+        #expect(DayOffDetector.looksLikeHolidayCalendar("Helligdage i Danmark"))
         #expect(!DayOffDetector.looksLikeHolidayCalendar("Personales"))
         #expect(!DayOffDetector.looksLikeHolidayCalendar("me@example.com"))
     }
