@@ -6,6 +6,29 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.5.0</title>
+      <pubDate>Fri, 16 Oct 2026 19:39:25 +0000</pubDate>
+      <sparkle:version>98</sparkle:version>
+      <sparkle:shortVersionString>0.5.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>**A shortcut to join, an alert that doesn't take over, and days off on the calendar.**
+
+- **⌃⌘J joins the next meeting from any app.** Change or remove the shortcut in Settings › General. The same action is in the menu bar item's right-click menu and the panel's ••• menu.
+- **The alert is a small card now.** It appears in a corner of the screen when a meeting starts, over every desktop and full-screen app, with a live countdown, the room, who's coming, Join and Snooze (1, 5 or 10 minutes, or until it starts). Overlapping meetings stack their cards. Full screen is still there as a choice. Both styles leave on their own when the meeting ends.
+- **Try before you decide.** Settings › Notifications has “Send Test Notification” and “Show Test Alert”.
+- **Days off on the calendar.** Time off (Out of office, PTO, vacation and their equivalents in nine languages) and holiday calendars tint their days in the month view and get an icon in the list.
+- **How busy is that day.** One, two or three dots under each day, and optional week numbers.
+- **Calendars, by account.** Settings › Calendars groups them by account; unchecking List drops a calendar from Calenbar in one click, and the ••• button hides it, shows it everywhere or marks it as a holidays calendar.
+- **Mirrored events show once.** A personal event copied into a work calendar is one row, even when the copy says just “Busy” or carries a tag; the card names the other calendar.
+- **Sharing your screen?** Hide event titles and the menu bar says “Meeting • in 12m” until you turn it back on.
+- **New meeting, now.** Start a Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.
+- **Updates you can see.** When one is waiting, the menu bar icon gets a dot and both menus offer “Update to…” or “Restart to Update”.
+- **No Accessibility permission.** On displays without a notch, the title width is Automatic (it learns how much room your apps leave) or Short, Medium or Long.
+- Up to five world clocks, with no duplicates. Settings › Notifications says when macOS has notifications turned off for Calenbar. Install with Homebrew: `brew install --cask hercase/calenbar/calenbar --no-quarantine`.</p>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.5.0/Calenbar-0.5.0.dmg" length="5994250" type="application/octet-stream"
+        sparkle:edSignature="EyeHR7H6g2yHxezzfaVj3B+8JEEupeMTFdoYeVXZiYxbHIRrpG6gcbNraeiy94CyqQqIueaSYYiMO05knjiWDQ==" />
+    </item>
+    <item>
       <title>Calenbar 0.4.1</title>
       <pubDate>Fri, 16 Oct 2026 14:56:04 +0000</pubDate>
       <sparkle:version>58</sparkle:version>
