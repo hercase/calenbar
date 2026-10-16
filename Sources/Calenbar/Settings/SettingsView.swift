@@ -235,10 +235,19 @@ private struct NotificationSettings: View {
             Section {
                 Toggle("Show an alert when a meeting starts", isOn: $settings.alertEnabled)
                 Picker("Style", selection: $settings.alertStyle) {
-                    Text("Small card in the corner").tag(AlertStyle.card)
+                    Text("Small card in a corner").tag(AlertStyle.card)
                     Text("Full screen").tag(AlertStyle.fullScreen)
                 }
                 .disabled(!settings.alertEnabled)
+                if settings.alertStyle == .card {
+                    Picker("Corner", selection: $settings.alertCorner) {
+                        Text("Bottom right").tag(AlertCorner.bottomRight)
+                        Text("Bottom left").tag(AlertCorner.bottomLeft)
+                        Text("Top right").tag(AlertCorner.topRight)
+                        Text("Top left").tag(AlertCorner.topLeft)
+                    }
+                    .disabled(!settings.alertEnabled)
+                }
                 Picker("When", selection: $settings.alertLeadMinutes) {
                     ForEach(AppSettings.notifyLeadOptions, id: \.self) { minutes in
                         Text(minutes == 0 ? String(localized: "At start time") : String(localized: "\(minutes) min before")).tag(

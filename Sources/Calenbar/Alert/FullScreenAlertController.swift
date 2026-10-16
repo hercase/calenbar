@@ -115,13 +115,17 @@ final class FullScreenAlertController {
         return panel
     }
 
-    /// Top-right corner, under the menu bar, above everything, without taking focus from the current app.
+    /// In the chosen corner of the screen, inside the visible area (menu bar and Dock excluded), above
+    /// everything, without taking focus from the current app.
     private func showCard(_ event: CalendarEvent, actions: AlertActions, on screen: NSScreen) -> NSPanel {
         let content = NSHostingView(rootView: AlertCardView(model: model, event: event, actions: actions))
         let size = content.fittingSize
         let margin: CGFloat = 12
-        let origin = NSPoint(
-            x: screen.visibleFrame.maxX - size.width - margin, y: screen.visibleFrame.maxY - size.height - margin)
+        let area = screen.visibleFrame
+        let corner = model.settings.alertCorner
+        let x = corner == .topLeft || corner == .bottomLeft ? area.minX + margin : area.maxX - size.width - margin
+        let y = corner == .topLeft || corner == .topRight ? area.maxY - size.height - margin : area.minY + margin
+        let origin = NSPoint(x: x, y: y)
         // Can become key (so its buttons take the first click) without activating Calenbar.
         let panel = KeyPanel(
             contentRect: NSRect(origin: origin, size: size),

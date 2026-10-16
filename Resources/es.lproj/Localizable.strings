@@ -123,7 +123,7 @@
 "settings.position.row" = "macOS pone los ítems nuevos a la izquierda de la barra de menús y son lo primero que esconde cuando está llena. Mantené ⌘ y arrastrá el ítem de Calenbar junto al reloj una vez; se queda ahí aunque relances o actualices.";
 "settings.privacy.footer" = "La barra de menús muestra “Reunión • en 12m” en vez del título, así una pantalla compartida o una grabación no lo revela. El panel no cambia. También está en el menú ••• del panel y en el clic derecho del ítem.";
 "settings.shortcut.footer" = "⌃⌘J por defecto; grabá otro, o quitalo con la ×. Funciona en cualquier app y entra a la reunión que muestra la barra, o a la próxima que tenga link.";
-"settings.alert.footer" = "La tarjeta aparece arriba a la derecha, sobre todos los escritorios y apps a pantalla completa, y se queda hasta que entrás, posponés o la cerrás. Pantalla completa difumina todo y no se puede pasar por alto. Las dos se van solas cuando termina la reunión.";
+"settings.alert.footer" = "La tarjeta aparece en la esquina que elijas, sobre todos los escritorios y apps a pantalla completa, y se queda hasta que entrás, posponés o la cerrás. Las esquinas de abajo no se pisan con las notificaciones de macOS. Pantalla completa difumina todo y no se puede pasar por alto. Las dos se van solas cuando termina la reunión.";
 "settings.horizon.footer" = "Fuera de ese plazo la barra de menús muestra solo la fecha de hoy. Un evento en curso se muestra siempre.";
 "Nothing coming up" = "Nada en el horizonte";
 "Use the free space after the app menus" = "Usar el espacio libre después de los menús de la app";
@@ -241,7 +241,7 @@
 "Join %@ (Return, or %@ anywhere)" = "Unirse a %@ (Retorno, o %@ desde cualquier app)";
 "Show an alert when a meeting starts" = "Mostrar una alerta cuando empieza una reunión";
 "Style" = "Estilo";
-"Small card in the corner" = "Tarjeta chica en la esquina";
+"Small card in a corner" = "Tarjeta chica en una esquina";
 "Full screen" = "Pantalla completa";
 "Alert" = "Alerta";
 "This is how an alert looks" = "Así se ve una alerta";
@@ -250,3 +250,8 @@
 "Preview" = "Vista previa";
 "Send Test Notification" = "Enviar notificación de prueba";
 "Show Test Alert" = "Mostrar alerta de prueba";
+"Corner" = "Esquina";
+"Bottom right" = "Abajo a la derecha";
+"Bottom left" = "Abajo a la izquierda";
+"Top right" = "Arriba a la derecha";
+"Top left" = "Arriba a la izquierda";

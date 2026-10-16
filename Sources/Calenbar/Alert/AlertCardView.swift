@@ -11,7 +11,11 @@ struct AlertCardView: View {
     var body: some View {
         let now = model.now
         VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .frame(width: 16, height: 16)
+                    .alignmentGuide(.firstTextBaseline) { $0[.bottom] - 2 }
                 Text(AlertFacts.headline(event: event, now: now))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)

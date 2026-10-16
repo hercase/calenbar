@@ -18,6 +18,11 @@ enum AlertStyle: String, Codable, CaseIterable {
     case card
 }
 
+/// Where the alert card sits. Bottom corners stay clear of macOS notifications, which stack top-right.
+enum AlertCorner: String, Codable, CaseIterable {
+    case topRight, bottomRight, topLeft, bottomLeft
+}
+
 struct WorldClock: Codable, Hashable, Identifiable {
     var id = UUID()
     var timeZoneID: String
@@ -53,6 +58,7 @@ final class AppSettings {
     var alertLeadMinutes: Int { didSet { store(alertLeadMinutes, .alertLeadMinutes) } }
     var alertOnlyWithLink: Bool { didSet { store(alertOnlyWithLink, .alertOnlyWithLink) } }
     var alertStyle: AlertStyle { didSet { store(alertStyle, .alertStyle) } }
+    var alertCorner: AlertCorner { didSet { store(alertCorner, .alertCorner) } }
     /// Display for the full-screen alert (`NSScreenNumber`); nil means the screen under the pointer.
     var alertDisplayID: UInt32? { didSet { store(alertDisplayID, .alertDisplayID) } }
 
@@ -78,7 +84,7 @@ final class AppSettings {
         case titleRule, titleHorizon, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar, joinShortcut, openEventsIn,
             meetingBrowserID, preferNativeMeetingApps, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
-            alertStyle
+            alertStyle, alertCorner
         case disabledCalendars, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel, showClocksInEventDetails
     }
 
@@ -110,6 +116,7 @@ final class AppSettings {
         alertOnlyWithLink = Self.load(.alertOnlyWithLink, from: defaults) ?? true
         // The gentle one first; the takeover is a step up for those who want it.
         alertStyle = Self.load(.alertStyle, from: defaults) ?? .card
+        alertCorner = Self.load(.alertCorner, from: defaults) ?? .bottomRight
         let storedDisplay: UInt32?? = Self.load(.alertDisplayID, from: defaults)
         alertDisplayID = storedDisplay.flatMap { $0 }
         disabledCalendars = Self.load(.disabledCalendars, from: defaults) ?? [:]
