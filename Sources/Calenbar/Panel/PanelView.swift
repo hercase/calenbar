@@ -110,13 +110,14 @@ private struct FooterView: View {
                         systemImage: update.isReadyToInstall
                             ? "arrow.triangle.2.circlepath.circle.fill" : "arrow.down.circle.fill"
                     )
-                    .font(.caption.weight(.medium))
-                    .padding(.horizontal, PanelStyle.small)
-                    .padding(.vertical, 3)
-                    .background(Color.accentColor.opacity(0.15), in: Capsule())
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, PanelStyle.small + 2)
+                    .padding(.vertical, 4)
+                    // Solid accent with white text: the tinted version faded into the panel.
+                    .background(Color.accentColor, in: Capsule())
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(Color.accentColor)
+                .foregroundStyle(.white)
                 .help(
                     update.isReadyToInstall
                         ? String(localized: "Restart Calenbar to finish updating")
