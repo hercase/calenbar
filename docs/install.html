@@ -57,7 +57,7 @@
         <div class="cmd"><code>brew install --cask hercase/calenbar/calenbar --no-quarantine</code><button type="button" data-copied="Copied">Copy</button></div>
         <ol>
           <li>Homebrew asks you to <b>trust the tap</b> the first time. Say yes.</li>
-          <li><code>--no-quarantine</code> is what skips the <b>Open Anyway</b> step. Leave it out and step 2 applies as usual.</li>
+          <li><b>Why <code>--no-quarantine</code>:</b> macOS flags anything downloaded as quarantined, and since Calenbar isn't notarized by Apple that flag triggers the <b>“Not Opened”</b> warning from step 2. This tells Homebrew not to set it, so Calenbar just opens. Only do this with software you trust; Calenbar's source is on GitHub.</li>
           <li>Afterwards Calenbar updates itself; no <code>brew upgrade</code> needed. Continue at <b>step 3</b>.</li>
         </ol>
       </div>
@@ -158,7 +158,7 @@
         <div class="cmd"><code>brew install --cask hercase/calenbar/calenbar --no-quarantine</code><button type="button" data-copied="Copiado">Copiar</button></div>
         <ol>
           <li>La primera vez Homebrew pide <b>confiar en el tap</b>. Decí que sí.</li>
-          <li><code>--no-quarantine</code> es lo que saltea el paso de <b>Abrir de todas formas</b>. Sin eso, el paso 2 aplica igual.</li>
+          <li><b>Por qué <code>--no-quarantine</code>:</b> macOS marca como “en cuarentena” todo lo que se descarga, y como Calenbar no está notarizada por Apple esa marca dispara el aviso <b>“No se abrió”</b> del paso 2. Esto le dice a Homebrew que no la ponga, y Calenbar abre directo. Hacelo solo con software en el que confiás; el código de Calenbar está en GitHub.</li>
           <li>Después Calenbar se actualiza sola; no hace falta <code>brew upgrade</code>. Seguí en el <b>paso 3</b>.</li>
         </ol>
       </div>
