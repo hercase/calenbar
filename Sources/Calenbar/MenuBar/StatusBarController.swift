@@ -118,6 +118,8 @@ final class StatusBarController {
         image?.isTemplate = true
         button.image = image
         button.title = title.isEmpty ? "" : (image == nil ? title : " " + title)
+        let spoken = title.isEmpty ? image?.accessibilityDescription ?? "" : title
+        button.setAccessibilityLabel("Calenbar, \(spoken)")
     }
 
     // MARK: - Automatic width

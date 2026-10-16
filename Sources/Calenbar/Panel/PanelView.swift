@@ -10,6 +10,8 @@ struct PanelView: View {
         VStack(alignment: .leading, spacing: 0) {
             if model.calendar.access != .granted {
                 AccessRequiredView(model: model)
+            } else if model.calendar.calendars.isEmpty {
+                NoCalendarsView(model: model)
             } else {
                 if let event = model.titleEvent {
                     HeroEventView(model: model, event: event)
@@ -46,6 +48,27 @@ private struct AccessRequiredView: View {
                     .buttonStyle(.borderedProminent)
             } else {
                 Button("Open Privacy Settings") { CalendarService.openPrivacySettings() }
+            }
+        }
+        .padding(PanelStyle.large)
+    }
+}
+
+/// Access is granted but macOS has no calendars: the account step from the setup guide.
+private struct NoCalendarsView: View {
+    let model: AppModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: PanelStyle.small) {
+            Text("No calendars yet").font(.headline)
+            Text("Add your Google, Exchange or iCloud account in System Settings › Internet Accounts and turn on Calendars.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: PanelStyle.small) {
+                Button("Open Internet Accounts") { CalendarService.openInternetAccountsSettings() }
+                    .buttonStyle(.borderedProminent)
+                Button("Refresh") { model.calendar.refreshSources() }
             }
         }
         .padding(PanelStyle.large)

@@ -122,6 +122,12 @@ final class CalendarService {
         NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Applications/Calendar.app"))
     }
 
+    static func openInternetAccountsSettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
     static func openPrivacySettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars") {
             NSWorkspace.shared.open(url)

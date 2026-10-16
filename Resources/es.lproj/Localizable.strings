@@ -43,6 +43,10 @@
 "Allow Access" = "Permitir acceso";
 "Open Privacy Settings" = "Abrir ajustes de privacidad";
 "Update available · %@" = "Actualización disponible · %@";
+"No calendars yet" = "Todavía no hay calendarios";
+"Add your Google, Exchange or iCloud account in System Settings › Internet Accounts and turn on Calendars." = "Agregar la cuenta de Google, Exchange o iCloud en Ajustes del Sistema › Cuentas de Internet y activar Calendarios.";
+"Open Internet Accounts" = "Abrir Cuentas de Internet";
+"Refresh" = "Actualizar";
 "Open Calendar" = "Abrir Calendario";
 "Settings…" = "Ajustes…";
 "Quit Calenbar" = "Salir de Calenbar";
@@ -61,6 +65,7 @@
 "Not answered" = "Sin responder";
 "You haven't answered this invitation yet" = "Esta invitación todavía no tiene respuesta";
 "Unknown" = "Desconocido";
+"Skipped" = "Omitido";
 
 /* Notifications and full-screen alert */
 "Starting now · %@" = "Empieza ahora · %@";
@@ -143,8 +148,6 @@
 "Version %@" = "Versión %@";
 "Your next meeting, always in the menu bar." = "Tu próxima reunión, siempre en la barra de menús.";
 "Made by Hernán Case" = "Hecho por Hernán Case";
-"Hide from the menu bar and don’t alert" = "Ocultar de la barra de menús y no avisar";
-"Skip this event: hide it from the menu bar and don’t alert" = "Omitir este evento: ocultarlo de la barra de menús y no avisar";
 "Check for Updates" = "Buscar actualizaciones";
 "Checking…" = "Buscando…";
 "Download %@" = "Descargar %@";

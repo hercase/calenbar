@@ -51,12 +51,7 @@ struct HeroEventView: View {
             Spacer(minLength: 0)
 
             if isUpcoming {
-                IconButton(
-                    systemImage: "eye.slash",
-                    label: String(localized: "Skip this event: hide it from the menu bar and don’t alert")
-                ) {
-                    model.settings.toggleSkipped(event)
-                }
+                SkipButton(model: model, event: event)
             }
         }
         .padding(.horizontal, PanelStyle.inset)

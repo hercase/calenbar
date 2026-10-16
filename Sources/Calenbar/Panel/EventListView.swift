@@ -85,14 +85,19 @@ private struct EventRow: View {
                 .lineLimit(1)
             }
             Spacer(minLength: PanelStyle.tight)
-            // On hover the countdown makes room for the labeled Skip button.
-            if !(isHovered && !isPast), let relative = EventTimeText.relative(event, now: model.now) {
-                Text(relative)
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
-            }
-            if !isPast, isHovered {
-                SkipButton(model: model, event: event)
+            // Countdown and Skip share one slot so nothing shifts when the pointer arrives.
+            ZStack(alignment: .trailing) {
+                if let relative = EventTimeText.relative(event, now: model.now) {
+                    Text(relative)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .opacity(isHovered && !isPast ? 0 : 1)
+                }
+                if !isPast {
+                    SkipButton(model: model, event: event)
+                        .opacity(isHovered ? 1 : 0)
+                        .accessibilityHidden(!isHovered)
+                }
             }
             if let link, !isPast {
                 Button {
@@ -117,6 +122,22 @@ private struct EventRow: View {
         .opacity(isPast || isSkipped ? 0.45 : 1)
         .contentShape(Rectangle())
         .onHover { state.setHovering($0, eventID: event.id) }
+        // Double-click first so a single click waits for it; Return and Space work like a click.
+        .onTapGesture(count: 2) { model.openEvent(event) }
+        .onTapGesture { state.toggleDetail(eventID: event.id) }
+        .focusable()
+        .onKeyPress(.return) {
+            state.toggleDetail(eventID: event.id)
+            return .handled
+        }
+        .onKeyPress(.space) {
+            state.toggleDetail(eventID: event.id)
+            return .handled
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityLabel(isPast: isPast, isSkipped: isSkipped))
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { state.toggleDetail(eventID: event.id) }
         .popover(
             isPresented: Binding(
                 get: { state.detailEventID == event.id },
@@ -127,37 +148,52 @@ private struct EventRow: View {
             EventDetailView(model: model, event: event)
                 .onHover { state.setHoveringDetail($0) }
         }
-        .onTapGesture(count: 2) { model.openEvent(event) }
         .contextMenu { EventContextMenu(model: model, event: event) }
+    }
+
+    /// One sentence for VoiceOver: title, time, countdown and status.
+    private func accessibilityLabel(isPast: Bool, isSkipped: Bool) -> String {
+        var parts = [TitleFormatter.displayTitle(event), EventTimeText.range(event)]
+        if let relative = EventTimeText.relative(event, now: model.now) {
+            parts.append(relative)
+        }
+        if event.needsResponse, !isPast {
+            parts.append(String(localized: "Not answered"))
+        }
+        if isSkipped {
+            parts.append(String(localized: "Skipped"))
+        }
+        return parts.joined(separator: ", ")
     }
 }
 
 /// Skip = act as if this occurrence didn't exist: gone from the menu bar, no notification or alert.
-/// It stays in the list, dimmed, so it can be brought back. Shown with a label on hover.
+/// It stays in the list, dimmed, so it can be brought back. The same control everywhere: an icon in
+/// rows and the hero, with its label in the detail card.
 struct SkipButton: View {
     let model: AppModel
     let event: CalendarEvent
+    var showsLabel = false
 
     var body: some View {
         let isSkipped = model.isSkipped(event)
+        let title = isSkipped ? String(localized: "Unskip") : String(localized: "Skip")
         let help =
             isSkipped
             ? String(localized: "Bring this event back") : String(localized: "Skip: hide from the menu bar and don’t alert")
-        Button {
-            model.settings.toggleSkipped(event)
-        } label: {
-            Label(
-                isSkipped ? String(localized: "Unskip") : String(localized: "Skip"), systemImage: isSkipped ? "eye" : "eye.slash"
-            )
-            .font(.caption.weight(.medium))
-            .padding(.horizontal, PanelStyle.small)
-            .frame(height: 22)
-            .background(Color.primary.opacity(0.08), in: Capsule())
-            .contentShape(Capsule())
+        let symbol = isSkipped ? "eye" : "eye.slash"
+        if showsLabel {
+            Button {
+                model.settings.toggleSkipped(event)
+            } label: {
+                Label(title, systemImage: symbol)
+            }
+            .buttonStyle(.borderless)
+            .help(help)
+        } else {
+            IconButton(systemImage: symbol, label: help) {
+                model.settings.toggleSkipped(event)
+            }
         }
-        .buttonStyle(.borderless)
-        .foregroundStyle(.primary)
-        .help(help)
-        .accessibilityLabel(help)
     }
 }

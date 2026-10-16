@@ -24,6 +24,12 @@ final class PanelState {
         detailEventID = nil
     }
 
+    /// Click or Return on a row: open its card, or close it if it's already showing.
+    func toggleDetail(eventID: String) {
+        showTask?.cancel()
+        detailEventID = detailEventID == eventID ? nil : eventID
+    }
+
     func setHovering(_ isHovering: Bool, eventID: String) {
         showTask?.cancel()
         if isHovering {

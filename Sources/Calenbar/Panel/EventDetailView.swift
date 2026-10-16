@@ -166,7 +166,6 @@ private struct ParticipantsView: View {
     }
 }
 
-/// Respond / Skip / Open buttons shared by the detail card.
 /// Card footer: Skip on the left, one primary action on the right. Answering and opening both go to
 /// the same place, so there's a single button whose label says which it is.
 struct EventActionsRow: View {
@@ -182,19 +181,7 @@ struct EventActionsRow: View {
             Divider()
             HStack(spacing: PanelStyle.small) {
                 if event.start > model.now {
-                    let isSkipped = model.isSkipped(event)
-                    Button {
-                        model.settings.toggleSkipped(event)
-                    } label: {
-                        Label(
-                            isSkipped ? String(localized: "Unskip") : String(localized: "Skip"),
-                            systemImage: isSkipped ? "eye" : "eye.slash")
-                    }
-                    .buttonStyle(.borderless)
-                    .help(
-                        isSkipped
-                            ? String(localized: "Bring this event back")
-                            : String(localized: "Hide from the menu bar and don’t alert"))
+                    SkipButton(model: model, event: event, showsLabel: true)
                 }
                 Spacer(minLength: 0)
                 if event.needsResponse {
