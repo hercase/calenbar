@@ -9,7 +9,7 @@ final class AppModel {
     let settings: AppSettings
     let calendar: CalendarService
     let clock: MinuteClock
-    let updates = UpdateChecker()
+    let updater = Updater()
 
     init(settings: AppSettings, calendar: CalendarService, clock: MinuteClock) {
         self.settings = settings

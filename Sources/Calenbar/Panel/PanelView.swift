@@ -82,19 +82,28 @@ private struct FooterView: View {
 
     var body: some View {
         HStack(spacing: PanelStyle.medium) {
-            if let update = model.updates.available {
+            if let update = model.updater.pending {
                 Button {
-                    model.updates.openReleasePage()
+                    model.updater.checkForUpdates()
                 } label: {
-                    Label("Update available · \(update.version.description)", systemImage: "arrow.down.circle.fill")
-                        .font(.caption.weight(.medium))
-                        .padding(.horizontal, PanelStyle.small)
-                        .padding(.vertical, 3)
-                        .background(Color.accentColor.opacity(0.15), in: Capsule())
+                    Label(
+                        update.isReadyToInstall
+                            ? String(localized: "Update ready · \(update.version)")
+                            : String(localized: "Update available · \(update.version)"),
+                        systemImage: update.isReadyToInstall
+                            ? "arrow.triangle.2.circlepath.circle.fill" : "arrow.down.circle.fill"
+                    )
+                    .font(.caption.weight(.medium))
+                    .padding(.horizontal, PanelStyle.small)
+                    .padding(.vertical, 3)
+                    .background(Color.accentColor.opacity(0.15), in: Capsule())
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(Color.accentColor)
-                .help("Download the new version from GitHub")
+                .help(
+                    update.isReadyToInstall
+                        ? String(localized: "Restart Calenbar to finish updating")
+                        : String(localized: "Install the new version"))
             } else {
                 Text(model.now.formatted(.dateTime.weekday(.wide).day().month(.wide)))
                     .font(.caption)

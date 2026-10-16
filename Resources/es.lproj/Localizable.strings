@@ -43,6 +43,9 @@
 "Allow Access" = "Permitir acceso";
 "Open Privacy Settings" = "Abrir ajustes de privacidad";
 "Update available · %@" = "Actualización disponible · %@";
+"Update ready · %@" = "Actualización lista · %@";
+"Install the new version" = "Instalar la nueva versión";
+"Restart Calenbar to finish updating" = "Reiniciar Calenbar para terminar de actualizar";
 "No calendars yet" = "Todavía no hay calendarios";
 "Add your Google, Exchange or iCloud account in System Settings › Internet Accounts and turn on Calendars." = "Agregar la cuenta de Google, Exchange o iCloud en Ajustes del Sistema › Cuentas de Internet y activar Calendarios.";
 "Open Internet Accounts" = "Abrir Cuentas de Internet";
@@ -155,8 +158,8 @@
 "Version %@" = "Versión %@";
 "Your next meeting, always in the menu bar." = "Tu próxima reunión, siempre en la barra de menús.";
 "Made by Hernán Case" = "Hecho por Hernán Case";
-"Check for Updates" = "Buscar actualizaciones";
-"Checking…" = "Buscando…";
-"Download %@" = "Descargar %@";
-"Download the new version from GitHub" = "Descargar la nueva versión desde GitHub";
-"You’re up to date." = "Está todo actualizado.";
+"Install %@ and Relaunch" = "Instalar %@ y reiniciar";
+"Update to %@…" = "Actualizar a %@…";
+"Last checked %@" = "Última comprobación: %@";
+"Check for Updates…" = "Buscar actualizaciones…";
+"Download and install updates automatically" = "Descargar e instalar actualizaciones automáticamente";

@@ -28,7 +28,7 @@ enum SettingsWindow {
         add(String(localized: "Calendars"), "calendar", CalendarSettings(model: model))
         add(String(localized: "Notifications"), "bell.badge", NotificationSettings(settings: model.settings))
         add(String(localized: "Time Zones"), "globe", WorldClockSettings(settings: model.settings, uiState: uiState))
-        add(String(localized: "About"), "info.circle", AboutView(updates: model.updates))
+        add(String(localized: "About"), "info.circle", AboutView(updater: model.updater))
 
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]
@@ -186,7 +186,7 @@ private struct NotificationSettings: View {
 }
 
 private struct AboutView: View {
-    let updates: UpdateChecker
+    let updater: Updater
     private let website = URL(string: "https://hercase.vercel.app/")
 
     var body: some View {
@@ -200,7 +200,7 @@ private struct AboutView: View {
                 .foregroundStyle(.secondary)
             Text("Your next meeting, always in the menu bar.")
                 .font(.callout)
-            UpdateStatusView(updates: updates)
+            UpdateStatusView(updater: updater)
             VStack(spacing: PanelStyle.tight) {
                 Text("Made by Hernán Case")
                     .font(.callout.weight(.medium))
@@ -222,21 +222,36 @@ private struct AboutView: View {
     }
 }
 
+/// Sparkle status: one button that checks, downloads or installs depending on where things stand.
 private struct UpdateStatusView: View {
-    let updates: UpdateChecker
+    let updater: Updater
 
     var body: some View {
-        HStack(spacing: PanelStyle.small) {
-            if let update = updates.available {
-                Button("Download \(update.version.description)") { updates.openReleasePage() }
+        VStack(spacing: PanelStyle.small) {
+            HStack(spacing: PanelStyle.small) {
+                if let update = updater.pending {
+                    Button(
+                        update.isReadyToInstall
+                            ? String(localized: "Install \(update.version) and Relaunch")
+                            : String(localized: "Update to \(update.version)…")
+                    ) { updater.checkForUpdates() }
                     .buttonStyle(.borderedProminent)
-            } else if updates.isChecking {
-                ProgressView().controlSize(.small)
-                Text("Checking…").foregroundStyle(.secondary)
-            } else {
-                Text(updates.lastCheck == nil ? "" : String(localized: "You’re up to date."))
-                    .foregroundStyle(.secondary)
-                Button("Check for Updates") { Task { await updates.check() } }
+                } else {
+                    if let last = updater.lastCheck {
+                        Text("Last checked \(last.formatted(.relative(presentation: .named)))")
+                            .foregroundStyle(.secondary)
+                    }
+                    Button("Check for Updates…") { updater.checkForUpdates() }
+                }
+            }
+            .disabled(!updater.canCheck)
+            if updater.isAvailable {
+                Toggle(
+                    "Download and install updates automatically",
+                    isOn: Binding(get: { updater.automaticallyDownloads }, set: { updater.automaticallyDownloads = $0 })
+                )
+                .toggleStyle(.checkbox)
+                .font(.caption)
             }
         }
         .font(.callout)

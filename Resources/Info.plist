@@ -31,6 +31,17 @@
     <string>public.app-category.productivity</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
     <string>Calenbar shows your next event in the menu bar. Events are read locally and never leave your Mac.</string>
+    <!-- Sparkle: daily background checks, updates verified with the EdDSA key before install. -->
+    <key>SUFeedURL</key>
+    <string>https://hercase.github.io/calenbar/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>/pbsrNXyUOyU7ku7LLsSPvBbSDEheDMizU0+gusYxmc=</string>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
+    <key>SUAutomaticallyUpdate</key>
+    <true/>
+    <key>SUScheduledCheckInterval</key>
+    <integer>86400</integer>
     <key>NSHumanReadableCopyright</key>
     <string>© 2026 Hernán Case · hercase.vercel.app</string>
 </dict>

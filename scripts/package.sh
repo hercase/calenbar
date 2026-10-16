@@ -4,7 +4,7 @@
 set -e
 cd "$(dirname "$0")/.."
 
-scripts/build.sh --no-install
+scripts/build.sh --no-install --require-identity
 
 VERSION=$(cat VERSION)
 WORK=$(mktemp -d)

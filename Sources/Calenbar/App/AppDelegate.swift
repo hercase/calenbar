@@ -22,7 +22,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusBar = StatusBarController(model: model) { button in panel.toggle(from: button) }
         notifications = NotificationScheduler(model: model)
         alerts = FullScreenAlertController(model: model)
-        model.updates.start()
+        model.updater.start()
         observeContinuously {
             MeetingOpener.browserBundleID = model.settings.meetingBrowserID
             MeetingOpener.preferNativeApps = model.settings.preferNativeMeetingApps
