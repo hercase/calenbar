@@ -23,6 +23,7 @@ final class StatusBarController {
     private let model: AppModel
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let onClick: (NSStatusBarButton) -> Void
+    private let onOpenSettings: () -> Void
     private let warningIcon = NSImage(
         systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Warning"))
     private let idleIcon = NSImage(systemSymbolName: "calendar", accessibilityDescription: String(localized: "Calendar"))
@@ -46,13 +47,15 @@ final class StatusBarController {
     private var renderedEventKey: String?
     private var attentionTimer: Timer?
 
-    init(model: AppModel, onClick: @escaping (NSStatusBarButton) -> Void) {
+    init(model: AppModel, onOpenSettings: @escaping () -> Void, onClick: @escaping (NSStatusBarButton) -> Void) {
         self.model = model
+        self.onOpenSettings = onOpenSettings
         self.onClick = onClick
 
         if let button = statusItem.button {
             button.target = self
             button.action = #selector(clicked)
+            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
             button.imagePosition = .imageLeading
             button.wantsLayer = true
             button.layer?.cornerRadius = 4
@@ -64,12 +67,34 @@ final class StatusBarController {
 
     @objc private func clicked() {
         guard let button = statusItem.button else { return }
+        if NSApp.currentEvent?.type == .rightMouseUp {
+            showMenu()
+            return
+        }
         if model.calendar.access == .denied {
             CalendarService.openPrivacySettings()
             return
         }
         onClick(button)
     }
+
+    /// Right click: the same actions as the panel's "•••" menu, without opening the panel.
+    private func showMenu() {
+        let menu = NSMenu()
+        menu.addItem(withTitle: String(localized: "Open Calendar"), action: #selector(openCalendar), keyEquivalent: "").target =
+            self
+        menu.addItem(withTitle: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",").target = self
+        menu.addItem(.separator())
+        menu.addItem(withTitle: String(localized: "Quit Calenbar"), action: #selector(quit), keyEquivalent: "q").target = self
+        // Attaching a menu makes the button pop it up on click; detach right after so left clicks keep opening the panel.
+        statusItem.menu = menu
+        statusItem.button?.performClick(nil)
+        statusItem.menu = nil
+    }
+
+    @objc private func openCalendar() { model.calendar.openCalendarApp() }
+    @objc private func openSettings() { onOpenSettings() }
+    @objc private func quit() { NSApp.terminate(nil) }
 
     func render() {
         guard let button = statusItem.button else { return }
@@ -96,7 +121,9 @@ final class StatusBarController {
 
         guard let event else {
             set(button, image: todayIcon, title: "")
-            button.toolTip = String(localized: "No more events today")
+            button.toolTip =
+                model.settings.titleHorizon == .today
+                ? String(localized: "No more events today") : String(localized: "Nothing coming up")
             return
         }
 

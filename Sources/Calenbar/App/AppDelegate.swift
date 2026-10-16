@@ -19,7 +19,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let panel = PanelController(model: model) { [weak self] in self?.showSettings() }
         self.panel = panel
-        statusBar = StatusBarController(model: model) { button in panel.toggle(from: button) }
+        statusBar = StatusBarController(
+            model: model,
+            onOpenSettings: { [weak self] in self?.showSettings() },
+            onClick: { button in panel.toggle(from: button) }
+        )
         notifications = NotificationScheduler(model: model)
         alerts = FullScreenAlertController(model: model)
         model.updater.start()
