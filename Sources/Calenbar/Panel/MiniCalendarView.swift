@@ -185,7 +185,7 @@ private struct DayCell: View {
                 }
                 .overlay(alignment: .bottom) {
                     // The tint already says the day is taken; no dots on top of it.
-                    if eventCount > 0, !isToday, !isDayOff {
+                    if eventCount > 0, !isDayOff {
                         HStack(spacing: 2) {
                             ForEach(0..<min(3, (eventCount + 1) / 2), id: \.self) { _ in
                                 Circle().fill(Color.secondary).frame(width: 3, height: 3)
