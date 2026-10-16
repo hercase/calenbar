@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.4.1</title>
+      <pubDate>Fri, 16 Oct 2026 14:56:04 +0000</pubDate>
+      <sparkle:version>58</sparkle:version>
+      <sparkle:shortVersionString>0.4.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>The full-screen alert is now off by default and can target a chosen screen; no alert for meetings you already joined; the panel and the Calendars tab say when the Mac has no calendar account; the menu bar item keeps its place.</p>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.4.1/Calenbar-0.4.1.dmg" length="5673796" type="application/octet-stream"
+        sparkle:edSignature="rUxtKvWIW3NT9w2zg33xq55idJ+CU+pzXc6CgwSkLmKcXyHWCxzzQtd22H3incNj2dq3Gad8cs5hCBGOx/AzAQ==" />
+    </item>
+    <item>
       <title>Calenbar 0.4.0</title>
       <pubDate>Fri, 16 Oct 2026 01:39:28 +0000</pubDate>
       <sparkle:version>38</sparkle:version>
