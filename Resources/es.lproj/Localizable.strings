@@ -57,9 +57,13 @@
 "Same time" = "Misma hora";
 
 /* Event details */
-"Organized by %@" = "Organizado por %@";
+"Organizer" = "Organiza";
 "%@ (you)" = "%@ (yo)";
-"%lld guests · %lld yes" = "%lld invitados · %lld sí";
+"%lld guests · %lld accepted" = "%lld invitados · %lld aceptaron";
+"accepted" = "aceptó";
+"maybe" = "quizás";
+"declined" = "rechazó";
+"not answered" = "sin responder";
 "+%lld more" = "+%lld más";
 "Your response:" = "Respuesta:";
 "Yes" = "Sí";

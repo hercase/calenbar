@@ -9,49 +9,74 @@ struct EventDetailView: View {
     var body: some View {
         let link = event.meetingLink
         VStack(alignment: .leading, spacing: PanelStyle.medium) {
-            VStack(alignment: .leading, spacing: 3) {
+            // Header: what, which calendar.
+            VStack(alignment: .leading, spacing: PanelStyle.tight) {
                 Text(TitleFormatter.displayTitle(event))
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(
-                    verbatim:
-                        "\(event.start.formatted(.dateTime.weekday(.wide).day().month(.wide))) · \(EventTimeText.range(event))"
-                )
-                .font(.callout)
+                HStack(spacing: 5) {
+                    Circle()
+                        .fill(Color(hex: event.calendarColorHex))
+                        .frame(width: 7, height: 7)
+                    Text(event.calendarTitle)
+                        .lineLimit(1)
+                }
+                .font(.caption)
                 .foregroundStyle(.secondary)
             }
 
-            DetailLine(systemImage: "circle.fill", tint: Color(hex: event.calendarColorHex)) {
-                Text(event.calendarTitle)
+            // When: date, the time as the key fact, then the same moment elsewhere.
+            VStack(alignment: .leading, spacing: PanelStyle.tight) {
+                Text(event.start.formatted(.dateTime.weekday(.wide).day().month(.wide)))
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                HStack(alignment: .firstTextBaseline, spacing: PanelStyle.small) {
+                    Text(EventTimeText.range(event))
+                        .font(.callout.weight(.medium))
+                        .monospacedDigit()
+                    if let relative = EventTimeText.relative(event, now: model.now) {
+                        Text(relative)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                if !event.isAllDay, model.settings.showClocksInEventDetails {
+                    OtherTimeZonesView(event: event, clocks: model.settings.worldClocks)
+                        .padding(.top, 2)
+                }
             }
-            if !event.isAllDay, model.settings.showClocksInEventDetails {
-                OtherTimeZonesView(event: event, clocks: model.settings.worldClocks)
-            }
+
             if let link {
-                HStack(alignment: .center, spacing: PanelStyle.small) {
-                    ProviderIconView(provider: link.provider, size: 14)
-                    Button("Join \(link.provider.displayName)") { MeetingOpener.open(link) }
-                        .buttonStyle(.link)
-                        .font(.callout)
+                Button {
+                    MeetingOpener.open(link)
+                } label: {
+                    HStack(spacing: 6) {
+                        ProviderIconView(provider: link.provider, size: 14)
+                        Text("Join \(link.provider.displayName)")
+                    }
+                    .padding(.horizontal, 2)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.regular)
+            }
+
+            if !event.rooms.isEmpty || displayLocation(link: link) != nil {
+                VStack(alignment: .leading, spacing: PanelStyle.tight) {
+                    if !event.rooms.isEmpty {
+                        DetailLine(systemImage: "door.left.hand.open") {
+                            Text(event.rooms.joined(separator: ", ")).textSelection(.enabled)
+                        }
+                    }
+                    if let location = displayLocation(link: link) {
+                        DetailLine(systemImage: "mappin.and.ellipse") {
+                            Text(location).textSelection(.enabled)
+                        }
+                    }
                 }
             }
-            if !event.rooms.isEmpty {
-                DetailLine(systemImage: "door.left.hand.open", tint: .secondary) {
-                    Text(event.rooms.joined(separator: ", ")).textSelection(.enabled)
-                }
-            }
-            if let location = displayLocation(link: link) {
-                DetailLine(systemImage: "mappin.and.ellipse", tint: .secondary) {
-                    Text(location).textSelection(.enabled)
-                }
-            }
-            if let organizer = event.organizer, !organizer.isCurrentUser {
-                DetailLine(systemImage: "person.crop.circle", tint: .secondary) {
-                    Text("Organized by \(organizer.displayName)")
-                }
-            }
+
             if !event.people.isEmpty {
-                ParticipantsView(people: event.people)
+                ParticipantsView(people: event.people, organizer: event.organizer)
             }
 
             EventActionsRow(model: model, event: event)
@@ -86,23 +111,24 @@ struct EventDetailView: View {
 
 private struct DetailLine<Content: View>: View {
     let systemImage: String
-    let tint: Color
     @ViewBuilder let content: Content
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: PanelStyle.small) {
             Image(systemName: systemImage)
                 .font(.caption)
-                .foregroundStyle(tint)
+                .foregroundStyle(.secondary)
                 .frame(width: 14)
             content.font(.callout)
         }
     }
 }
 
-/// Who's invited and how they answered, most relevant first, capped to keep the card short.
+/// Who's invited and how they answered: a small section label, the organizer first, then the rest,
+/// capped to keep the card short.
 private struct ParticipantsView: View {
     let people: [Attendee]
+    let organizer: Attendee?
     private let limit = 8
 
     var body: some View {
@@ -120,8 +146,18 @@ private struct ParticipantsView: View {
                     Text(person.isCurrentUser ? String(localized: "\(person.displayName) (you)") : person.displayName)
                         .font(.callout)
                         .lineLimit(1)
+                    if person.isOrganizer {
+                        Text("Organizer")
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 1)
+                            .background(Color.primary.opacity(0.08), in: Capsule())
+                    }
                 }
                 .help(person.email ?? person.displayName)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(accessibilityLabel(person))
             }
             if sorted.count > limit {
                 Text("+\(sorted.count - limit) more")
@@ -133,7 +169,15 @@ private struct ParticipantsView: View {
 
     private var summary: String {
         let accepted = people.filter { $0.status == .accepted }.count
-        return String(localized: "\(people.count) guests · \(accepted) yes")
+        return String(localized: "\(people.count) guests · \(accepted) accepted")
+    }
+
+    private func accessibilityLabel(_ person: Attendee) -> String {
+        var parts = [person.displayName, statusName(person.status)]
+        if person.isOrganizer {
+            parts.append(String(localized: "Organizer"))
+        }
+        return parts.joined(separator: ", ")
     }
 
     private func rank(_ person: Attendee) -> Int {
@@ -144,6 +188,15 @@ private struct ParticipantsView: View {
         case .tentative: return 3
         case .pending, .unknown: return 4
         case .declined: return 5
+        }
+    }
+
+    private func statusName(_ status: ParticipationStatus) -> String {
+        switch status {
+        case .accepted: String(localized: "accepted")
+        case .tentative: String(localized: "maybe")
+        case .declined: String(localized: "declined")
+        case .pending, .unknown: String(localized: "not answered")
         }
     }
 
@@ -206,35 +259,34 @@ struct EventActionsRow: View {
 }
 
 /// The meeting's time in each configured world clock, so "4 PM here" is also "9 PM in London".
-/// Clocks on the Mac's own time zone are left out.
+/// Clocks on the Mac's own time zone are left out. Laid out as a grid so the times line up.
 private struct OtherTimeZonesView: View {
     let event: CalendarEvent
     let clocks: [WorldClock]
 
     var body: some View {
-        let others = clocks.filter {
-            $0.timeZone.secondsFromGMT(for: event.start) != TimeZone.current.secondsFromGMT(for: event.start)
-        }
+        let others = clocks.filter { TimeZoneMath.offset(of: $0.timeZone, at: event.start) != 0 }
         if !others.isEmpty {
-            VStack(alignment: .leading, spacing: PanelStyle.tight) {
+            Grid(alignment: .leading, horizontalSpacing: PanelStyle.small, verticalSpacing: PanelStyle.tight) {
                 ForEach(others) { clock in
                     let isDay = TimeZoneMath.isDaytime(in: clock.timeZone, at: event.start)
-                    HStack(alignment: .firstTextBaseline, spacing: PanelStyle.small) {
+                    GridRow(alignment: .firstTextBaseline) {
                         Image(systemName: isDay ? "sun.max.fill" : "moon.fill")
                             .font(.caption)
                             .foregroundStyle(isDay ? Color.orange : Color.indigo)
                             .frame(width: 14)
                         Text(clock.name)
                             .foregroundStyle(.secondary)
-                        Spacer(minLength: PanelStyle.small)
+                            .lineLimit(1)
                         Text(verbatim: EventTimeText.range(event, in: clock.timeZone))
                             .monospacedDigit()
-                        if let day = dayNote(in: clock.timeZone) {
-                            Text(verbatim: "· \(day)")
-                                .foregroundStyle(.secondary)
-                        }
+                            .gridColumnAlignment(.trailing)
+                        Text(dayNote(in: clock.timeZone) ?? "")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                     .font(.callout)
+                    .accessibilityElement(children: .combine)
                 }
             }
         }
