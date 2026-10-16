@@ -18,7 +18,7 @@ struct AlertCardView: View {
                     .alignmentGuide(.firstTextBaseline) { $0[.bottom] - 2 }
                 Text(AlertFacts.headline(event: event, now: now))
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AlertFacts.headlineTint(event: event, now: now))
                     .monospacedDigit()
                     .contentTransition(.numericText())
                 Spacer(minLength: 8)
