@@ -33,13 +33,21 @@ enum PreviewRenderer {
                 page.view.frame(width: SettingsWindow.pageSize.width, height: SettingsWindow.pageSize.height),
                 named: "settings-\(page.title.lowercased().replacingOccurrences(of: " ", with: "-"))", in: directory)
         }
-        try writeMenuBarStrip(fixtures, in: directory)
-        let badged = DateIcon.image(day: 16, showsBadge: true)
-        badged.isTemplate = false
-        let bitmap = badged.tiffRepresentation.flatMap(NSBitmapImageRep.init(data:))
-        if let png = bitmap?.representation(using: .png, properties: [:]) {
-            try png.write(to: directory.appendingPathComponent("menubar-icon-update.png"))
-        }
+        try writeMenuBarStrip(fixtures, in: directory, named: "menu-bar.png")
+        try writeMenuBarStrip(fixtures, in: directory, named: "menu-bar-update.png", updatePending: true)
+        let shortcut = KeyShortcut.defaultJoin.display
+        try write(
+            MenuMockup(items: [
+                .item("Restart to Update"), .separator, .item("Join Next Meeting", shortcut: shortcut), .separator,
+                .item("Hide Event Titles"), .separator, .item("Open Calendar"), .item("Settings…", shortcut: "⌘,"), .separator,
+                .item("Quit Calenbar", shortcut: "⌘Q"),
+            ]), named: "menu-right-click", in: directory)
+        try write(
+            MenuMockup(items: [
+                .item("Update to 0.5.0…"), .separator, .item("Join Next Meeting", shortcut: shortcut),
+                .item("New Meeting", shortcut: "›"), .separator, .item("Hide Event Titles in Menu Bar", check: true), .separator,
+                .item("Open Calendar"), .item("Settings…", shortcut: "⌘,"), .separator, .item("Quit Calenbar", shortcut: "⌘Q"),
+            ]), named: "menu-more", in: directory)
     }
 
     private static func panels(_ fixtures: PreviewFixtures) -> [(String, AnyView)] {
@@ -107,7 +115,9 @@ enum PreviewRenderer {
     }
 
     /// The date icon and a title the way the status item lays them out, beside system icons, in both appearances.
-    private static func writeMenuBarStrip(_ fixtures: PreviewFixtures, in directory: URL) throws {
+    private static func writeMenuBarStrip(
+        _ fixtures: PreviewFixtures, in directory: URL, named name: String, updatePending: Bool = false
+    ) throws {
         let font = NSFont.menuBarFont(ofSize: 0)
         let title = TitleFormatter.title(for: fixtures.meeting, now: fixtures.model.now)
         let day = Calendar.current.component(.day, from: fixtures.model.now)
@@ -130,7 +140,7 @@ enum PreviewRenderer {
                         at: NSPoint(x: x, y: y + (24 - icon.size.height) / 2), from: .zero, operation: .sourceOver, fraction: 1)
                     x += icon.size.width + gap
                 }
-                place(DateIcon.image(day: day))
+                place(DateIcon.image(day: day, showsBadge: updatePending))
                 (title as NSString).draw(at: NSPoint(x: x, y: y + 4), withAttributes: [.font: font, .foregroundColor: tint])
                 x += (title as NSString).size(withAttributes: [.font: font]).width + 18
                 for symbol in ["wifi", "battery.100", "calendar"] {
@@ -142,7 +152,44 @@ enum PreviewRenderer {
             }
             return true
         }
-        try png(image, scale: 4).write(to: directory.appending(path: "menu-bar.png"))
+        try png(image, scale: 4).write(to: directory.appending(path: name))
+    }
+}
+
+/// A static picture of a menu's rows, for previews only: real menus can't be rendered off screen.
+private struct MenuMockup: View {
+    enum Row {
+        case item(String, shortcut: String? = nil, check: Bool = false)
+        case separator
+    }
+
+    let items: [Row]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(Array(items.enumerated()), id: \.offset) { _, row in
+                switch row {
+                case .separator:
+                    Divider().padding(.vertical, 5).padding(.horizontal, 10)
+                case .item(let title, let shortcut, let check):
+                    HStack(spacing: 8) {
+                        Image(systemName: "checkmark").font(.caption.weight(.semibold)).opacity(check ? 1 : 0).frame(width: 12)
+                        Text(verbatim: title)
+                        Spacer(minLength: 24)
+                        if let shortcut {
+                            Text(verbatim: shortcut).foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 3)
+                }
+            }
+        }
+        .font(.system(size: 13))
+        .padding(.vertical, 5)
+        .frame(width: 260)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+        .padding(12)
     }
 }
 

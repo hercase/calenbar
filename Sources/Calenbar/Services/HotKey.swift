@@ -10,9 +10,9 @@ struct KeyShortcut: Codable, Hashable {
     /// What the key prints, for display ("A", "Space", "F5").
     let keyLabel: String
 
-    /// ⌃⌥J: Control-Option combinations are left alone by macOS and by nearly every app.
+    /// ⌃⌘J: free in macOS and in the common window managers (which live on Control-Option).
     static let defaultJoin = KeyShortcut(
-        keyCode: UInt32(kVK_ANSI_J), modifiers: NSEvent.ModifierFlags([.control, .option]).rawValue, keyLabel: "J")
+        keyCode: UInt32(kVK_ANSI_J), modifiers: NSEvent.ModifierFlags([.control, .command]).rawValue, keyLabel: "J")
 
     init(keyCode: UInt32, modifiers: UInt, keyLabel: String) {
         self.keyCode = keyCode
