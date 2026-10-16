@@ -1,11 +1,19 @@
 #!/bin/sh
-# Publishes a new version: bumps VERSION, tags it, builds the DMG and creates a GitHub Release.
-# Usage: scripts/release.sh 0.2.0 ["Short summary for the release notes"]
+# Publishes a new version: bumps VERSION, tags it, builds and EdDSA-signs the DMG, creates the GitHub
+# Release, and updates the Sparkle appcast on GitHub Pages so every installed copy updates itself.
+# Usage: scripts/release.sh 0.4.0 ["Short summary for the release notes"]
+#
+# One-time setup on the release machine:
+#   scripts/make-signing-cert.sh        # "Calenbar Dev" code-signing identity (keeps macOS permissions)
+#   $(scripts/sparkle-tools.sh)/generate_keys   # Sparkle EdDSA key pair in the login keychain;
+#                                               # its public half must match SUPublicEDKey in Info.plist
 set -e
 cd "$(dirname "$0")/.."
 
 VERSION="$1"
 SUMMARY="$2"
+REPO="hercase/calenbar"
+PAGES_URL="https://hercase.github.io/calenbar"
 if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
   echo "usage: scripts/release.sh X.Y.Z [summary]" >&2
   exit 1
@@ -16,6 +24,15 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 if [ "$(git rev-parse --abbrev-ref HEAD)" != "main" ]; then
   echo "Releases are cut from main." >&2
+  exit 1
+fi
+
+TOOLS=$(scripts/sparkle-tools.sh)
+EXPECTED_KEY=$(/usr/libexec/PlistBuddy -c "Print :SUPublicEDKey" Resources/Info.plist)
+ACTUAL_KEY=$("$TOOLS/generate_keys" -p 2>/dev/null || true)
+if [ "$ACTUAL_KEY" != "$EXPECTED_KEY" ]; then
+  echo "error: the Sparkle private key in this keychain doesn't match SUPublicEDKey in Info.plist." >&2
+  echo "       Import the backed-up key with: $TOOLS/generate_keys -i <key-file>" >&2
   exit 1
 fi
 
@@ -30,16 +47,29 @@ git tag -a "v$VERSION" -m "Calenbar $VERSION"
 
 ./scripts/package.sh
 DMG="dist/Calenbar-$VERSION.dmg"
+DOWNLOAD_URL="https://github.com/$REPO/releases/download/v$VERSION/Calenbar-$VERSION.dmg"
+
+# Appcast: sign the DMG, then prepend the item (scripts/appcast.py keeps the previous entries).
+SIGNATURE=$("$TOOLS/sign_update" -p "$DMG")
+LENGTH=$(stat -f%z "$DMG")
+BUILD=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" .build/Calenbar.app/Contents/Info.plist)
+MIN_OS=$(/usr/libexec/PlistBuddy -c "Print :LSMinimumSystemVersion" .build/Calenbar.app/Contents/Info.plist)
+python3 scripts/appcast.py docs/appcast.xml \
+  --version "$VERSION" --build "$BUILD" --url "$DOWNLOAD_URL" --length "$LENGTH" \
+  --signature "$SIGNATURE" --minimum-system-version "$MIN_OS" --notes "$SUMMARY"
+"$TOOLS/sign_update" --verify "$DMG" "$SIGNATURE" >/dev/null
+git commit -qm "chore: appcast for v$VERSION" docs/appcast.xml
+
+# A stable copy for the landing page's Download button (…/releases/latest/download/Calenbar.dmg).
+cp "$DMG" dist/Calenbar.dmg
 
 git push -q origin main "v$VERSION"
 NOTES=$(mktemp)
 {
   [ -n "$SUMMARY" ] && printf '%s\n\n' "$SUMMARY"
-  printf '### Install or update\n'
-  printf '1. Download **Calenbar-%s.dmg** below and open it.\n' "$VERSION"
-  printf '2. Quit Calenbar (••• › Quit), then drag the new Calenbar to Applications and replace the old one.\n'
-  printf '3. Open it. The first time, macOS asks to confirm: System Settings › Privacy & Security › Open Anyway.\n'
+  printf 'Installed copies update themselves: open the panel and click **Update available**, or wait for the next automatic check.\n\n'
+  printf 'New here? Follow the [install guide](%s).\n' "$PAGES_URL"
 } > "$NOTES"
-gh release create "v$VERSION" "$DMG" --title "Calenbar $VERSION" --notes-file "$NOTES" --generate-notes
-rm -f "$NOTES"
-echo "Released v$VERSION"
+gh release create "v$VERSION" "$DMG" "dist/Calenbar.dmg" --title "Calenbar $VERSION" --notes-file "$NOTES" --generate-notes
+rm -f "$NOTES" dist/Calenbar.dmg
+echo "Released v$VERSION; the appcast at $PAGES_URL/appcast.xml goes live when GitHub Pages redeploys (about a minute)."

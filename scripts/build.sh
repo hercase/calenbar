@@ -7,7 +7,9 @@ set -e
 cd "$(dirname "$0")/.."
 
 VERSION=$(cat VERSION)
-BUILD=$(git rev-list --count HEAD 2>/dev/null || echo 1)
+BUILD=${CALENBAR_BUILD:-$(git rev-list --count HEAD 2>/dev/null || echo 1)}
+# Test builds can point Sparkle at a local appcast: CALENBAR_FEED_URL=http://localhost:8765/appcast.xml
+FEED_URL=${CALENBAR_FEED_URL:-}
 APP=".build/Calenbar.app"
 IDENTITY="Calenbar Dev"
 INSTALL=1
@@ -47,6 +49,11 @@ cp Resources/LaunchAgent.plist "$APP/Contents/Library/LaunchAgents/com.hernancas
 # -R on a symlinked framework keeps Versions/Current etc. as links; the executable loads it via @rpath.
 cp -R "$SPARKLE" "$APP/Contents/Frameworks/Sparkle.framework"
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD/" Resources/Info.plist > "$APP/Contents/Info.plist"
+if [ -n "$FEED_URL" ]; then
+  /usr/libexec/PlistBuddy -c "Set :SUFeedURL $FEED_URL" "$APP/Contents/Info.plist"
+  /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity:NSAllowsLocalNetworking bool true" "$APP/Contents/Info.plist"
+  echo "warning: test build, Sparkle feed is $FEED_URL" >&2
+fi
 if [ -f Resources/AppIcon.icns ]; then
   cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
   /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$APP/Contents/Info.plist"
