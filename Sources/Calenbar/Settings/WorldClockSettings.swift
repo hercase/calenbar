@@ -36,15 +36,17 @@ struct WorldClockSettings: View {
                 Text("Clocks")
             } footer: {
                 HStack {
-                    Text("Up to 3 clocks.")
+                    let limit = AppSettings.maxWorldClocks
+                    Text("Up to \(limit) clocks.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()
                     Button("Add Clock…") { uiState.isAddingClock = true }
                         .disabled(settings.worldClocks.count >= AppSettings.maxWorldClocks)
                         .popover(isPresented: $uiState.isAddingClock, arrowEdge: .bottom) {
-                            ClockPicker(search: uiState.citySearch) { identifier, name in
-                                settings.worldClocks.append(WorldClock(timeZoneID: identifier, name: name))
+                            let existing = Set(settings.worldClocks.map(\.timeZoneID))
+                            ClockPicker(search: uiState.citySearch, existing: existing) { identifier, name in
+                                settings.addWorldClock(timeZoneID: identifier, name: name)
                                 uiState.citySearch.query = ""
                                 uiState.isAddingClock = false
                             }
@@ -100,6 +102,8 @@ private struct ClockRow: View {
 /// "Add Clock…" popover: cities from Apple Maps first, then matching time zones (works offline).
 private struct ClockPicker: View {
     @Bindable var search: CitySearch
+    /// Time zones already in the list; shown with a checkmark and not selectable again.
+    let existing: Set<String>
     let pick: (_ identifier: String, _ name: String) -> Void
 
     var body: some View {
@@ -133,7 +137,9 @@ private struct ClockPicker: View {
                     if !zones.isEmpty {
                         Section("Time zones") {
                             ForEach(zones, id: \.self) { identifier in
-                                row(Self.cityName(identifier), detail: identifier) { pick(identifier, Self.cityName(identifier)) }
+                                row(Self.cityName(identifier), detail: identifier, added: existing.contains(identifier)) {
+                                    pick(identifier, Self.cityName(identifier))
+                                }
                             }
                         }
                     }
@@ -158,7 +164,7 @@ private struct ClockPicker: View {
             .padding(.vertical, PanelStyle.tight)
     }
 
-    private func row(_ title: String, detail: String, action: @escaping () -> Void) -> some View {
+    private func row(_ title: String, detail: String, added: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 Text(title)
@@ -166,10 +172,16 @@ private struct ClockPicker: View {
                 Text(detail)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                if added {
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(.secondary)
+                        .accessibilityLabel("Already added")
+                }
             }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .disabled(added)
     }
 
     private var zones: [String] {

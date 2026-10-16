@@ -168,7 +168,8 @@
 "No world clocks yet" = "Todavía no hay relojes";
 "Add the cities you work with to see their time in the panel and in each meeting." = "Agregar las ciudades con las que se trabaja para ver su hora en el panel y en cada reunión.";
 "Add Clock…" = "Agregar reloj…";
-"Up to 3 clocks." = "Hasta 3 relojes.";
+"Up to %lld clocks." = "Hasta %lld relojes.";
+"Already added" = "Ya agregado";
 "Name" = "Nombre";
 "Search a city, e.g. San Diego or Madrid" = "Buscar una ciudad, p. ej. San Diego o Madrid";
 "Cities" = "Ciudades";

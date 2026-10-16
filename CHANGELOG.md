@@ -11,10 +11,12 @@ Quieter notifications, and install from the terminal.
 
 - Settings › Notifications says when macOS has notifications turned off for Calenbar, with a button to fix it.
 - Install with Homebrew: `brew install --cask hercase/calenbar/calenbar` (trust the tap when asked).
+- Up to five world clocks, and the same time zone can't be added twice.
 
 ### es
 - Ajustes › Notificaciones avisa cuando macOS tiene las notificaciones de Calenbar desactivadas, con un botón para arreglarlo.
 - Instalación con Homebrew: `brew install --cask hercase/calenbar/calenbar` (confiá en el tap cuando lo pida).
+- Hasta cinco relojes del mundo, y la misma zona horaria no se puede agregar dos veces.
 
 ## 0.4.1 - 2026-10-16
 

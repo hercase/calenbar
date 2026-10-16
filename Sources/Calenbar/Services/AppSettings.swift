@@ -45,8 +45,8 @@ final class AppSettings {
     var disabledCalendars: [CalendarPurpose: Set<String>] { didSet { store(disabledCalendars, .disabledCalendars) } }
     /// Keys of skipped occurrences.
     var mutedKeys: Set<String> { didSet { store(mutedKeys, .mutedKeys) } }
-    /// Clocks shown in the panel footer; only this many fit on its single line.
-    static let maxWorldClocks = 3
+    /// Clocks shown in the panel, one row each; more than this and the panel gets tall.
+    static let maxWorldClocks = 5
     var worldClocks: [WorldClock] { didSet { store(worldClocks, .worldClocks) } }
     var showClocksInPanel: Bool { didSet { store(showClocksInPanel, .showClocksInPanel) } }
     var showClocksInEventDetails: Bool { didSet { store(showClocksInEventDetails, .showClocksInEventDetails) } }
@@ -119,6 +119,14 @@ final class AppSettings {
             ids.insert(calendarID)
         }
         disabledCalendars[purpose] = ids
+    }
+
+    /// Adds a clock unless one for that time zone already exists.
+    func addWorldClock(timeZoneID: String, name: String) {
+        guard !worldClocks.contains(where: { $0.timeZoneID == timeZoneID }), worldClocks.count < Self.maxWorldClocks else {
+            return
+        }
+        worldClocks.append(WorldClock(timeZoneID: timeZoneID, name: name))
     }
 
     /// Skip = the event disappears from the menu bar and never alerts; it stays (dimmed) in the list.
