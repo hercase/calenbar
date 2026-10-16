@@ -5,5 +5,15 @@
     <link>https://hercase.github.io/calenbar/</link>
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
+    <item>
+      <title>Calenbar 0.4.0</title>
+      <pubDate>Fri, 16 Oct 2026 01:39:28 +0000</pubDate>
+      <sparkle:version>38</sparkle:version>
+      <sparkle:shortVersionString>0.4.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>In-app updates, a redesigned event card, a clearer Settings window and a landing page for new users.</p>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.4.0/Calenbar-0.4.0.dmg" length="5686823" type="application/octet-stream"
+        sparkle:edSignature="1BSftxEMcspjZKXB5ww4TY6MOB9hZMKcP0WoZeOq0+i3A2dY7KTrVpjI67XSYmn4g6bJ8WR66k/6DimypM6iCg==" />
+    </item>
   </channel>
 </rss>
