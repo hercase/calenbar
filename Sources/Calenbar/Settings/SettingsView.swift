@@ -5,30 +5,47 @@ import SwiftUI
 /// Settings window with icon tabs in the toolbar, like native macOS preference windows.
 @MainActor
 enum SettingsWindow {
-    private static let pageSize = NSSize(width: 560, height: 480)
+    static let pageSize = NSSize(width: 560, height: 480)
+
+    struct Page {
+        let title: String
+        let symbol: String
+        let view: AnyView
+    }
+
+    static func pages(model: AppModel, uiState: SettingsUIState) -> [Page] {
+        [
+            Page(
+                title: String(localized: "General"), symbol: "gearshape",
+                view: AnyView(GeneralSettings(settings: model.settings, calendar: model.calendar))),
+            Page(title: String(localized: "Calendars"), symbol: "calendar", view: AnyView(CalendarSettings(model: model))),
+            Page(
+                title: String(localized: "Notifications"), symbol: "bell.badge",
+                view: AnyView(NotificationSettings(settings: model.settings))),
+            Page(
+                title: String(localized: "Time Zones"), symbol: "globe",
+                view: AnyView(WorldClockSettings(settings: model.settings, uiState: uiState))),
+            Page(title: String(localized: "About"), symbol: "info.circle", view: AnyView(AboutView(updater: model.updater))),
+        ]
+    }
 
     static func make(model: AppModel, uiState: SettingsUIState) -> NSWindow {
         let tabs = NSTabViewController()
         tabs.tabStyle = .toolbar
         tabs.canPropagateSelectedChildViewControllerTitle = true
 
-        func add(_ title: String, _ symbol: String, _ view: some View) {
-            let page = NSHostingController(rootView: view.frame(width: pageSize.width, height: pageSize.height))
+        for page in pages(model: model, uiState: uiState) {
+            let controller = NSHostingController(rootView: page.view.frame(width: pageSize.width, height: pageSize.height))
             // Fixed size per page: otherwise the window can end up narrower than the content and clip it,
             // which also hides the grouped form's margins.
-            page.sizingOptions = []
-            page.preferredContentSize = pageSize
-            page.title = title
-            let item = NSTabViewItem(viewController: page)
-            item.label = title
-            item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: title)
+            controller.sizingOptions = []
+            controller.preferredContentSize = pageSize
+            controller.title = page.title
+            let item = NSTabViewItem(viewController: controller)
+            item.label = page.title
+            item.image = NSImage(systemSymbolName: page.symbol, accessibilityDescription: page.title)
             tabs.addTabViewItem(item)
         }
-        add(String(localized: "General"), "gearshape", GeneralSettings(settings: model.settings, calendar: model.calendar))
-        add(String(localized: "Calendars"), "calendar", CalendarSettings(model: model))
-        add(String(localized: "Notifications"), "bell.badge", NotificationSettings(settings: model.settings))
-        add(String(localized: "Time Zones"), "globe", WorldClockSettings(settings: model.settings, uiState: uiState))
-        add(String(localized: "About"), "info.circle", AboutView(updater: model.updater))
 
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]
@@ -104,12 +121,6 @@ private struct GeneralSettings: View {
                     Text("Google Calendar (web)").tag(EventDestination.googleWeb)
                 }
             }
-            Section("Grab attention when an event is close") {
-                Toggle("Flash red in the menu bar", isOn: $settings.flashEnabled)
-                Toggle("Start 5 minutes before (flashes at the end of each minute)", isOn: $settings.flashFromFiveMinutes)
-                    .disabled(!settings.flashEnabled)
-                Toggle("Play a sound at 5 min and 30 s", isOn: $settings.attentionSound)
-            }
         }
         .formStyle(.grouped)
     }
@@ -167,6 +178,12 @@ private struct NotificationSettings: View {
                     }
                 }
                 .disabled(!settings.notificationsEnabled)
+            }
+            Section("Grab attention when an event is close") {
+                Toggle("Flash red in the menu bar", isOn: $settings.flashEnabled)
+                Toggle("Start 5 minutes before (flashes at the end of each minute)", isOn: $settings.flashFromFiveMinutes)
+                    .disabled(!settings.flashEnabled)
+                Toggle("Play a sound at 5 min and 30 s", isOn: $settings.attentionSound)
             }
             Section("Full-screen alert") {
                 Toggle("Show full-screen alert", isOn: $settings.alertEnabled)

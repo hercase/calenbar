@@ -35,6 +35,14 @@ final class CalendarService {
     @ObservationIgnored private var safetyTimer: Timer?
     @ObservationIgnored private let network = NWPathMonitor()
 
+    /// Fixed data for previews: no EventKit, no observers, no timers.
+    init(fixture: [CalendarEvent], calendars: [CalendarInfo], access: Access = .granted) {
+        self.access = access
+        upcoming = fixture
+        self.calendars = calendars
+        lastReload = Date()
+    }
+
     init() {
         access = Self.currentAccess()
         observers.append(

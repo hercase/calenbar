@@ -96,7 +96,7 @@ private final class AlertPanel: NSPanel {
     override var canBecomeKey: Bool { true }
 }
 
-private struct AlertView: View {
+struct AlertView: View {
     let event: CalendarEvent
     let now: Date
     let join: (MeetingLink) -> Void
