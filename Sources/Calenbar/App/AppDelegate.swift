@@ -11,6 +11,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        if InstallLocation.offerMoveIfNeeded() {
+            return
+        }
         let model = AppModel(settings: AppSettings(), calendar: CalendarService(), clock: MinuteClock())
         self.model = model
 
@@ -29,7 +32,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if model.calendar.access == .notDetermined {
                 await model.calendar.requestAccess()
             }
-            LoginLaunch.enableOnFirstRun()
+            if !InstallLocation.isTemporary {
+                LoginLaunch.enableOnFirstRun()
+            }
         }
     }
 

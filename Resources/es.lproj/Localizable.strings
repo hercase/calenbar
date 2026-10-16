@@ -144,6 +144,13 @@
 "No matching places" = "No hay lugares que coincidan";
 "Remove %@" = "Quitar %@";
 
+/* First launch */
+"Move Calenbar to Applications?" = "¿Mover Calenbar a Aplicaciones?";
+"install.moveExplanation" = "Calenbar se está ejecutando desde una imagen de disco o una ubicación temporal. Al moverlo a la carpeta Aplicaciones puede abrirse al iniciar sesión y actualizarse solo.";
+"Move to Applications" = "Mover a Aplicaciones";
+"Not Now" = "Ahora no";
+"Calenbar couldn’t be moved" = "No se pudo mover Calenbar";
+
 /* Settings: About */
 "Version %@" = "Versión %@";
 "Your next meeting, always in the menu bar." = "Tu próxima reunión, siempre en la barra de menús.";
