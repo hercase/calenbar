@@ -63,15 +63,16 @@ private struct GeneralSettings: View {
 
     var body: some View {
         Form {
-            Toggle("Launch at login", isOn: $settings.launchAtLogin)
-
-            Picker("Switch to the next event", selection: $settings.titleRule) {
-                Text("5 min before it starts").tag(TitleRule.switchBeforeNextStarts)
-                Text("5 min before the current one ends").tag(TitleRule.switchBeforeCurrentEnds)
-            }
-            Toggle("Show month calendar in the panel", isOn: $settings.showMonthCalendar)
             Section {
-                LabeledContent("Measure app menus") {
+                Toggle("Launch at login", isOn: $settings.launchAtLogin)
+                Toggle("Show month calendar in the panel", isOn: $settings.showMonthCalendar)
+            }
+            Section {
+                Picker("Switch to the next event", selection: $settings.titleRule) {
+                    Text("5 min before it starts").tag(TitleRule.switchBeforeNextStarts)
+                    Text("5 min before the current one ends").tag(TitleRule.switchBeforeCurrentEnds)
+                }
+                LabeledContent("Use the free space after the app menus") {
                     if AccessibilityTrust.shared.isTrusted {
                         Label("On", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
                     } else {
@@ -81,31 +82,28 @@ private struct GeneralSettings: View {
                         }
                     }
                 }
+            } header: {
+                Text("Menu bar title")
             } footer: {
-                Text("settings.menuSpace.footer")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                SettingsFooter { Text("settings.menuSpace.footer") }
             }
             Section {
-                LabeledContent("Last updated") {
-                    HStack(spacing: PanelStyle.small) {
-                        if let last = calendar.lastReload {
-                            Text(last, format: .relative(presentation: .named))
-                                .foregroundStyle(.secondary)
-                        }
-                        Button("Refresh Now") { calendar.refreshSources() }
+                LabeledContent {
+                    Button("Refresh Now") { calendar.refreshSources() }
+                } label: {
+                    Text("Calendar sync")
+                    if let last = calendar.lastReload {
+                        Text("Last updated \(last.formatted(.relative(presentation: .named)))")
                     }
                 }
             } header: {
                 Text("Sync")
             } footer: {
-                VStack(alignment: .leading, spacing: PanelStyle.tight) {
+                SettingsFooter {
                     Text("settings.sync.footer")
                     Button("Open Calendar…") { calendar.openCalendarApp() }
                         .buttonStyle(.link)
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
             }
             Section("Meetings & events") {
                 Picker("Open meeting links in", selection: $settings.meetingBrowserID) {
@@ -123,6 +121,22 @@ private struct GeneralSettings: View {
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+/// Explanatory text under a section. Grouped forms align footers to the trailing edge on macOS, which
+/// reads wrong for paragraphs; this keeps them leading and in the secondary caption style.
+private struct SettingsFooter<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: PanelStyle.tight) {
+            content
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .multilineTextAlignment(.leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -204,7 +218,7 @@ private struct NotificationSettings: View {
 
 private struct AboutView: View {
     let updater: Updater
-    private let website = URL(string: "https://hercase.vercel.app/")
+    private let website = URL(string: "https://hercase.vercel.app/?utm_source=calenbar&utm_medium=app&utm_campaign=about")
     private let repository = URL(string: "https://github.com/hercase/calenbar")
     private let issues = URL(string: "https://github.com/hercase/calenbar/issues/new")
     private let sparkle = URL(string: "https://sparkle-project.org")

@@ -99,12 +99,14 @@
 "5 min before it starts" = "5 min antes de que empiece";
 "5 min before the current one ends" = "5 min antes de que termine el actual";
 "Show month calendar in the panel" = "Mostrar el calendario mensual en el panel";
-"Measure app menus" = "Medir los menús de la app";
+"Menu bar title" = "Título en la barra de menús";
+"Use the free space after the app menus" = "Usar el espacio libre después de los menús de la app";
 "On" = "Activado";
 "Allow…" = "Permitir…";
 "settings.menuSpace.footer" = "Opcional. En pantallas sin notch, permite que los títulos largos usen el espacio libre hasta los menús de la app activa en lugar de un ancho fijo. No hace falta en la pantalla de una MacBook. Requiere acceso de Accesibilidad, que se usa solo para saber dónde terminan los menús.";
 "Sync" = "Sincronización";
-"Last updated" = "Última actualización";
+"Calendar sync" = "Sincronización de calendarios";
+"Last updated %@" = "Última actualización: %@";
 "Refresh Now" = "Actualizar ahora";
 "settings.sync.footer" = "macOS sincroniza los calendarios de Google y Exchange según su propio intervalo. Para que las invitaciones nuevas aparezcan rápido, en Calendario › Ajustes › Cuentas, configurar Actualizar calendarios en \"Cada minuto\".";
 "Open Calendar…" = "Abrir Calendario…";
