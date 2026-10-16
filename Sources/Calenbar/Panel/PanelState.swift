@@ -13,6 +13,8 @@ final class PanelState {
     var hoveredEventID: String?
     /// Row whose detail card is showing; set after a short hover so skimming the list doesn't flash cards.
     var detailEventID: String?
+    /// A clicked row keeps its card open until it is clicked again, another row is clicked, or the card is dismissed.
+    @ObservationIgnored private var isPinned = false
     @ObservationIgnored private var isHoveringDetail = false
     @ObservationIgnored private var showTask: Task<Void, Never>?
     @ObservationIgnored private var closeTask: Task<Void, Never>?
@@ -22,12 +24,27 @@ final class PanelState {
         displayedMonth = Calendar.current.startOfMonth(for: Date())
         hoveredEventID = nil
         detailEventID = nil
+        isPinned = false
     }
 
-    /// Click or Return on a row: open its card, or close it if it's already showing.
+    /// Click or Return on a row: show its card right away and keep it open; a second click lets it go.
     func toggleDetail(eventID: String) {
         showTask?.cancel()
-        detailEventID = detailEventID == eventID ? nil : eventID
+        closeTask?.cancel()
+        if isPinned, detailEventID == eventID {
+            isPinned = false
+            detailEventID = nil
+        } else {
+            isPinned = true
+            detailEventID = eventID
+        }
+    }
+
+    /// The card was dismissed by the system (Esc, click outside).
+    func detailDismissed(eventID: String) {
+        guard detailEventID == eventID else { return }
+        detailEventID = nil
+        isPinned = false
     }
 
     func setHovering(_ isHovering: Bool, eventID: String) {
@@ -35,6 +52,9 @@ final class PanelState {
         if isHovering {
             closeTask?.cancel()
             hoveredEventID = eventID
+            if isPinned {
+                return
+            }
             if detailEventID != nil {
                 // A card is already open: follow the mouse without waiting again.
                 detailEventID = eventID
@@ -66,7 +86,7 @@ final class PanelState {
         closeTask?.cancel()
         closeTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(350))
-            guard let self, !Task.isCancelled, !self.isHoveringDetail, self.hoveredEventID == nil else { return }
+            guard let self, !Task.isCancelled, !self.isPinned, !self.isHoveringDetail, self.hoveredEventID == nil else { return }
             self.detailEventID = nil
         }
     }

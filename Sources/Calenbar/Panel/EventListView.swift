@@ -125,7 +125,7 @@ private struct EventRow: View {
         // Double-click first so a single click waits for it; Return and Space work like a click.
         .onTapGesture(count: 2) { model.openEvent(event) }
         .onTapGesture { state.toggleDetail(eventID: event.id) }
-        .focusable()
+        .focusable(true, interactions: .activate)
         .onKeyPress(.return) {
             state.toggleDetail(eventID: event.id)
             return .handled
@@ -141,7 +141,7 @@ private struct EventRow: View {
         .popover(
             isPresented: Binding(
                 get: { state.detailEventID == event.id },
-                set: { if !$0, state.detailEventID == event.id { state.detailEventID = nil } }
+                set: { if !$0 { state.detailDismissed(eventID: event.id) } }
             ),
             arrowEdge: .leading
         ) {
