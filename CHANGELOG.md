@@ -4,6 +4,19 @@ Notes for each version, in the words users see on the site's What's new page and
 release. Write the next version under "Unreleased" as you go; `scripts/release.sh` turns that
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 
+## Unreleased
+
+### Headline
+The alert still comes if you opened the meeting early, and tidier buttons on the event card.
+La alerta llega aunque hayas abierto la reunión antes, y botones más prolijos en la tarjeta del evento.
+
+- **Joined early, still reminded.** Opening a meeting from Calenbar minutes before it starts often leaves you in the waiting room, or in another tab. The alert now stays quiet only when you joined within two minutes of the start.
+- **Event card buttons.** Skip and Open in Calendar are proper buttons, lined up under Join.
+
+### es
+- **Entraste antes, igual te avisa.** Abrir una reunión desde Calenbar unos minutos antes suele dejarte en la sala de espera, o en otra pestaña. Ahora la alerta solo se calla si entraste dentro de los dos minutos previos al inicio.
+- **Botones de la tarjeta del evento.** Omitir y Abrir en Calendario son botones de verdad, alineados debajo de Unirse.
+
 ## 0.6.0 - 2026-10-19
 
 ### Headline
