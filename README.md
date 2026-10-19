@@ -5,8 +5,8 @@
 <h1 align="center">Calenbar</h1>
 
 <p align="center">
-  Your next meeting, in the menu bar.<br>
-  A small native Mac app: the current or upcoming event next to the clock, with a countdown, and one click to join the call.
+  <b>Never miss a meeting again.</b><br>
+  A countdown to your next meeting next to the clock, an alert that pulls you out of whatever you're doing when it starts, and one click into the call. Free, native, and your calendar never leaves your Mac.
 </p>
 
 <p align="center">
@@ -23,14 +23,15 @@
   <img src="docs/img/og.jpg" alt="A Mac menu bar showing “Weekly Sync • in 12m”, with the Calenbar panel open below it" width="900">
 </p>
 
-## What it does
+## What it solves
 
-- **Always in view.** The menu bar shows today's date and the next event: `Weekly Sync • in 12m`, then `now`, then `25m left`. You choose how far ahead it looks, from the next hour to the whole week.
-- **One click to join.** Google Meet, Zoom, Microsoft Teams, Webex, Slack huddles and FaceTime. Zoom and Teams open in their apps when installed.
-- **A panel for the day.** Today and tomorrow, a month view, world clocks, and a card per event: the time in your other time zones, the room, who's coming and who said yes, the notes.
-- **Hard to miss.** A notification before each meeting, a card in the corner of the screen when it starts (or a full-screen alert, if you want it), and the bar flashing red in the last minutes. Press ⌃⌘J anywhere to join.
-- **Your calendars, as they are.** Works with any account the Mac's Calendar knows (Google, Exchange, iCloud). Events never leave your Mac.
-- **Low maintenance.** Updates itself. English and Spanish.
+- **Late because you lost track of time.** The menu bar always shows what's next and how long you have: `Weekly Sync • in 12m`, then `now`, then `25m left`. In the last five minutes it flashes.
+- **Missing the start while deep in something.** When a meeting starts, a card appears in the corner of the screen, even over full-screen apps, with Join and Snooze. Prefer a takeover? Make it full screen.
+- **Hunting for the link.** One click, or ⌃⌘J from any app, opens Google Meet, Zoom, Microsoft Teams, Webex, Slack huddles, FaceTime and six more. Zoom and Teams open in their apps.
+- **Double bookings you notice too late.** Meetings that share a slot sit together, so you pick one in time.
+- **Time zone math.** World clocks in the panel, with offsets and upcoming clock changes; each event shows its time in your other zones.
+- **Showing your agenda while sharing your screen.** Hide titles and the bar just says `Meeting • in 12m`.
+- **Another account to trust.** There isn't one: Calenbar reads the calendars your Mac already has (Google, Exchange, iCloud) and nothing leaves your Mac. It updates itself. English and Spanish.
 
 ## Install
 

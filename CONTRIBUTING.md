@@ -59,3 +59,8 @@ echo 0.9.9 > VERSION && CALENBAR_BUILD=101 scripts/package.sh && git checkout VE
 ```
 
 Sign the DMG with `sign_update -p`, write an appcast item with `scripts/appcast.py` pointing at `http://localhost:8765/…`, serve the folder with `python3 -m http.server 8765`, launch the old app, and watch it download and install the new one on quit.
+
+## Writing for users
+
+Everything users read (the site, the README, release notes in `CHANGELOG.md`, the GitHub release, the app's own strings) leads with the problem it solves, not the feature's name. "Never miss a meeting again", not "a menu bar calendar"; "In the call in one click", not "Join button". Name the feature after the benefit, in plain words, then say how it works in one short sentence. English and Spanish say the same thing.
+

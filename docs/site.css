@@ -1,3 +1,12 @@
+/* Layout: one page width for every page, a reading width for prose, one rhythm between sections.
+   The page stops growing at --page, so ultra-wide screens get a centred column rather than long lines. */
+:root {
+  --page: 1200px;
+  --content: 880px;
+  --measure: 66ch;
+  --gutter: clamp(16px, 4vw, 32px);
+  --section-y: clamp(56px, 7vw, 96px);
+}
 :root {
   --paper: #fbfbfd; --ink: #1d1d1f; --ink-2: #515154; --ink-3: #86868b; --rule: #e3e3e8;
   --accent: #4c4ed6; --accent-ink: #ffffff; --band: #eef0ff;
@@ -31,8 +40,9 @@ body {
 }
 a { color: var(--accent); }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-.narrow { max-width: 920px; }
+.wrap { max-width: calc(var(--page) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
+/* Reading pages (guide, release notes): a narrower column, left-aligned with the logo. */
+.guide, .release { max-width: var(--content); }
 [hidden] { display: none !important; }
 b { font-weight: 600; }
 h1, h2, h3 { text-wrap: balance; }
@@ -83,7 +93,7 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 
 /* A slice of desktop: wallpaper, the menu bar on top, and whatever hangs from Calenbar's item. */
 .screen {
-  position: relative; margin: 44px auto 0; max-width: 920px; border-radius: 18px; overflow: hidden;
+  position: relative; margin: 44px auto 0; max-width: 1000px; border-radius: 18px; overflow: hidden;
   background: var(--wallpaper);
   box-shadow: 0 0 0 1px var(--wallpaper-edge), 0 24px 60px rgba(28, 29, 70, .16);
   padding: 0 0 28px; text-align: left;
@@ -112,7 +122,7 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 
 /* Eight reasons, one line each, right under the hero */
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.perks { padding: 72px 0 80px; }
+.perks { padding: var(--section-y) 0; }
 .perks ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 36px 32px; }
 .perks li { display: grid; gap: 4px; align-content: start; }
 .perks svg { width: 26px; height: 26px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 8px; }
@@ -122,12 +132,12 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 
 /* Eyebrow above section titles */
 .eyebrow { display: block; color: var(--accent); font-size: 16px; font-weight: 600; margin: 0 0 8px; }
-.section-head { text-align: center; max-width: 60ch; margin: 0 auto 36px; }
+.section-head { text-align: center; max-width: var(--measure); margin: 0 auto 36px; }
 .section-head h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.028em; margin: 0 0 12px; }
 .section-head p { color: var(--ink-2); margin: 0; font-size: 18px; }
 
 /* Three sizes of the same thing */
-.trio { padding: 88px 0; border-top: 1px solid var(--rule); }
+.trio { padding: var(--section-y) 0; border-top: 1px solid var(--rule); }
 .trio .shots { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 28px; align-items: start; }
 .trio figure { margin: 0; }
 .trio figure img, .trio figure picture { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow); }
@@ -138,7 +148,7 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 @media (max-width: 760px) { .trio .shots { grid-template-columns: 1fr; } }
 
 /* Small things, as cards */
-.cards { padding: 88px 0; border-top: 1px solid var(--rule); }
+.cards { padding: var(--section-y) 0; border-top: 1px solid var(--rule); }
 .cards .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .cards .card { background: var(--win); border: 1px solid var(--rule); border-radius: 16px; padding: 22px 24px; }
 .cards h3 { margin: 0 0 6px; font-size: 17px; letter-spacing: -0.01em; }
@@ -148,7 +158,7 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 /* What's new */
 .release { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; padding: 40px 0; border-top: 1px solid var(--rule); }
 .release time { color: var(--ink-3); font-size: 15px; padding-top: 7px; position: sticky; top: 24px; align-self: start; }
-.release > div { max-width: 68ch; }
+.release > div { max-width: var(--measure); }
 .release h2 { font-size: 27px; letter-spacing: -0.02em; margin: 0 0 10px; line-height: 1.2; }
 .release p { color: var(--ink-2); margin: 0 0 12px; }
 .release ul { margin: 0; padding-left: 18px; color: var(--ink-2); display: grid; gap: 7px; }
@@ -157,7 +167,7 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 @media (max-width: 640px) { .release { grid-template-columns: 1fr; gap: 6px; } }
 
 /* Features: text and a screenshot, alternating sides. */
-.feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; padding: 80px 0; border-top: 1px solid var(--rule); }
+.feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; padding: var(--section-y) 0; border-top: 1px solid var(--rule); }
 .feature.flip > .text { order: 2; }
 .feature h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 1.12; letter-spacing: -0.025em; margin: 0 0 12px; }
 .feature p { margin: 0 0 14px; color: var(--ink-2); }
@@ -168,18 +178,18 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 .feature picture img { box-shadow: none; }
 .feature picture.card { max-width: 340px; margin: 0 auto; }
 .feature.wide { grid-template-columns: 1fr; gap: 24px; }
-.feature.wide .text { max-width: 60ch; }
-@media (max-width: 680px) { .feature { grid-template-columns: 1fr; gap: 24px; padding: 40px 0; } .feature.flip > .text { order: 0; } }
+.feature.wide .text { max-width: var(--measure); }
+@media (max-width: 680px) { .feature { grid-template-columns: 1fr; gap: 24px; } .feature.flip > .text { order: 0; } }
 
 /* Meeting services Join recognises */
-.services { padding: 56px 0; border-top: 1px solid var(--rule); text-align: center; }
+.services { padding: var(--section-y) 0; border-top: 1px solid var(--rule); text-align: center; }
 .services h2 { font-size: clamp(22px, 3vw, 28px); letter-spacing: -0.02em; margin: 0 0 20px; }
 .services ul { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 760px; }
 .services li { background: var(--win); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 16px; font-size: 15px; font-weight: 500; }
 .services p { color: var(--ink-3); font-size: 14px; margin: 18px 0 0; }
 
 /* Keyboard */
-.keys { padding: 64px 0; border-top: 1px solid var(--rule); }
+.keys { padding: var(--section-y) 0; border-top: 1px solid var(--rule); }
 .keys h2 { font-size: clamp(26px, 3.4vw, 34px); letter-spacing: -0.025em; margin: 0 0 20px; }
 .keys dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
 .keys dl > div { display: flex; align-items: baseline; gap: 14px; background: var(--win); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; }
@@ -188,22 +198,22 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 kbd { display: inline-block; min-width: 24px; padding: 2px 7px; margin-right: 3px; text-align: center; font: 600 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--win-rule); border-bottom-width: 2px; border-radius: 6px; }
 
 /* Questions */
-.faq { padding: 56px 0 24px; border-top: 1px solid var(--rule); }
+.faq { padding: var(--section-y) 0 24px; border-top: 1px solid var(--rule); }
 .faq h2 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 20px; }
-.faq dl { margin: 0; display: grid; gap: 22px; max-width: 64ch; }
+.faq dl { margin: 0; display: grid; gap: 22px; max-width: var(--measure); }
 .faq dt { font-weight: 600; margin: 0 0 4px; }
 .faq dd { margin: 0; color: var(--ink-2); }
 .faq dd code { font-size: .85em; background: var(--win); border: 1px solid var(--rule); border-radius: 5px; padding: 1px 5px; overflow-wrap: anywhere; }
 
 /* Closing band */
-.closing { padding: 64px 24px; margin: 24px 0 56px; text-align: center; border-radius: 24px; background: var(--wallpaper); box-shadow: 0 0 0 1px var(--wallpaper-edge); }
+.closing { padding: var(--section-y) 24px; margin: 24px 0 56px; text-align: center; border-radius: 24px; background: var(--wallpaper); box-shadow: 0 0 0 1px var(--wallpaper-edge); }
 .closing h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.02em; margin: 0 0 10px; }
 .closing p { color: var(--ink-2); margin: 0 auto 24px; max-width: 46ch; }
 
 /* Install guide page */
 .guide { padding: 32px 0 16px; }
 .guide h1 { text-align: left; margin: 0 0 12px; max-width: 20ch; font-size: clamp(34px, 5vw, 48px); }
-.guide .intro { color: var(--ink-2); margin: 0 0 24px; max-width: 60ch; font-size: 19px; line-height: 1.45; }
+.guide .intro { color: var(--ink-2); margin: 0 0 24px; max-width: var(--measure); font-size: 19px; line-height: 1.45; }
 /* Two ways in, stacked: the command first, then the download that the numbered steps below follow. */
 .ways { display: grid; gap: 16px; margin: 32px 0 8px; }
 .way { background: var(--win); border: 1px solid var(--rule); border-radius: 20px; padding: 26px 28px; display: grid; gap: 14px; }
@@ -234,7 +244,7 @@ kbd { display: inline-block; min-width: 24px; padding: 2px 7px; margin-right: 3p
 .way code { font-size: .92em; }
 .way p code, .way li code { background: var(--paper); border: 1px solid var(--rule); border-radius: 5px; padding: 1px 5px; }
 .steps-head { margin: 56px 0 6px; font-size: clamp(24px, 3vw, 30px); letter-spacing: -0.025em; }
-.steps-head + p { color: var(--ink-2); margin: 0 0 20px; max-width: 60ch; }
+.steps-head + p { color: var(--ink-2); margin: 0 0 20px; max-width: var(--measure); }
 .step { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 40px; align-items: start; padding: 0 0 44px 52px; position: relative; }
 .step::before { content: ""; position: absolute; left: 15px; top: 36px; bottom: 4px; width: 2px; border-radius: 2px; background: var(--rule); }
 .step:last-of-type::before { display: none; }
