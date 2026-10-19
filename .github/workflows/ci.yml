@@ -30,6 +30,9 @@ jobs:
       - name: Translations
         run: python3 scripts/check-l10n.py
 
+      - name: Site asset stamps
+        run: python3 scripts/site-assets.py --check
+
       - name: SwiftLint
         run: |
           command -v swiftlint >/dev/null || brew install swiftlint

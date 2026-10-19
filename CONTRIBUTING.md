@@ -28,7 +28,7 @@ Quality gates, all of which CI runs on every push: `scripts/test.sh`, `scripts/l
 - `Sources/CalenbarCore`: pure logic with no AppKit or EventKit: which event the menu bar shows (`TitleSelector`, `TitleHorizon`), title formatting and width fitting, meeting-link detection, event filtering and deduplication, time-zone math. Fully unit tested in `Tests/CalenbarCoreTests`.
 - `Sources/Calenbar`: the app. `App/` wiring and the offscreen preview renderer; `MenuBar/` the status item, date icon and notch-aware width; `Panel/` the popover, event list, card and world clocks; `Alert/` the full-screen reminder; `Settings/`; `Services/` EventKit access, notifications, Sparkle updates, login item, first-launch install check.
 - `Resources/`: Info.plist, entitlements, icon, localizations, launchd agent.
-- `docs/`: the GitHub Pages site and the Sparkle appcast.
+- `docs/`: the GitHub Pages site and the Sparkle appcast. Pages link `site.css`/`site.js` with a content hash (`?v=…`) so browsers never pair new HTML with a cached stylesheet; `scripts/lint.sh` refreshes it and CI checks it.
 
 Keep logic in Core with tests; the app layer should be thin.
 
