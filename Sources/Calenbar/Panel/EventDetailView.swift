@@ -218,8 +218,8 @@ private struct ParticipantsView: View {
     }
 }
 
-/// Card footer: Skip on the left, one primary action on the right. Answering and opening both go to
-/// the same place, so there's a single button whose label says which it is.
+/// Card footer: Skip at its own width, then one action to open the event filling the rest of the row.
+/// Answering and opening both go to the same place, so there's a single button whose label says which it is.
 struct EventActionsRow: View {
     let model: AppModel
     let event: CalendarEvent
@@ -236,12 +236,12 @@ struct EventActionsRow: View {
                 if event.start > model.now {
                     SkipButton(model: model, event: event, showsLabel: true)
                 }
-                Spacer(minLength: 0)
                 if event.needsResponse {
                     Button {
                         model.openEvent(event)
                     } label: {
                         Label(String(localized: "Answer in \(destination)"), systemImage: "arrow.up.forward")
+                            .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(hasPrimaryJoin ? .secondary : .accentColor)
@@ -251,10 +251,12 @@ struct EventActionsRow: View {
                         model.openEvent(event)
                     } label: {
                         Label(String(localized: "Open in \(destination)"), systemImage: "arrow.up.forward")
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.bordered)
                 }
             }
-            .controlSize(.small)
+            .lineLimit(1)
         }
     }
 }

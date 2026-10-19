@@ -235,7 +235,8 @@ struct SkipButton: View {
             } label: {
                 Label(title, systemImage: symbol)
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.bordered)
+            .fixedSize()
             .help(help)
         } else {
             IconButton(systemImage: symbol, label: help) {
