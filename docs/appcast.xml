@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.6.0</title>
+      <pubDate>Mon, 19 Oct 2026 15:18:34 +0000</pubDate>
+      <sparkle:version>119</sparkle:version>
+      <sparkle:shortVersionString>0.6.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p><b>Double bookings in plain sight, clocks that explain themselves, and a card on hover.</b></p><ul><li><b>Double bookings show up.</b> Meetings that share a time slot sit together in the list under “At the same time”, so you see the clash before it happens and pick one.</li><li><b>Hover the menu bar item</b> and the event's card appears: time, room, who's coming, Join. Off in Settings › Menu Bar if you prefer.</li><li><b>World clocks that explain themselves.</b> Type what your team says, “ET”, “PT”, “CET”, “UTC”, and the right zone comes up first. Each clock shows its short name (PDT, CEST, BST), its UTC offset, and a note when its clocks change within the month, with the offset you will have from then on. Arrows reorder them.</li><li><b>My Room.</b> Set your standing room (a fixed Meet, your Zoom personal meeting id) in Settings › General; New Meeting › My Room opens it with the link already on the clipboard.</li><li><b>Fixes.</b> A meeting a few days out gets its notification once it comes within a day. The test alert no longer silences a live one, and turning the alert off removes cards already on screen. A short meeting with “vacation” in its title no longer counts as a day off. Title width in Settings › Menu Bar now applies on MacBooks with a notch too.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.6.0/Calenbar-0.6.0.dmg" length="6134526" type="application/octet-stream"
+        sparkle:edSignature="LNaav97joLB+Q+aIxrDGu5CQAHpHVcdWEMIcf8JejBtrpuWiyuBqt8ru1sWElyTD/HZUeU+pRNf0OVRbOE7WBw==" />
+    </item>
+    <item>
       <title>Calenbar 0.5.0</title>
       <pubDate>Fri, 16 Oct 2026 19:39:25 +0000</pubDate>
       <sparkle:version>98</sparkle:version>
