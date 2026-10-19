@@ -160,38 +160,30 @@ private struct DayCell: View {
     let isInMonth: Bool
     let isToday: Bool
     let isSelected: Bool
-    /// Timed events that day; shown as a bar: short (1–2), medium (3–4), long (5+).
+    /// Timed events that day; the fill behind the number darkens in three steps (1–2, 3–4, 5+).
     let eventCount: Int
     let isDayOff: Bool
     let select: () -> Void
 
     var body: some View {
         Button(action: select) {
+            // The heat-map convention: a soft fill behind the number, stronger the busier the day, in one
+            // hue. Today is the solid version of the same hue; the selected day is a ring; a day off is
+            // written in the accent colour, the way printed calendars mark holidays in red.
             Text(day.formatted(.dateTime.day()))
-                .font(.subheadline.weight(isToday ? .bold : .regular).monospacedDigit())
+                .font(.subheadline.weight(isToday || isDayOff ? .semibold : .regular).monospacedDigit())
                 .foregroundStyle(foreground)
-                .frame(width: 22, height: 22)
+                .frame(width: 24, height: 24)
                 .background {
                     if isToday {
                         Circle().fill(Color.accentColor)
                     } else {
-                        if isDayOff {
-                            Circle().fill(Color.accentColor.opacity(0.16))
+                        if let load = loadOpacity {
+                            Circle().fill(Color.accentColor.opacity(load))
                         }
                         if isSelected {
                             Circle().strokeBorder(Color.accentColor, lineWidth: 1.2)
                         }
-                    }
-                }
-                .overlay(alignment: .bottom) {
-                    // One mark, one channel: the bar grows with the day's load. Length is read more
-                    // accurately than colour, and a calendar shouldn't go red. The holiday tint already
-                    // says the day is taken, so no bar on top of it.
-                    if eventCount > 0, !isDayOff {
-                        Capsule()
-                            .fill(Color.secondary.opacity(0.55))
-                            .frame(width: barWidth, height: 2)
-                            .offset(y: 5)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -205,11 +197,13 @@ private struct DayCell: View {
 
     private var dayName: String { day.formatted(date: .complete, time: .omitted) }
 
-    private var barWidth: CGFloat {
+    /// Three steps of the same hue: light, busy, packed. Nil leaves the cell plain.
+    private var loadOpacity: Double? {
         switch eventCount {
-        case ...2: 6
-        case ...4: 12
-        default: 18
+        case ...0: nil
+        case ...2: 0.10
+        case ...4: 0.22
+        default: 0.38
         }
     }
 
@@ -223,6 +217,9 @@ private struct DayCell: View {
     private var foreground: Color {
         if isToday {
             return .white
+        }
+        if isDayOff {
+            return isInMonth ? .accentColor : .accentColor.opacity(0.5)
         }
         return isInMonth ? .primary : .secondary.opacity(0.5)
     }
