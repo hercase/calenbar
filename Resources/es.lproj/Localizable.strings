@@ -280,3 +280,6 @@
 "Previous month" = "Mes anterior";
 "Next month" = "Mes siguiente";
 "%@ is already in the list as the same time zone." = "%@ ya está en la lista con la misma zona horaria.";
+" · No link" = " · Sin link";
+"No meeting link in this invitation" = "La invitación no tiene link de reunión";
+"Add one" = "Agregar uno";

@@ -45,6 +45,11 @@ struct HeroEventView: View {
                     if event.needsResponse {
                         Text(" · Not answered").foregroundStyle(.orange.opacity(0.9))
                     }
+                    // Only where it matters: a meeting with people and nowhere to join. Personal
+                    // blocks and all-day events say nothing.
+                    if link == nil, event.hasOtherAttendees, !event.isAllDay {
+                        Text(" · No link")
+                    }
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
