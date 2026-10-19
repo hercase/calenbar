@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.6.1</title>
+      <pubDate>Mon, 19 Oct 2026 17:56:27 +0000</pubDate>
+      <sparkle:version>126</sparkle:version>
+      <sparkle:shortVersionString>0.6.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p><b>The alert still comes if you opened the meeting early, and tidier buttons on the event card.</b></p><ul><li><b>Joined early, still reminded.</b> Opening a meeting from Calenbar minutes before it starts often leaves you in the waiting room, or in another tab. The alert now stays quiet only when you joined within two minutes of the start.</li><li><b>Event card buttons.</b> Skip and Open in Calendar are proper buttons, lined up under Join.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.6.1/Calenbar-0.6.1.dmg" length="6123565" type="application/octet-stream"
+        sparkle:edSignature="ebzMLxgJeI4dGYcbju1ocsyK0U666mKzSZH8yEolbkGQqbCwswOahuLbPRCHzRDqOgU/e+UI3i8K5hiRZyghAw==" />
+    </item>
+    <item>
       <title>Calenbar 0.6.0</title>
       <pubDate>Mon, 19 Oct 2026 15:18:34 +0000</pubDate>
       <sparkle:version>119</sparkle:version>
