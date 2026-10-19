@@ -103,6 +103,11 @@ private struct GeneralSettings: View {
                     }
                 }
                 Toggle("Use the Zoom and Teams apps when installed", isOn: $settings.preferNativeMeetingApps)
+                TextField(
+                    "Your personal meeting room", text: $settings.personalRoomURL,
+                    prompt: Text(verbatim: "https://meet.google.com/abc-defg-hij")
+                )
+                .textFieldStyle(.roundedBorder)
                 Picker("Open events and invitations in", selection: $settings.openEventsIn) {
                     Text("Automatic (Google Calendar for Google events)").tag(EventDestination.automatic)
                     Text("Calendar app").tag(EventDestination.calendarApp)

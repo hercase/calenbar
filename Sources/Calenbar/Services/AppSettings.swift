@@ -68,6 +68,8 @@ final class AppSettings {
     /// Bundle id of the browser for meeting links; empty means the system default browser.
     var meetingBrowserID: String { didSet { store(meetingBrowserID, .meetingBrowserID) } }
     var preferNativeMeetingApps: Bool { didSet { store(preferNativeMeetingApps, .preferNativeMeetingApps) } }
+    /// The user's standing meeting room (a fixed Meet, a Zoom personal meeting id): "New Meeting › My Room".
+    var personalRoomURL: String { didSet { store(personalRoomURL, .personalRoomURL) } }
     var flashEnabled: Bool { didSet { store(flashEnabled, .flashEnabled) } }
     var flashFromFiveMinutes: Bool { didSet { store(flashFromFiveMinutes, .flashFromFiveMinutes) } }
     var attentionSound: Bool { didSet { store(attentionSound, .attentionSound) } }
@@ -106,7 +108,7 @@ final class AppSettings {
         case titleRule, titleHorizon, titleWidth, hoverPreview, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar,
             joinShortcut,
             openEventsIn,
-            meetingBrowserID, preferNativeMeetingApps, flashEnabled, flashFromFiveMinutes, attentionSound
+            meetingBrowserID, preferNativeMeetingApps, personalRoomURL, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
             alertStyle, alertCorner
         case disabledCalendars, holidayCalendarChoices, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel,
@@ -132,6 +134,7 @@ final class AppSettings {
         openEventsIn = Self.load(.openEventsIn, from: defaults) ?? .automatic
         meetingBrowserID = Self.load(.meetingBrowserID, from: defaults) ?? ""
         preferNativeMeetingApps = Self.load(.preferNativeMeetingApps, from: defaults) ?? true
+        personalRoomURL = Self.load(.personalRoomURL, from: defaults) ?? ""
         flashEnabled = Self.load(.flashEnabled, from: defaults) ?? true
         flashFromFiveMinutes = Self.load(.flashFromFiveMinutes, from: defaults) ?? true
         attentionSound = Self.load(.attentionSound, from: defaults) ?? false

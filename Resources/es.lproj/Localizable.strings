@@ -122,7 +122,7 @@
 "Position" = "Posición";
 "settings.position.row" = "macOS pone los ítems nuevos a la izquierda de la barra de menús y son lo primero que esconde cuando está llena. Mantené ⌘ y arrastrá el ítem de Calenbar junto al reloj una vez; se queda ahí aunque relances o actualices.";
 "settings.privacy.footer" = "La barra de menús muestra “Reunión • en 12m” en vez del título, así una pantalla compartida o una grabación no lo revela. El panel no cambia. También está en el menú ••• del panel y en el clic derecho del ítem.";
-"settings.shortcut.footer" = "⌃⌘J por defecto; grabá otro, o quitalo con la ×. Funciona en cualquier app y entra a la reunión que muestra la barra, o a la próxima que tenga link.";
+"settings.shortcut.footer" = "⌃⌘J por defecto; grabá otro, o quitalo con la ×. Funciona en cualquier app y entra a la reunión que muestra la barra, o a la próxima que tenga link. Con una sala personal cargada, Nueva reunión › Mi sala la abre y copia el link para que lo pegues.";
 "settings.alert.footer" = "La tarjeta aparece en la esquina que elijas, sobre todos los escritorios y apps a pantalla completa, y se queda hasta que entrás, posponés o la cerrás. Las esquinas de abajo no se pisan con las notificaciones de macOS. Pantalla completa difumina todo y no se puede pasar por alto. Las dos se van solas cuando termina la reunión.";
 "settings.horizon.footer" = "Fuera de ese plazo la barra de menús muestra solo la fecha de hoy. Un evento en curso se muestra siempre.";
 "Nothing coming up" = "Nada en el horizonte";
@@ -272,3 +272,5 @@
 "Select All" = "Seleccionar todo";
 "Window" = "Ventana";
 "Close" = "Cerrar";
+"My Room (copies the link)" = "Mi sala (copia el link)";
+"Your personal meeting room" = "Tu sala de reuniones personal";

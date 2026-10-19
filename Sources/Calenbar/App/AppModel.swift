@@ -44,6 +44,26 @@ final class AppModel {
         MeetingOpener.open(link, eventKey: event.key)
     }
 
+    /// The standing room from Settings, when the text is a link.
+    var personalRoom: URL? {
+        let text = settings.personalRoomURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let url = URL(string: text), url.scheme != nil, url.host != nil else { return nil }
+        return url
+    }
+
+    /// Opens the standing room (through its app when it's a known service) and puts the link on the
+    /// clipboard, ready to paste into the chat.
+    func startPersonalRoom() {
+        guard let url = personalRoom else { return }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(url.absoluteString, forType: .string)
+        if let link = MeetingLinkDetector.detect(url: url, location: nil, notes: nil) {
+            MeetingOpener.open(link)
+        } else {
+            MeetingOpener.openInBrowser(url)
+        }
+    }
+
     /// Opens the service's instant-meeting page in the user's meeting browser.
     func startNewMeeting(_ provider: MeetingProvider) {
         if let url = provider.newMeetingURL {

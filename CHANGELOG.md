@@ -10,6 +10,7 @@ section into the release. Bullets are English; an optional `### es` block carrie
 - Under each day, a short bar grows with the number of meetings: a glance says light, busy or packed.
 - The "Update available" pill in the panel is easier to see.
 - World clocks: type what your team says, “ET”, “PT”, “CET”, “UTC”, and the right zone comes up first.
+- New Meeting › My Room: set your standing room (a fixed Meet, your Zoom personal meeting id) in Settings › General, and it opens with the link already on the clipboard.
 - Paste, copy, cut, select all and undo now work in the Settings text fields (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), and ⌘W closes the window.
 
 ### es
@@ -17,6 +18,7 @@ section into the release. Bullets are English; an optional `### es` block carrie
 - Debajo de cada día, una barrita crece con la cantidad de reuniones: de un vistazo se ve si es tranquilo, cargado o imposible.
 - El aviso "Actualización disponible" del panel se ve mejor.
 - Relojes del mundo: escribí lo que dice tu equipo, “ET”, “PT”, “CET”, “UTC”, y la zona correcta aparece primero.
+- Nueva reunión › Mi sala: cargá tu sala fija (un Meet permanente, tu ID personal de Zoom) en Ajustes › General, y se abre con el link ya en el portapapeles.
 - Pegar, copiar, cortar, seleccionar todo y deshacer ya funcionan en los campos de texto de Ajustes (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), y ⌘W cierra la ventana.
 
 ## 0.5.0 - 2026-10-16

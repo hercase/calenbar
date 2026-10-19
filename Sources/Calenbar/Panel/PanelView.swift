@@ -150,6 +150,10 @@ private struct FooterView: View {
                     .keyboardShortcut(model.settings.joinShortcut?.keyboardShortcut)
                     .disabled(model.nextMeeting == nil)
                 Menu("New Meeting") {
+                    if model.personalRoom != nil {
+                        Button("My Room (copies the link)") { model.startPersonalRoom() }
+                        Divider()
+                    }
                     ForEach(MeetingProvider.instantMeetingProviders, id: \.self) { provider in
                         Button(provider.displayName) { model.startNewMeeting(provider) }
                     }
