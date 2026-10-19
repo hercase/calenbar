@@ -6,26 +6,26 @@ section into the release. Bullets are English; an optional `### es` block carrie
 
 ## Unreleased
 
-- Rest the pointer on the menu bar item and the event's card appears: time, room, who's coming, Join. Off in Settings › Menu Bar if you prefer.
-- The "Update available" pill in the panel is easier to see.
-- World clocks: type what your team says, “ET”, “PT”, “CET”, “UTC”, and the right zone comes up first.
-- World clocks: arrows to reorder them, and each one shows its short name (PDT, CET), its UTC offset, and a note when its clocks change within the month, with the offset you will have from then on.
-- New Meeting › My Room: set your standing room (a fixed Meet, your Zoom personal meeting id) in Settings › General, and it opens with the link already on the clipboard.
-- Fixes: a meeting a few days out now gets its notification once it comes within a day, even if nothing else changed; the test alert no longer silences a live one; turning the alert off removes cards already on screen; “Skip This Version” clears the update badge; world clocks in Europe and Asia show CEST, BST, JST; a short meeting with “vacation” in its title no longer counts as a day off.
-- Meetings that share a time slot sit together in the list, under “At the same time”, so a double booking shows at a glance.
-- The service logo on Join buttons sits on a small white tile, so it reads well whatever accent colour your Mac uses.
-- Paste, copy, cut, select all and undo now work in the Settings text fields (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), and ⌘W closes the window.
+### Headline
+Double bookings in plain sight, clocks that explain themselves, and a card on hover.
+Dobles turnos a la vista, relojes que se explican solos, y una tarjeta al pasar el puntero.
+
+- **Double bookings show up.** Meetings that share a time slot sit together in the list under “At the same time”, so you see the clash before it happens and pick one.
+- **Hover the menu bar item** and the event's card appears: time, room, who's coming, Join. Off in Settings › Menu Bar if you prefer.
+- **World clocks that explain themselves.** Type what your team says, “ET”, “PT”, “CET”, “UTC”, and the right zone comes up first. Each clock shows its short name (PDT, CEST, BST), its UTC offset, and a note when its clocks change within the month, with the offset you will have from then on. Arrows reorder them.
+- **My Room.** Set your standing room (a fixed Meet, your Zoom personal meeting id) in Settings › General; New Meeting › My Room opens it with the link already on the clipboard.
+- **Smaller things.** The Join button shows the global shortcut in small type. Paste, copy, cut, select all and undo work in Settings text fields, and ⌘W closes the window. Title width in Settings › Menu Bar now takes effect on MacBooks with a notch too. The “Update available” pill is easier to see. Logos on the large Join buttons sit on a white tile, so they read well with any accent colour.
+- **Fixes.** A meeting a few days out gets its notification once it comes within a day, even when nothing else changed. The test alert no longer silences a live one, and turning the alert off removes cards already on screen. “Skip This Version” clears the update badge. A short meeting with “vacation” in its title no longer counts as a day off. The menu bar title stops shrinking after app switches, wakes and lock screens. A declined invitation stays declined even when a shared calendar has a copy.
+- **Under the hood.** Less work per minute: meeting links are found once per event, calendar reloads are grouped, and the month grid reuses one query. The app is lighter on battery all day.
 
 ### es
-- Apoyá el puntero en el ítem de la barra y aparece la tarjeta del evento: hora, sala, quién viene, Unirse. Se apaga en Ajustes › Barra de menús si preferís.
-- El aviso "Actualización disponible" del panel se ve mejor.
-- Relojes del mundo: escribí lo que dice tu equipo, “ET”, “PT”, “CET”, “UTC”, y la zona correcta aparece primero.
-- Relojes del mundo: flechas para reordenarlos, y cada uno muestra su nombre corto (PDT, CET), su desfase UTC y una nota cuando su horario cambia dentro del mes, con el desfase que vas a tener desde entonces.
-- Nueva reunión › Mi sala: cargá tu sala fija (un Meet permanente, tu ID personal de Zoom) en Ajustes › General, y se abre con el link ya en el portapapeles.
-- Correcciones: una reunión de acá a unos días recibe su notificación cuando entra en las 24 horas, aunque nada más haya cambiado; la alerta de prueba ya no silencia una real; apagar la alerta quita las tarjetas que ya estaban; “Omitir esta versión” saca el punto de actualización; los relojes de Europa y Asia muestran CEST, BST, JST; una reunión corta con “vacaciones” en el título ya no cuenta como día libre.
-- Las reuniones que comparten horario van juntas en la lista, bajo “A la misma hora”, así un doble turno se ve de un vistazo.
-- El logo del servicio en los botones Unirse va sobre una placa blanca chica, para que se lea bien con cualquier color de acento de tu Mac.
-- Pegar, copiar, cortar, seleccionar todo y deshacer ya funcionan en los campos de texto de Ajustes (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), y ⌘W cierra la ventana.
+- **Los dobles turnos se ven.** Las reuniones que comparten horario van juntas en la lista bajo “A la misma hora”, así ves el choque antes de que pase y elegís una.
+- **Pasá el puntero por el ítem de la barra** y aparece la tarjeta del evento: hora, sala, quién viene, Unirse. Se apaga en Ajustes › Barra de menús si preferís.
+- **Relojes del mundo que se explican solos.** Escribí lo que dice tu equipo, “ET”, “PT”, “CET”, “UTC”, y la zona correcta aparece primero. Cada reloj muestra su nombre corto (PDT, CEST, BST), su desfase UTC y una nota cuando su horario cambia dentro del mes, con el desfase que vas a tener desde entonces. Las flechas los reordenan.
+- **Mi sala.** Cargá tu sala fija (un Meet permanente, tu ID personal de Zoom) en Ajustes › General; Nueva reunión › Mi sala la abre con el link ya en el portapapeles.
+- **Cosas más chicas.** El botón Unirse muestra el atajo global en letra chica. Pegar, copiar, cortar, seleccionar todo y deshacer funcionan en los campos de Ajustes, y ⌘W cierra la ventana. El ancho del título en Ajustes › Barra de menús ahora también aplica en MacBooks con notch. El aviso “Actualización disponible” se ve mejor. Los logos en los botones grandes de Unirse van sobre una placa blanca, para que se lean con cualquier color de acento.
+- **Correcciones.** Una reunión de acá a unos días recibe su notificación cuando entra en las 24 horas, aunque nada más haya cambiado. La alerta de prueba ya no silencia una real, y apagar la alerta quita las tarjetas que ya estaban. “Omitir esta versión” saca el punto de actualización. Una reunión corta con “vacaciones” en el título ya no cuenta como día libre. El título de la barra deja de achicarse tras cambiar de app, despertar o bloquear la pantalla. Una invitación declinada sigue declinada aunque un calendario compartido tenga una copia.
+- **Por dentro.** Menos trabajo por minuto: los links de reunión se detectan una vez por evento, las recargas del calendario se agrupan y el mes reutiliza una sola consulta. La app es más liviana con la batería todo el día.
 
 ## 0.5.0 - 2026-10-16
 
