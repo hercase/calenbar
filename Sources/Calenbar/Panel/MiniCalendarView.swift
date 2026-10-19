@@ -160,7 +160,7 @@ private struct DayCell: View {
     let isInMonth: Bool
     let isToday: Bool
     let isSelected: Bool
-    /// Timed events that day; shown as one dot (1–2), two (3–4) or three (5+).
+    /// Timed events that day; shown as a bar: short (1–2), medium (3–4), long (5+).
     let eventCount: Int
     let isDayOff: Bool
     let select: () -> Void
@@ -184,14 +184,14 @@ private struct DayCell: View {
                     }
                 }
                 .overlay(alignment: .bottom) {
-                    // The tint already says the day is taken; no dots on top of it.
+                    // One mark, one channel: the bar grows with the day's load. Length is read more
+                    // accurately than colour, and a calendar shouldn't go red. The holiday tint already
+                    // says the day is taken, so no bar on top of it.
                     if eventCount > 0, !isDayOff {
-                        HStack(spacing: 2) {
-                            ForEach(0..<min(3, (eventCount + 1) / 2), id: \.self) { _ in
-                                Circle().fill(dotTint).frame(width: 3, height: 3)
-                            }
-                        }
-                        .offset(y: 4)
+                        Capsule()
+                            .fill(Color.secondary.opacity(0.55))
+                            .frame(width: barWidth, height: 2)
+                            .offset(y: 5)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -205,12 +205,11 @@ private struct DayCell: View {
 
     private var dayName: String { day.formatted(date: .complete, time: .omitted) }
 
-    /// The dots already count; the colour hints at the kind of day: light, busy, packed.
-    private var dotTint: Color {
+    private var barWidth: CGFloat {
         switch eventCount {
-        case ...2: Color.yellow.opacity(0.9)
-        case ...4: Color.orange.opacity(0.9)
-        default: Color.red.opacity(0.85)
+        case ...2: 6
+        case ...4: 12
+        default: 18
         }
     }
 

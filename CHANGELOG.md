@@ -7,14 +7,14 @@ section into the release. Bullets are English; an optional `### es` block carrie
 ## Unreleased
 
 - Rest the pointer on the menu bar item and the event's card appears: time, room, who's coming, Join. Off in Settings › Menu Bar if you prefer.
-- The dots under each day are now yellow, orange or red as the day fills up.
+- Under each day, a short bar grows with the number of meetings: a glance says light, busy or packed.
 - The "Update available" pill in the panel is easier to see.
 - World clocks: type what your team says, “ET”, “PT”, “CET”, “UTC”, and the right zone comes up first.
 - Paste, copy, cut, select all and undo now work in the Settings text fields (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), and ⌘W closes the window.
 
 ### es
 - Apoyá el puntero en el ítem de la barra y aparece la tarjeta del evento: hora, sala, quién viene, Unirse. Se apaga en Ajustes › Barra de menús si preferís.
-- Los puntos debajo de cada día ahora son amarillos, naranjas o rojos según se llena el día.
+- Debajo de cada día, una barrita crece con la cantidad de reuniones: de un vistazo se ve si es tranquilo, cargado o imposible.
 - El aviso "Actualización disponible" del panel se ve mejor.
 - Relojes del mundo: escribí lo que dice tu equipo, “ET”, “PT”, “CET”, “UTC”, y la zona correcta aparece primero.
 - Pegar, copiar, cortar, seleccionar todo y deshacer ya funcionan en los campos de texto de Ajustes (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), y ⌘W cierra la ventana.
