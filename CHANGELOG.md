@@ -4,7 +4,7 @@ Notes for each version, in the words users see on the site's What's new page and
 release. Write the next version under "Unreleased" as you go; `scripts/release.sh` turns that
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 
-## Unreleased
+## 0.6.1 - 2026-10-19
 
 ### Headline
 The alert still comes if you opened the meeting early, and tidier buttons on the event card.
