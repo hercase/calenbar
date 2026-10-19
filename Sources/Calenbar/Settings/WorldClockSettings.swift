@@ -87,10 +87,11 @@ private struct ClockRow: View {
                 Text(subtitle(at: now))
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                // Unusual, so it stands out a little: accent, not alarm. Only shown inside a month.
                 if let change = clockChange(at: now) {
-                    Text(change)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Label(change, systemImage: "clock.arrow.trianglehead.2.counterclockwise.rotate.90")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(Color.accentColor)
                 }
             }
             Spacer()
@@ -127,7 +128,7 @@ private struct ClockRow: View {
     /// "From 1 Nov, −5h": what the distance becomes once that zone's clocks change. The fact that
     /// matters is the new offset; the mechanics (forward, back) don't need saying.
     private func clockChange(at now: Date) -> String? {
-        guard let change = TimeZoneFacts.upcomingClockChange(in: clock.timeZone, at: now) else { return nil }
+        guard let change = TimeZoneFacts.upcomingClockChange(in: clock.timeZone, at: now, within: 31) else { return nil }
         var style = Date.FormatStyle().month(.abbreviated).day()
         style.timeZone = clock.timeZone
         let when = change.date.formatted(style)

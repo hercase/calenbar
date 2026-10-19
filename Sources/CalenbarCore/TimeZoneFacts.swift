@@ -23,7 +23,7 @@ public enum TimeZoneFacts {
     /// The next daylight-saving switch in that zone when it falls within `days`, with the change in
     /// hours relative to now (+1 when clocks go forward). Nil when none is coming.
     public static func upcomingClockChange(
-        in zone: TimeZone, at date: Date, within days: Int = 21
+        in zone: TimeZone, at date: Date, within days: Int = 31
     ) -> (date: Date, hourShift: Double)? {
         guard let next = zone.nextDaylightSavingTimeTransition(after: date),
             next.timeIntervalSince(date) <= Double(days) * 86_400
