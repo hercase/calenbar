@@ -9,6 +9,7 @@ section into the release. Bullets are English; an optional `### es` block carrie
 - Rest the pointer on the menu bar item and the event's card appears: time, room, who's coming, Join. Off in Settings › Menu Bar if you prefer.
 - The "Update available" pill in the panel is easier to see.
 - World clocks: type what your team says, “ET”, “PT”, “CET”, “UTC”, and the right zone comes up first.
+- World clocks: arrows to reorder them, and each one shows its short name (PDT, CET), its UTC offset, and a warning when its clocks are about to change.
 - New Meeting › My Room: set your standing room (a fixed Meet, your Zoom personal meeting id) in Settings › General, and it opens with the link already on the clipboard.
 - Paste, copy, cut, select all and undo now work in the Settings text fields (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), and ⌘W closes the window.
 
@@ -16,6 +17,7 @@ section into the release. Bullets are English; an optional `### es` block carrie
 - Apoyá el puntero en el ítem de la barra y aparece la tarjeta del evento: hora, sala, quién viene, Unirse. Se apaga en Ajustes › Barra de menús si preferís.
 - El aviso "Actualización disponible" del panel se ve mejor.
 - Relojes del mundo: escribí lo que dice tu equipo, “ET”, “PT”, “CET”, “UTC”, y la zona correcta aparece primero.
+- Relojes del mundo: flechas para reordenarlos, y cada uno muestra su nombre corto (PDT, CET), su desfase UTC y un aviso cuando su horario está por cambiar.
 - Nueva reunión › Mi sala: cargá tu sala fija (un Meet permanente, tu ID personal de Zoom) en Ajustes › General, y se abre con el link ya en el portapapeles.
 - Pegar, copiar, cortar, seleccionar todo y deshacer ya funcionan en los campos de texto de Ajustes (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), y ⌘W cierra la ventana.
 

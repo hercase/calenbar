@@ -171,7 +171,7 @@
 "No world clocks yet" = "Todavía no hay relojes";
 "Add the cities you work with to see their time in the panel and in each meeting." = "Agregar las ciudades con las que se trabaja para ver su hora en el panel y en cada reunión.";
 "Add Clock…" = "Agregar reloj…";
-"Up to %lld clocks." = "Hasta %lld relojes.";
+"Up to %lld clocks, in the order of the list; the arrows reorder them." = "Hasta %lld relojes, en el orden de la lista; las flechas los reordenan.";
 "Already added" = "Ya agregado";
 "Name" = "Nombre";
 "Search a city, e.g. San Diego or Madrid" = "Buscar una ciudad, p. ej. San Diego o Madrid";
@@ -274,3 +274,7 @@
 "Close" = "Cerrar";
 "My Room (copies the link)" = "Mi sala (copia el link)";
 "Your personal meeting room" = "Tu sala de reuniones personal";
+"Move up" = "Subir";
+"Move down" = "Bajar";
+"Clocks go forward %@h on %@" = "El reloj se adelanta %@h el %@";
+"Clocks go back %@h on %@" = "El reloj se atrasa %@h el %@";

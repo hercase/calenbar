@@ -22,13 +22,18 @@ struct WorldClockSettings: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, PanelStyle.large)
                 } else {
-                    ForEach($settings.worldClocks) { $clock in
+                    let count = settings.worldClocks.count
+                    ForEach(Array($settings.worldClocks.enumerated()), id: \.element.id) { index, $clock in
                         // Read the id first: reading `clock` inside removeAll would overlap the write to the
                         // same array and trip Swift's exclusivity check (a crash, not a warning).
                         let id = clock.id
-                        ClockRow(clock: $clock) {
-                            settings.worldClocks.removeAll { $0.id == id }
-                        }
+                        ClockRow(
+                            clock: $clock,
+                            canMoveUp: index > 0,
+                            canMoveDown: index < count - 1,
+                            move: { delta in settings.worldClocks.swapAt(index, index + delta) },
+                            remove: { settings.worldClocks.removeAll { $0.id == id } }
+                        )
                     }
                     .onMove { settings.worldClocks.move(fromOffsets: $0, toOffset: $1) }
                 }
@@ -37,7 +42,7 @@ struct WorldClockSettings: View {
             } footer: {
                 HStack {
                     let limit = AppSettings.maxWorldClocks
-                    Text("Up to \(limit) clocks.")
+                    Text("Up to \(limit) clocks, in the order of the list; the arrows reorder them.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()
@@ -64,9 +69,13 @@ struct WorldClockSettings: View {
 
 private struct ClockRow: View {
     @Binding var clock: WorldClock
+    let canMoveUp: Bool
+    let canMoveDown: Bool
+    let move: (_ delta: Int) -> Void
     let remove: () -> Void
 
     var body: some View {
+        let now = Date()
         HStack(spacing: PanelStyle.medium) {
             VStack(alignment: .leading, spacing: 2) {
                 TextField("Name", text: $clock.name, prompt: Text("Name"))
@@ -75,27 +84,54 @@ private struct ClockRow: View {
                     .multilineTextAlignment(.leading)
                     .font(.body.weight(.medium))
                     .help("Click to rename")
-                Text(subtitle)
+                Text(subtitle(at: now))
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                if let change = clockChange(at: now) {
+                    Label(change, systemImage: "clock.arrow.2.circlepath")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
             }
             Spacer()
-            Text(Date().formatted(WorldClocksView.timeStyle(in: clock.timeZone)))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-            Button(role: .destructive, action: remove) {
-                Image(systemName: "minus.circle.fill")
-                    .foregroundStyle(.secondary)
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(now.formatted(WorldClocksView.timeStyle(in: clock.timeZone)))
+                    .monospacedDigit()
+                if let day = WorldClocksView.dayNote(in: clock.timeZone, at: now) {
+                    Text(day).font(.caption).foregroundStyle(.secondary)
+                }
             }
-            .buttonStyle(.borderless)
-            .help("Remove \(clock.name)")
-            .accessibilityLabel("Remove \(clock.name)")
+            HStack(spacing: 2) {
+                IconButton(systemImage: "chevron.up", label: String(localized: "Move up")) { move(-1) }
+                    .disabled(!canMoveUp)
+                    .opacity(canMoveUp ? 1 : 0.3)
+                IconButton(systemImage: "chevron.down", label: String(localized: "Move down")) { move(1) }
+                    .disabled(!canMoveDown)
+                    .opacity(canMoveDown ? 1 : 0.3)
+                IconButton(systemImage: "minus.circle.fill", label: String(localized: "Remove \(clock.name)"), action: remove)
+            }
         }
     }
 
-    private var subtitle: String {
-        let zone = clock.timeZoneID.replacingOccurrences(of: "_", with: " ")
-        return "\(zone) · \(WorldClocksView.offsetText(of: clock.timeZone, at: Date()))"
+    /// "America/Los Angeles · PDT · UTC−7 · −4h": the zone, its short name, where it sits, and how far from you.
+    private func subtitle(at now: Date) -> String {
+        var parts = [clock.timeZoneID.replacingOccurrences(of: "_", with: " ")]
+        if let abbreviation = TimeZoneFacts.abbreviation(of: clock.timeZone, at: now), !abbreviation.hasPrefix("GMT") {
+            parts.append(abbreviation)
+        }
+        parts.append(TimeZoneFacts.utcOffsetText(of: clock.timeZone, at: now))
+        parts.append(WorldClocksView.offsetText(of: clock.timeZone, at: now))
+        return parts.joined(separator: " · ")
+    }
+
+    /// "Clocks go back 1h on Nov 1": the thing that silently breaks next week's meeting times.
+    private func clockChange(at now: Date) -> String? {
+        guard let change = TimeZoneFacts.upcomingClockChange(in: clock.timeZone, at: now) else { return nil }
+        let when = change.date.formatted(.dateTime.month(.abbreviated).day())
+        let hours = abs(change.hourShift).formatted(.number.precision(.fractionLength(0...1)))
+        return change.hourShift > 0
+            ? String(localized: "Clocks go forward \(hours)h on \(when)")
+            : String(localized: "Clocks go back \(hours)h on \(when)")
     }
 }
 
