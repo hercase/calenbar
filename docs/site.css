@@ -110,6 +110,16 @@ h1 { font-size: clamp(38px, 6.4vw, 64px); line-height: 1.03; letter-spacing: -0.
 .screen .strip { display: block; width: calc(100% - 40px); height: auto; margin: 22px auto 0; border-radius: 9px; box-shadow: 0 10px 30px rgba(28, 29, 70, .18); }
 @media (max-width: 560px) { .menubar .menus span:nth-child(n+3), .menubar .sys { display: none; } .screen .panel { margin: 10px auto 0; } }
 
+/* Eight reasons, one line each, right under the hero */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.perks { padding: 72px 0 80px; }
+.perks ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 36px 32px; }
+.perks li { display: grid; gap: 4px; align-content: start; }
+.perks svg { width: 26px; height: 26px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 8px; }
+.perks b { font-size: 17px; letter-spacing: -0.01em; color: var(--ink); }
+.perks span { color: var(--ink-2); font-size: 15px; line-height: 1.45; }
+@media (max-width: 860px) { .perks ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; } }
+
 /* Eyebrow above section titles */
 .eyebrow { display: block; color: var(--accent); font-size: 16px; font-weight: 600; margin: 0 0 8px; }
 .section-head { text-align: center; max-width: 60ch; margin: 0 auto 36px; }
