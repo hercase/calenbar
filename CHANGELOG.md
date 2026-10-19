@@ -14,7 +14,6 @@ section into the release. Bullets are English; an optional `### es` block carrie
 - Fixes: a meeting a few days out now gets its notification once it comes within a day, even if nothing else changed; the test alert no longer silences a live one; turning the alert off removes cards already on screen; “Skip This Version” clears the update badge; world clocks in Europe and Asia show CEST, BST, JST; a short meeting with “vacation” in its title no longer counts as a day off.
 - Meetings that share a time slot sit together in the list, under “At the same time”, so a double booking shows at a glance.
 - The service logo on Join buttons sits on a small white tile, so it reads well whatever accent colour your Mac uses.
-- A meeting with guests but no link says so: “No link” next to the time in the panel, and the card offers to add one.
 - Paste, copy, cut, select all and undo now work in the Settings text fields (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), and ⌘W closes the window.
 
 ### es
@@ -26,7 +25,6 @@ section into the release. Bullets are English; an optional `### es` block carrie
 - Correcciones: una reunión de acá a unos días recibe su notificación cuando entra en las 24 horas, aunque nada más haya cambiado; la alerta de prueba ya no silencia una real; apagar la alerta quita las tarjetas que ya estaban; “Omitir esta versión” saca el punto de actualización; los relojes de Europa y Asia muestran CEST, BST, JST; una reunión corta con “vacaciones” en el título ya no cuenta como día libre.
 - Las reuniones que comparten horario van juntas en la lista, bajo “A la misma hora”, así un doble turno se ve de un vistazo.
 - El logo del servicio en los botones Unirse va sobre una placa blanca chica, para que se lea bien con cualquier color de acento de tu Mac.
-- Una reunión con invitados pero sin link lo dice: “Sin link” junto a la hora en el panel, y la tarjeta ofrece agregar uno.
 - Pegar, copiar, cortar, seleccionar todo y deshacer ya funcionan en los campos de texto de Ajustes (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), y ⌘W cierra la ventana.
 
 ## 0.5.0 - 2026-10-16

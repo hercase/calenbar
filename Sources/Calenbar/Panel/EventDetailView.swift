@@ -65,18 +65,6 @@ struct EventDetailView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-            } else if event.hasOtherAttendees, !event.isAllDay {
-                Divider()
-                // The Join button's place, with the reason it's missing and the way to fix it.
-                HStack(spacing: PanelStyle.small) {
-                    Image(systemName: "link.badge.plus").foregroundStyle(.secondary)
-                    Text("No meeting link in this invitation")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                    Spacer(minLength: 0)
-                    Button("Add one") { model.openEvent(event) }
-                        .controlSize(.small)
-                }
             }
 
             if !event.rooms.isEmpty || location != nil || !event.people.isEmpty {
