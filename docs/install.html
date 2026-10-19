@@ -53,12 +53,11 @@
     <div class="ways">
       <div class="way term">
         <h2>From the terminal</h2>
-        <p>With Homebrew, one command installs it and skips steps 1 and 2:</p>
-        <div class="cmd"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><code>brew install --cask hercase/calenbar/calenbar --no-quarantine</code><button type="button" data-done="Copied">Copy</button></div>
+        <p>With Homebrew, one command replaces step 1:</p>
+        <div class="cmd"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><code>brew install --cask hercase/calenbar/calenbar</code><button type="button" data-done="Copied">Copy</button></div>
         <ol>
           <li>Homebrew asks you to <b>trust the tap</b> the first time. Say yes.</li>
-          <li><b>Why <code>--no-quarantine</code>:</b> macOS flags anything downloaded as quarantined, and since Calenbar isn't notarized by Apple that flag triggers the <b>“Not Opened”</b> warning from step 2. This tells Homebrew not to set it, so Calenbar just opens. Only do this with software you trust; Calenbar's source is on GitHub.</li>
-          <li>Afterwards Calenbar updates itself; no <code>brew upgrade</code> needed. Continue at <b>step 3</b>.</li>
+          <li>Afterwards Calenbar updates itself; no <code>brew upgrade</code> needed. Continue at <b>step 2</b>: macOS still asks once, the same as with the download.</li>
         </ol>
       </div>
       <div class="way get">
@@ -156,12 +155,11 @@
     <div class="ways">
       <div class="way term">
         <h2>Desde la terminal</h2>
-        <p>Con Homebrew, un comando la instala y se saltea los pasos 1 y 2:</p>
-        <div class="cmd"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><code>brew install --cask hercase/calenbar/calenbar --no-quarantine</code><button type="button" data-done="Copiado">Copiar</button></div>
+        <p>Con Homebrew, un comando reemplaza el paso 1:</p>
+        <div class="cmd"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><code>brew install --cask hercase/calenbar/calenbar</code><button type="button" data-done="Copiado">Copiar</button></div>
         <ol>
           <li>La primera vez Homebrew pide <b>confiar en el tap</b>. Decí que sí.</li>
-          <li><b>Por qué <code>--no-quarantine</code>:</b> macOS marca como “en cuarentena” todo lo que se descarga, y como Calenbar no está notarizada por Apple esa marca dispara el aviso <b>“No se abrió”</b> del paso 2. Esto le dice a Homebrew que no la ponga, y Calenbar abre directo. Hacelo solo con software en el que confiás; el código de Calenbar está en GitHub.</li>
-          <li>Después Calenbar se actualiza sola; no hace falta <code>brew upgrade</code>. Seguí en el <b>paso 3</b>.</li>
+          <li>Después Calenbar se actualiza sola; no hace falta <code>brew upgrade</code>. Seguí en el <b>paso 2</b>: macOS pregunta una vez, igual que con la descarga.</li>
         </ol>
       </div>
       <div class="way get">

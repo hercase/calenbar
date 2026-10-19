@@ -39,7 +39,7 @@
 2. The first time, macOS says it can't verify the app. Click **Done**, then **System Settings › Privacy & Security › Open Anyway**. Once.
 3. Allow access to Calendars and Notifications.
 
-Or, with Homebrew: `brew install --cask hercase/calenbar/calenbar --no-quarantine` (the flag skips step 2).
+Or, with Homebrew, instead of step 1: `brew install --cask hercase/calenbar/calenbar`.
 
 Step-by-step with pictures: [the install guide](https://hercase.github.io/calenbar/install.html). Release notes: [What's new](https://hercase.github.io/calenbar/whats-new.html).
 
