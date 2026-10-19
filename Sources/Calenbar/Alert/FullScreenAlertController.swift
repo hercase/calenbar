@@ -50,8 +50,8 @@ final class FullScreenAlertController {
             if settings.alertOnlyWithLink, event.meetingLink == nil {
                 return false
             }
-            // Already joined from Calenbar: no need to interrupt.
-            return !MeetingOpener.wasJoinedRecently(eventKey: event.key)
+            // Joined from Calenbar around the start: no need to interrupt.
+            return !MeetingOpener.wasJoinedRecently(eventKey: event.key, start: event.start)
         }
         switch settings.alertStyle {
         case .fullScreen:

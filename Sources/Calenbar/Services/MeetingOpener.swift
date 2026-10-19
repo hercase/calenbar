@@ -18,9 +18,15 @@ enum MeetingOpener {
     private static var joined: [String: Date] = [:]
     private static let joinMemory: TimeInterval = 90 * 60
 
-    /// True when this occurrence was joined from Calenbar recently (the user is presumably in that call).
-    static func wasJoinedRecently(eventKey: String, now: Date = Date()) -> Bool {
-        guard let joinedAt = joined[eventKey] else { return false }
+    /// Joining earlier than this before the start is opening the waiting room, not being in the call.
+    private static let joinedNearStart: TimeInterval = 2 * 60
+
+    /// True when this occurrence was joined from Calenbar recently and close to its start (the user is
+    /// presumably in that call). An early join still gets the alert: people open the link, then drift off.
+    static func wasJoinedRecently(eventKey: String, start: Date, now: Date = Date()) -> Bool {
+        guard let joinedAt = joined[eventKey], joinedAt >= start.addingTimeInterval(-joinedNearStart) else {
+            return false
+        }
         return now.timeIntervalSince(joinedAt) < joinMemory
     }
 
