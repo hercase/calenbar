@@ -4,7 +4,7 @@ Notes for each version, in the words users see on the site's What's new page and
 release. Write the next version under "Unreleased" as you go; `scripts/release.sh` turns that
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 
-## Unreleased
+## 0.6.0 - 2026-10-19
 
 ### Headline
 Double bookings in plain sight, clocks that explain themselves, and a card on hover.
