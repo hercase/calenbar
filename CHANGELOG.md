@@ -11,6 +11,7 @@ section into the release. Bullets are English; an optional `### es` block carrie
 - World clocks: type what your team says, “ET”, “PT”, “CET”, “UTC”, and the right zone comes up first.
 - World clocks: arrows to reorder them, and each one shows its short name (PDT, CET), its UTC offset, and a note when its clocks change within the month, with the offset you will have from then on.
 - New Meeting › My Room: set your standing room (a fixed Meet, your Zoom personal meeting id) in Settings › General, and it opens with the link already on the clipboard.
+- Fixes: a meeting a few days out now gets its notification once it comes within a day, even if nothing else changed; the test alert no longer silences a live one; turning the alert off removes cards already on screen; “Skip This Version” clears the update badge; world clocks in Europe and Asia show CEST, BST, JST; a short meeting with “vacation” in its title no longer counts as a day off.
 - Paste, copy, cut, select all and undo now work in the Settings text fields (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), and ⌘W closes the window.
 
 ### es
@@ -19,6 +20,7 @@ section into the release. Bullets are English; an optional `### es` block carrie
 - Relojes del mundo: escribí lo que dice tu equipo, “ET”, “PT”, “CET”, “UTC”, y la zona correcta aparece primero.
 - Relojes del mundo: flechas para reordenarlos, y cada uno muestra su nombre corto (PDT, CET), su desfase UTC y una nota cuando su horario cambia dentro del mes, con el desfase que vas a tener desde entonces.
 - Nueva reunión › Mi sala: cargá tu sala fija (un Meet permanente, tu ID personal de Zoom) en Ajustes › General, y se abre con el link ya en el portapapeles.
+- Correcciones: una reunión de acá a unos días recibe su notificación cuando entra en las 24 horas, aunque nada más haya cambiado; la alerta de prueba ya no silencia una real; apagar la alerta quita las tarjetas que ya estaban; “Omitir esta versión” saca el punto de actualización; los relojes de Europa y Asia muestran CEST, BST, JST; una reunión corta con “vacaciones” en el título ya no cuenta como día libre.
 - Pegar, copiar, cortar, seleccionar todo y deshacer ya funcionan en los campos de texto de Ajustes (⌘V, ⌘C, ⌘X, ⌘A, ⌘Z), y ⌘W cierra la ventana.
 
 ## 0.5.0 - 2026-10-16

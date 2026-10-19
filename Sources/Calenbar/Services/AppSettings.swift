@@ -194,12 +194,14 @@ final class AppSettings {
         }
     }
 
-    /// Adds a clock unless one for that time zone already exists.
-    func addWorldClock(timeZoneID: String, name: String) {
+    /// Adds a clock unless one for that time zone already exists or the list is full; says which.
+    @discardableResult
+    func addWorldClock(timeZoneID: String, name: String) -> Bool {
         guard !worldClocks.contains(where: { $0.timeZoneID == timeZoneID }), worldClocks.count < Self.maxWorldClocks else {
-            return
+            return false
         }
         worldClocks.append(WorldClock(timeZoneID: timeZoneID, name: name))
+        return true
     }
 
     /// Skip = the event disappears from the menu bar and never alerts; it stays (dimmed) in the list.

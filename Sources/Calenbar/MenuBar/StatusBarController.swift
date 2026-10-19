@@ -259,12 +259,13 @@ final class StatusBarController {
         for (center, name) in triggers {
             center.addObserver(forName: name, object: nil, queue: .main) { [weak self] note in
                 MainActor.assumeIsolated {
-                    // App menus never reach the right of the notch, so app switches don't matter there.
-                    let isAppSwitch = note.name == NSWorkspace.didActivateApplicationNotification
-                    if isAppSwitch, self?.notchEdge != nil, self?.notchBudget != nil {
-                        return
+                    // Only a display change invalidates what was learned; an app switch or a wake just
+                    // needs a look at whether the item still fits (it shrinks if not).
+                    if note.name == NSApplication.didChangeScreenParametersNotification {
+                        self?.refit()
+                    } else {
+                        self?.schedulePlacementCheck()
                     }
-                    self?.refit()
                 }
             }
         }
@@ -291,6 +292,11 @@ final class StatusBarController {
         render()
     }
 
+    private static var isScreenLocked: Bool {
+        let session = CGSessionCopyCurrentDictionary() as? [String: Any]
+        return session?["CGSSessionScreenIsLocked"] as? Bool ?? false
+    }
+
     private func setNotchBudget(_ width: Double?) {
         notchBudget = width
         UserDefaults.standard.set(width ?? 0, forKey: Self.learnedWidthKey)
@@ -312,8 +318,8 @@ final class StatusBarController {
     }
 
     private func checkPlacement() {
-        // A hidden menu bar (full-screen app, locked screen) says nothing about space.
-        guard NSMenu.menuBarVisible(), let window = statusItem.button?.window else { return }
+        // A hidden menu bar (full-screen app) or a locked screen says nothing about space.
+        guard NSMenu.menuBarVisible(), !Self.isScreenLocked, let window = statusItem.button?.window else { return }
         let isVisible = window.occlusionState.contains(.visible)
 
         if let edge = notchEdge, let current = notchBudget {

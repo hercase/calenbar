@@ -7,7 +7,24 @@ public enum TimeZoneFacts {
     /// teams write in chat; `TimeZone.abbreviation(for:)` would follow the Mac's language.
     public static func abbreviation(of zone: TimeZone, at date: Date) -> String? {
         let style: TimeZone.NameStyle = zone.isDaylightSavingTime(for: date) ? .shortDaylightSaving : .shortStandard
-        return zone.localizedName(for: style, locale: Locale(identifier: "en_US"))
+        if let name = zone.localizedName(for: style, locale: Locale(identifier: "en_US")), !name.hasPrefix("GMT") {
+            return name
+        }
+        // ICU only names a few zones; Foundation's abbreviation table knows CET/CEST, BST, JST, AEDT…
+        // Each entry names one city (CEST → Paris), so match on offset and daylight state within the
+        // same region, preferring the zone itself.
+        let offset = zone.secondsFromGMT(for: date)
+        let isDaylight = zone.isDaylightSavingTime(for: date)
+        let region = zone.identifier.split(separator: "/").first.map(String.init) ?? ""
+        let candidates = TimeZone.abbreviationDictionary.filter { _, identifier in
+            guard let other = TimeZone(identifier: identifier) else { return false }
+            return other.secondsFromGMT(for: date) == offset && other.isDaylightSavingTime(for: date) == isDaylight
+                && identifier.hasPrefix(region + "/")
+        }
+        func rank(_ entry: (key: String, value: String)) -> (Int, String) {
+            (entry.value == zone.identifier ? 0 : 1, entry.key)
+        }
+        return candidates.min { rank($0) < rank($1) }?.key
     }
 
     /// "UTC−7", "UTC+5:30", "UTC".

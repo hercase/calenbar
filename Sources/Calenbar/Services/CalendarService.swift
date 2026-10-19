@@ -180,8 +180,11 @@ final class CalendarService {
             return upcoming.filter { $0.start < end && $0.end > start }
         }
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)
+        // Declined copies go before deduplication: a declined invite must not resurface through
+        // the team calendar's copy, nor hide it.
         let events = store.events(matching: predicate)
             .map(makeEvent)
+            .filter { !$0.isDeclined }
             .sorted { $0.start < $1.start }
         return CalendarEvent.deduplicated(events)
     }

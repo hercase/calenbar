@@ -69,6 +69,15 @@ final class Updater: NSObject, SPUUpdaterDelegate {
         pending = nil
     }
 
+    /// "Skip This Version" in Sparkle's dialog: stop badging the icon and the menus for it.
+    func updater(
+        _ updater: SPUUpdater, userDidMake choice: SPUUserUpdateChoice, forUpdate item: SUAppcastItem, state: SPUUserUpdateState
+    ) {
+        if choice == .skip {
+            pending = nil
+        }
+    }
+
     func updater(_ updater: SPUUpdater, willInstallUpdate item: SUAppcastItem) {
         pending = nil
     }

@@ -20,10 +20,12 @@ struct KeyShortcut: Codable, Hashable {
         self.keyLabel = keyLabel
     }
 
-    /// nil unless the event is a real combination: a key plus ⌘, ⌃ or ⌥ (⇧ alone would collide with typing).
+    /// nil unless the event is a usable global combination: a key with ⌃ or ⌥ (⌘-only combos are other
+    /// apps' menu items, ⇧ alone is typing), or a function key with anything.
     init?(event: NSEvent) {
         let flags = event.modifierFlags.intersection([.command, .control, .option, .shift])
-        guard !flags.isDisjoint(with: [.command, .control, .option]) else { return nil }
+        let isFunctionKey = (kVK_F1...kVK_F12).contains(Int(event.keyCode))
+        guard isFunctionKey || !flags.isDisjoint(with: [.control, .option]) else { return nil }
         keyCode = UInt32(event.keyCode)
         modifiers = flags.rawValue
         keyLabel = Self.label(keyCode: event.keyCode, characters: event.charactersIgnoringModifiers)
@@ -137,6 +139,9 @@ final class HotKeyCenter {
         }
         guard let shortcut else { return }
         let id = EventHotKeyID(signature: Self.signature, id: 1)
-        RegisterEventHotKey(shortcut.keyCode, shortcut.carbonModifiers, id, GetApplicationEventTarget(), 0, &hotKey)
+        let status = RegisterEventHotKey(shortcut.keyCode, shortcut.carbonModifiers, id, GetApplicationEventTarget(), 0, &hotKey)
+        if status != noErr {
+            hotKey = nil
+        }
     }
 }

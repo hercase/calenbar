@@ -4,6 +4,7 @@ import SwiftUI
 struct WorldClockSettings: View {
     @Bindable var settings: AppSettings
     @Bindable var uiState: SettingsUIState
+    let clock: MinuteClock
 
     var body: some View {
         Form {
@@ -29,6 +30,7 @@ struct WorldClockSettings: View {
                         let id = clock.id
                         ClockRow(
                             clock: $clock,
+                            now: self.clock.now,
                             canMoveUp: index > 0,
                             canMoveDown: index < count - 1,
                             move: { delta in settings.worldClocks.swapAt(index, index + delta) },
@@ -42,20 +44,31 @@ struct WorldClockSettings: View {
             } footer: {
                 HStack {
                     let limit = AppSettings.maxWorldClocks
-                    Text("Up to \(limit) clocks, in the order of the list; the arrows reorder them.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(
+                        uiState.clockNote
+                            ?? String(localized: "Up to \(limit) clocks, in the order of the list; the arrows reorder them.")
+                    )
+                    .font(.caption)
+                    .foregroundStyle(uiState.clockNote == nil ? .secondary : .primary)
                     Spacer()
-                    Button("Add Clock…") { uiState.isAddingClock = true }
-                        .disabled(settings.worldClocks.count >= AppSettings.maxWorldClocks)
-                        .popover(isPresented: $uiState.isAddingClock, arrowEdge: .bottom) {
-                            let existing = Set(settings.worldClocks.map(\.timeZoneID))
-                            ClockPicker(search: uiState.citySearch, existing: existing) { identifier, name in
-                                settings.addWorldClock(timeZoneID: identifier, name: name)
-                                uiState.citySearch.query = ""
-                                uiState.isAddingClock = false
-                            }
+                    Button("Add Clock…") {
+                        uiState.clockNote = nil
+                        uiState.isAddingClock = true
+                    }
+                    .disabled(settings.worldClocks.count >= AppSettings.maxWorldClocks)
+                    .popover(isPresented: $uiState.isAddingClock, arrowEdge: .bottom) {
+                        let existing = Set(settings.worldClocks.map(\.timeZoneID))
+                        ClockPicker(search: uiState.citySearch, existing: existing) { identifier, name in
+                            let added = settings.addWorldClock(timeZoneID: identifier, name: name)
+                            // A city can resolve to a zone already in the list; say so instead of closing quietly.
+                            uiState.clockNote =
+                                added
+                                ? nil
+                                : String(localized: "\(name) is already in the list as the same time zone.")
+                            uiState.citySearch.query = ""
+                            uiState.isAddingClock = false
                         }
+                    }
                 }
             }
             Section("Show") {
@@ -69,13 +82,13 @@ struct WorldClockSettings: View {
 
 private struct ClockRow: View {
     @Binding var clock: WorldClock
+    let now: Date
     let canMoveUp: Bool
     let canMoveDown: Bool
     let move: (_ delta: Int) -> Void
     let remove: () -> Void
 
     var body: some View {
-        let now = Date()
         HStack(spacing: PanelStyle.medium) {
             VStack(alignment: .leading, spacing: 2) {
                 TextField("Name", text: $clock.name, prompt: Text("Name"))

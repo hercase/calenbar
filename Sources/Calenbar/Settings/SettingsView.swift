@@ -28,7 +28,7 @@ enum SettingsWindow {
                     NotificationSettings(settings: model.settings, scheduler: model.notifications, alerts: model.alerts))),
             Page(
                 title: String(localized: "Time Zones"), symbol: "globe",
-                view: AnyView(WorldClockSettings(settings: model.settings, uiState: uiState))),
+                view: AnyView(WorldClockSettings(settings: model.settings, uiState: uiState, clock: model.clock))),
             Page(title: String(localized: "About"), symbol: "info.circle", view: AnyView(AboutView(updater: model.updater))),
         ]
     }

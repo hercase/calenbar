@@ -16,7 +16,7 @@ public enum DayOffDetector {
     private static let timeOff = [
         // English
         "out of office", "ooo", "oof", "pto", "vacation", "vacations", "day off", "time off", "annual leave", "sick day",
-        "sick leave", "leave",
+        "sick leave", "on leave",
         // Spanish
         "vacaciones", "fuera de la oficina", "dia libre", "dias libres", "licencia",
         // Portuguese
@@ -30,7 +30,7 @@ public enum DayOffDetector {
         // Italian
         "ferie", "assente", "malattia",
         // Danish, Swedish, Norwegian ("fri" alone collides with Friday, "semester" with school terms)
-        "fridag", "sygedag", "sjuk", "ledig", "ledighet",
+        "fridag", "sygedag", "sjuk", "ledighet",
         // Polish
         "urlop", "wolne",
     ]

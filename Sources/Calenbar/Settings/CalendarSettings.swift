@@ -21,7 +21,7 @@ struct CalendarSettings: View {
         ),
         Column(
             purpose: .alert, title: String(localized: "Alert"),
-            help: String(localized: "Show the full-screen alert for its events")),
+            help: String(localized: "Show the alert for its events")),
     ]
     private static let columnWidth: CGFloat = 64
     /// Room for the ••• button at the end of each row.

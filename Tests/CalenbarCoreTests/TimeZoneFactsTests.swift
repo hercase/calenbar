@@ -15,6 +15,8 @@ struct TimeZoneFactsTests {
     }
 
     @Test func abbreviationFollowsDaylightSaving() {
+        #expect(TimeZoneFacts.abbreviation(of: TimeZone(identifier: "Europe/Berlin")!, at: october) == "CEST")
+        #expect(TimeZoneFacts.abbreviation(of: TimeZone(identifier: "Europe/London")!, at: october) == "BST")
         #expect(TimeZoneFacts.abbreviation(of: losAngeles, at: october) == "PDT")
         #expect(
             TimeZoneFacts.abbreviation(of: losAngeles, at: Fixture.at(12, 0, day: 1).addingTimeInterval(45 * 86_400)) == "PST")

@@ -70,6 +70,9 @@ def main():
     path = pathlib.Path(args.path)
     old = path.read_text() if path.exists() else ""
     items = existing_items(old)
+    if "<item>" in old and not items:
+        print(f"error: {args.path} has items this script can't parse; fix the formatting first", file=sys.stderr)
+        return 1
     if any(f"<sparkle:shortVersionString>{args.version}</sparkle:shortVersionString>" in item for item in items):
         print(f"error: {args.path} already has an item for {args.version}", file=sys.stderr)
         return 1

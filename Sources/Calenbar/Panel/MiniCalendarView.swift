@@ -50,8 +50,8 @@ struct MiniCalendarView: View {
                         .buttonStyle(.borderless)
                         .font(.caption)
                 }
-                IconButton(systemImage: "chevron.left", label: "Previous month") { shiftMonth(-1) }
-                IconButton(systemImage: "chevron.right", label: "Next month") { shiftMonth(1) }
+                IconButton(systemImage: "chevron.left", label: String(localized: "Previous month")) { shiftMonth(-1) }
+                IconButton(systemImage: "chevron.right", label: String(localized: "Next month")) { shiftMonth(1) }
             }
         }
         .frame(height: PanelStyle.iconHitSize)

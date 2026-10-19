@@ -89,6 +89,9 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
     }
 
     private func reschedule() {
+        // Reading `lastReload` re-runs this after each reload, so a meeting two days out gets its
+        // request once it enters the 24-hour window even if the event list never changed.
+        _ = model.calendar.lastReload
         let settings = model.settings
         let events = model.events(for: .notify)
         let enabled = settings.notificationsEnabled

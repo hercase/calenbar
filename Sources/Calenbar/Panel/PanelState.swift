@@ -99,6 +99,8 @@ final class PanelState {
 @Observable
 final class SettingsUIState {
     var isAddingClock = false
+    /// Feedback under the clock list after a pick that changed nothing.
+    var clockNote: String?
     let citySearch = CitySearch()
     var isRecordingShortcut = false
     /// The key monitor installed while recording, so it can be removed.

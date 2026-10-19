@@ -35,7 +35,12 @@ final class FullScreenAlertController {
         for entry in shown.values where entry.event.end <= now {
             dismiss(entry.event.key)
         }
-        guard settings.alertEnabled else { return }
+        guard settings.alertEnabled else {
+            for key in shown.keys {
+                dismiss(key)
+            }
+            return
+        }
 
         let lead = TimeInterval(settings.alertLeadMinutes * 60)
         let due = events.filter { event in
@@ -64,8 +69,10 @@ final class FullScreenAlertController {
     /// Settings' "Show Test Alert": the current style with a made-up meeting, so people can decide
     /// whether they want it. Its buttons only close it.
     func showPreview() {
+        // Live alerts step aside for the sample and come back on the next tick.
         for key in shown.keys {
             dismiss(key)
+            shownKeys.remove(key)
         }
         let now = Date()
         let sample = CalendarEvent(
@@ -136,7 +143,7 @@ final class FullScreenAlertController {
         blur.addSubview(content)
         panel.contentView = blur
 
-        NSApp.activate()
+        // Key without activating: Return and Esc work, and the app the user was in stays active.
         panel.makeKeyAndOrderFront(nil)
         return panel
     }

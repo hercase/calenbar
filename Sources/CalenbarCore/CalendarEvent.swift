@@ -66,7 +66,10 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
         self.myStatus = myStatus
         self.isRecurring = isRecurring
         meetingLink = MeetingLinkDetector.detect(url: url, location: location, notes: notes)
-        titleDayOff = DayOffDetector.kind(title: title, isHolidayCalendar: false)
+        // Time off is a day or at least a half day; a short meeting with "vacation" in its title isn't.
+        let kind = DayOffDetector.kind(title: title, isHolidayCalendar: false)
+        let longEnough = isAllDay || end.timeIntervalSince(start) >= 4 * 3_600
+        titleDayOff = kind == .timeOff && !longEnough ? nil : kind
     }
 
     /// Stable key for a single occurrence, used to persist Hide/Mute.

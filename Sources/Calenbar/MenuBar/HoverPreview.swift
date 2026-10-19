@@ -69,6 +69,8 @@ final class HoverPreview {
         popover.behavior = .applicationDefined
         popover.animates = true
         let card = EventDetailView(model: model, event: event)
+            // Join, Skip or Open was clicked: the card has done its job.
+            .simultaneousGesture(TapGesture().onEnded { [weak self] in self?.scheduleClose() })
             .onHover { [weak self] inside in
                 if inside {
                     self?.closeTimer?.invalidate()

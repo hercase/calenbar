@@ -44,13 +44,11 @@ fi
 ./scripts/test.sh >/dev/null
 ./scripts/lint.sh --check
 
+# Nothing is committed until the signed DMG exists; until then a failure puts the files back.
 echo "$VERSION" > VERSION
 python3 scripts/changelog.py release "$VERSION"
 python3 scripts/changelog.py html "$VERSION"
-git add VERSION CHANGELOG.md docs/whats-new.html
-git commit -qm "chore: release v$VERSION"
-SUMMARY=$(python3 scripts/changelog.py notes "$VERSION")
-git tag -a "v$VERSION" -m "Calenbar $VERSION"
+trap 'git checkout -q -- VERSION CHANGELOG.md docs/whats-new.html; echo "release aborted; nothing was committed" >&2' EXIT
 
 ./scripts/package.sh
 DMG="dist/Calenbar-$VERSION.dmg"
@@ -61,6 +59,12 @@ SIGNATURE=$("$TOOLS/sign_update" -p "$DMG")
 LENGTH=$(stat -f%z "$DMG")
 BUILD=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" .build/Calenbar.app/Contents/Info.plist)
 MIN_OS=$(/usr/libexec/PlistBuddy -c "Print :LSMinimumSystemVersion" .build/Calenbar.app/Contents/Info.plist)
+
+trap - EXIT
+git add VERSION CHANGELOG.md docs/whats-new.html
+git commit -qm "chore: release v$VERSION"
+SUMMARY=$(python3 scripts/changelog.py notes "$VERSION")
+git tag -a "v$VERSION" -m "Calenbar $VERSION"
 
 # A stable copy for the landing page's Download button (…/releases/latest/download/Calenbar.dmg).
 cp "$DMG" dist/Calenbar.dmg

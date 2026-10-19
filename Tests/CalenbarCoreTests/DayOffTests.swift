@@ -41,6 +41,17 @@ struct DayOffTests {
         #expect(!DayOffDetector.looksLikeHolidayCalendar("me@example.com"))
     }
 
+    @Test func shortMeetingsAreNeverTimeOff() {
+        let start = Fixture.at(14, 0)
+        let short = Fixture.event("Vacation planning", start, start.addingTimeInterval(1_800))
+        let halfDay = Fixture.event("PTO afternoon", start, start.addingTimeInterval(4 * 3_600))
+        let allDay = Fixture.event("Vacaciones", start, start.addingTimeInterval(86_400), isAllDay: true)
+        #expect(short.dayOff(holidayCalendars: []) == nil)
+        #expect(halfDay.dayOff(holidayCalendars: []) == .timeOff)
+        #expect(allDay.dayOff(holidayCalendars: []) == .timeOff)
+        #expect(DayOffDetector.kind(title: "Leave feedback on the RFC", isHolidayCalendar: false) == nil)
+    }
+
     @Test func birthdaysAndOrdinaryTitlesAreNotDaysOff() {
         #expect(DayOffDetector.kind(title: "Cumpleaños de Braian Franco.", isHolidayCalendar: false) == nil)
         #expect(DayOffDetector.kind(title: "Birthday: Tomás (PTO manager)", isHolidayCalendar: false) == nil)
