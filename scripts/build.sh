@@ -76,4 +76,6 @@ if [ "$INSTALL" = 1 ]; then
   rm -rf "$HOME/Applications/Calenbar.app"
   cp -R "$APP" "$HOME/Applications/Calenbar.app"
   echo "Installed to ~/Applications/Calenbar.app"
+  # The running copy was quit above; bring the new one back so the menu bar isn't left empty.
+  open "$HOME/Applications/Calenbar.app"
 fi
