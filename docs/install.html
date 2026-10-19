@@ -32,7 +32,7 @@
 <link rel="stylesheet" href="site.css">
 </head>
 <body>
-<div class="wrap">
+<div class="wrap reading">
   <header class="top">
     <a class="mark" href="./"><img src="img/icon.png" alt="" width="28" height="28">Calenbar</a>
     <nav>
@@ -48,7 +48,7 @@
 
   <section class="guide" data-en>
     <h1>Install Calenbar</h1>
-    <p class="intro">Install it with Homebrew or download it, then follow four short steps. No account needed.</p>
+    <p class="intro">Install it with Homebrew or download it, then follow five short steps. No account needed.</p>
 
     <div class="ways">
       <div class="way term">
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <h2 class="steps-head">Four steps</h2>
+    <h2 class="steps-head">Five steps</h2>
 
     <div class="step">
       <div>
@@ -80,66 +80,50 @@
         <h3>Drag Calenbar to Applications</h3>
         <p>Open the downloaded <b>Calenbar.dmg</b>. Drag the Calenbar icon onto the Applications folder, then open Calenbar from Applications or with Spotlight.</p>
       </div>
-      <figure><img src="img/dmg.png" alt="The disk image window: the Calenbar icon, an arrow, and the Applications folder" width="660" height="412"></figure>
+      <figure><img src="img/dmg.png" alt="The disk image window: the Calenbar icon, an arrow, and the Applications folder" width="470" height="293"></figure>
     </div>
 
     <div class="step">
       <div>
         <p class="num">2</p>
-        <h3>Tell macOS it's OK to open</h3>
-        <p>The first time, macOS says <b>“Calenbar” Not Opened</b> and offers to move it to the Trash. It says this about every app that isn't registered with Apple, so click <b>Done</b>. Then open <b>System Settings › Privacy &amp; Security</b>, scroll to the bottom and click <b>Open Anyway</b>, confirm with your password and open Calenbar again. You only do this once.</p>
+        <h3>Click Done on the warning</h3>
+        <p>The first time you open it, macOS says <b>“Calenbar” Not Opened</b> and offers to move it to the Trash. It says this about every app that isn't registered with Apple. Click <b>Done</b>.</p>
       </div>
-      <figure aria-hidden="true">
-        <div class="win dialog">
-          <div class="body">
-            <div><b>“Calenbar” Not Opened</b></div>
-            <div class="muted">Apple could not verify “Calenbar” is free of malware that may harm your Mac or compromise your privacy.</div>
-            <div class="buttons"><span class="btn">Move to Trash</span><span class="btn plain">Done ←</span></div>
-          </div>
-        </div>
-        <div class="win" style="margin-top:12px">
-          <div class="head"><span class="lights"><i></i><i></i><i></i></span>Privacy &amp; Security</div>
-          <div class="body">
-            <div>“Calenbar” was blocked to protect your Mac.</div>
-            <div class="row"><span class="muted">Apple could not verify it.</span><span class="btn">Open Anyway</span></div>
-          </div>
-        </div>
+      <figure>
+        <img class="dialog" src="img/gatekeeper-en.png" alt="The macOS warning: “Calenbar.app” Not Opened. Apple could not verify it is free of malware. Buttons: Move to Trash and Done." width="260" height="284">
       </figure>
     </div>
 
     <div class="step">
       <div>
         <p class="num">3</p>
-        <h3>Allow access to your calendars</h3>
-        <p>Calenbar asks for <b>full access</b> to Calendars: that's how it reads your events, and they never leave your Mac. Then allow <b>Notifications</b> so it can warn you before a meeting.</p>
+        <h3>Allow it in Privacy &amp; Security</h3>
+        <p>Open <b>System Settings › Privacy &amp; Security</b> and scroll to the bottom. Click <b>Open Anyway</b>, confirm with your password and open Calenbar again. You only do this once.</p>
       </div>
-      <figure aria-hidden="true">
-        <div class="win dialog">
-          <div class="body">
-            <div class="icon daybox">16</div>
-            <div><b>“Calenbar” would like full access to your calendar</b></div>
-            <div class="muted">Calenbar shows your next event in the menu bar.</div>
-            <div class="buttons"><span class="btn plain">Don't Allow</span><span class="btn">Allow Full Access</span></div>
-          </div>
-        </div>
+      <figure>
+        <img src="img/open-anyway-en.png" alt="System Settings, Privacy &amp; Security: “Calenbar.app” was blocked to protect your Mac, with an Open Anyway button." width="468" height="90">
       </figure>
     </div>
 
     <div class="step">
       <div>
         <p class="num">4</p>
+        <h3>Allow access to your calendars</h3>
+        <p>Calenbar asks for <b>full access</b> to Calendars: that's how it reads your events, and they never leave your Mac. Then allow <b>Notifications</b> so it can warn you before a meeting.</p>
+      </div>
+      <figure>
+        <img class="dialog" src="img/calendar-access-en.png" alt="The macOS prompt: Allow “Calenbar.app” to access your calendar? Calenbar shows your next event in the menu bar. Events are read locally and never leave your Mac. Buttons: Allow Full Access and Don’t Allow." width="260" height="284">
+      </figure>
+    </div>
+
+    <div class="step">
+      <div>
+        <p class="num">5</p>
         <h3>Google Calendar or Outlook? Add the account once</h3>
         <p>Calenbar shows whatever your Mac's Calendar knows. In <b>System Settings › Internet Accounts</b>, add your Google or Exchange account with <b>Calendars</b> turned on. Already using the Calendar app with it? Nothing to do.</p>
       </div>
-      <figure aria-hidden="true">
-        <div class="win">
-          <div class="head"><span class="lights"><i></i><i></i><i></i></span>Internet Accounts</div>
-          <div class="body">
-            <div><b>Google</b> <span class="muted">you@gmail.com</span></div>
-            <div class="row"><span>Mail</span><span class="switch"></span></div>
-            <div class="row"><span>Calendars</span><span class="switch on"></span></div>
-          </div>
-        </div>
+      <figure>
+        <img src="img/internet-accounts-en.png" alt="System Settings, Internet Accounts: a Google account with Mail, Contacts, Calendars and Notes turned on." width="470" height="173">
       </figure>
     </div>
 
@@ -149,7 +133,7 @@
 
   <section class="guide" data-es hidden>
     <h1>Instalar Calenbar</h1>
-    <p class="intro">Instalala con Homebrew o descargala, y seguí cuatro pasos cortos. No necesitás cuenta.</p>
+    <p class="intro">Instalala con Homebrew o descargala, y seguí cinco pasos cortos. No necesitás cuenta.</p>
 
     <div class="ways">
       <div class="way term">
@@ -173,7 +157,7 @@
       </div>
     </div>
 
-    <h2 class="steps-head">Cuatro pasos</h2>
+    <h2 class="steps-head">Cinco pasos</h2>
     
     <div class="step">
       <div>
@@ -181,60 +165,50 @@
         <h3>Arrastrá Calenbar a Aplicaciones</h3>
         <p>Abrí el archivo descargado <b>Calenbar.dmg</b>. Arrastrá el ícono de Calenbar sobre la carpeta Aplicaciones y después abrí Calenbar desde Aplicaciones o con Spotlight.</p>
       </div>
-      <figure><img src="img/dmg.png" alt="La ventana de la imagen de disco: el ícono de Calenbar, una flecha y la carpeta Aplicaciones" width="660" height="412"></figure>
+      <figure><img src="img/dmg.png" alt="La ventana de la imagen de disco: el ícono de Calenbar, una flecha y la carpeta Aplicaciones" width="470" height="293"></figure>
     </div>
 
     <div class="step">
       <div>
         <p class="num">2</p>
-        <h3>Decile a macOS que está bien abrirla</h3>
-        <p>La primera vez macOS dice <b>No se abrió “Calenbar”</b> y te ofrece moverla al basurero. Lo dice de toda app que no está registrada en Apple, así que tocá <b>Listo</b>. Después abrí <b>Ajustes del Sistema › Privacidad y seguridad</b>, bajá hasta el final y tocá <b>Abrir de todas formas</b> (o <b>Abrir igualmente</b>, según el idioma del sistema), confirmá con tu contraseña y volvé a abrir Calenbar. Es una sola vez.</p>
+        <h3>Tocá Listo en el aviso</h3>
+        <p>La primera vez que la abrís, macOS dice <b>No se abrió “Calenbar”</b> y te ofrece moverla al basurero. Lo dice de toda app que no está registrada en Apple. Tocá <b>Listo</b>.</p>
       </div>
       <figure>
-        <img src="img/gatekeeper-es.png" alt="El aviso de macOS: No se abrió Calenbar. Apple no pudo verificar que no contenga software malicioso. Botones: Mover al basurero y Listo." width="294" height="280">
-        <div class="win" style="margin-top:12px" aria-hidden="true">
-          <div class="head"><span class="lights"><i></i><i></i><i></i></span>Privacidad y seguridad</div>
-          <div class="body">
-            <div>Se bloqueó “Calenbar” para proteger la Mac.</div>
-            <div class="row"><span class="muted">Apple no pudo verificarla.</span><span class="btn">Abrir de todas formas</span></div>
-          </div>
-        </div>
+        <img class="dialog" src="img/gatekeeper-es.png" alt="El aviso de macOS: No se abrió Calenbar. Apple no pudo verificar que no contenga software malicioso. Botones: Mover al basurero y Listo." width="304" height="284">
       </figure>
     </div>
 
     <div class="step">
       <div>
         <p class="num">3</p>
-        <h3>Permitile acceder a tus calendarios</h3>
-        <p>Calenbar pide <b>acceso completo</b> a Calendarios: así lee tus eventos, que nunca salen de tu Mac. Después permití las <b>Notificaciones</b> para que te avise antes de cada reunión.</p>
+        <h3>Permitila en Privacidad y seguridad</h3>
+        <p>Abrí <b>Configuración del Sistema › Privacidad y seguridad</b> y bajá hasta el final. Tocá <b>Abrir de todos modos</b> (o <b>Abrir igualmente</b>, según el idioma del sistema), confirmá con tu contraseña y volvé a abrir Calenbar. Es una sola vez.</p>
       </div>
-      <figure aria-hidden="true">
-        <div class="win dialog">
-          <div class="body">
-            <div class="icon daybox">16</div>
-            <div><b>“Calenbar” quiere acceso completo a tu calendario</b></div>
-            <div class="muted">Calenbar muestra tu próximo evento en la barra de menús.</div>
-            <div class="buttons"><span class="btn plain">No permitir</span><span class="btn">Permitir acceso completo</span></div>
-          </div>
-        </div>
+      <figure>
+        <img src="img/open-anyway-es.png" alt="Configuración del Sistema, Privacidad y seguridad: Se bloqueó Calenbar.app para proteger tu Mac, con el botón Abrir de todos modos." width="555" height="91">
       </figure>
     </div>
 
     <div class="step">
       <div>
         <p class="num">4</p>
-        <h3>¿Google Calendar u Outlook? Agregá la cuenta una vez</h3>
-        <p>Calenbar muestra lo que conoce el Calendario de tu Mac. En <b>Ajustes del Sistema › Cuentas de Internet</b>, agregá tu cuenta de Google o Exchange con <b>Calendarios</b> activado. Si ya usás la app Calendario con esa cuenta, no hay nada que hacer.</p>
+        <h3>Permitile acceder a tus calendarios</h3>
+        <p>Calenbar pide <b>acceso completo</b> a Calendarios: así lee tus eventos, que nunca salen de tu Mac. Después permití las <b>Notificaciones</b> para que te avise antes de cada reunión.</p>
       </div>
-      <figure aria-hidden="true">
-        <div class="win">
-          <div class="head"><span class="lights"><i></i><i></i><i></i></span>Cuentas de Internet</div>
-          <div class="body">
-            <div><b>Google</b> <span class="muted">vos@gmail.com</span></div>
-            <div class="row"><span>Mail</span><span class="switch"></span></div>
-            <div class="row"><span>Calendarios</span><span class="switch on"></span></div>
-          </div>
-        </div>
+      <figure>
+        <img class="dialog" src="img/calendar-access-es.png" alt="El pedido de macOS: ¿Permitir que Calenbar.app acceda a tu calendario? Calenbar muestra el próximo evento en la barra de menús. Los eventos se leen en la Mac y nunca salen de ella. Botones: Otorgar acceso completo y No permitir." width="304" height="284">
+      </figure>
+    </div>
+
+    <div class="step">
+      <div>
+        <p class="num">5</p>
+        <h3>¿Google Calendar u Outlook? Agregá la cuenta una vez</h3>
+        <p>Calenbar muestra lo que conoce el Calendario de tu Mac. En <b>Configuración del Sistema › Cuentas de Internet</b>, agregá tu cuenta de Google o Exchange con <b>Calendarios</b> activado. Si ya usás la app Calendario con esa cuenta, no hay nada que hacer.</p>
+      </div>
+      <figure>
+        <img src="img/internet-accounts-es.png" alt="Cuentas de Internet en Configuración del Sistema: una cuenta de Google con Mail, Contactos, Calendarios y Notas activados." width="555" height="173">
       </figure>
     </div>
 
