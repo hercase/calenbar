@@ -18,7 +18,11 @@ public enum TitleHorizon: String, CaseIterable, Codable, Sendable {
     /// Whether an event starting at `start` is within the horizon. Hour windows include their last
     /// instant ("in 4 hours" with a 4-hour horizon shows); day windows stop before the next midnight.
     public func includes(start: Date, from now: Date, calendar: Calendar) -> Bool {
-        let limit = limit(from: now, calendar: calendar)
+        includes(start: start, limit: limit(from: now, calendar: calendar))
+    }
+
+    /// Same test with the limit computed once, for filtering many events.
+    public func includes(start: Date, limit: Date) -> Bool {
         switch self {
         case .oneHour, .twoHours, .fourHours, .eightHours: return start <= limit
         case .today, .throughTomorrow, .twoDays, .sevenDays: return start < limit
@@ -62,9 +66,10 @@ public struct TitleSelector: Sendable {
             events
             .filter { $0.isOngoing(at: now) }
             .max { Self.ranksBefore($1, $0, earliestFirst: false) }
+        let limit = horizon.limit(from: now, calendar: calendar)
         let upcoming =
             events
-            .filter { $0.start > now && horizon.includes(start: $0.start, from: now, calendar: calendar) }
+            .filter { $0.start > now && horizon.includes(start: $0.start, limit: limit) }
             .min { Self.ranksBefore($0, $1, earliestFirst: true) }
 
         guard let ongoing else { return upcoming }

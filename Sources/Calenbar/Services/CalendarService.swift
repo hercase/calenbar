@@ -44,6 +44,14 @@ final class CalendarService {
     @ObservationIgnored private let network = NWPathMonitor()
     /// Previews answer date-range queries from `upcoming` instead of EventKit.
     @ObservationIgnored private var isFixture = false
+    /// The span `upcoming` covers, so callers know when a day needs its own query.
+    @ObservationIgnored private(set) var loadedRange: Range<Date> = Date.distantPast..<Date.distantPast
+    /// Month grids ask for the same six weeks on every click; one EventKit query per reload is enough.
+    @ObservationIgnored private var rangeCache: [String: [CalendarEvent]] = [:]
+    @ObservationIgnored private var pendingReload: Task<Void, Never>?
+    @ObservationIgnored private var wasOnline = true
+    /// Calendars whose name says "holidays" in some language; the user can override per calendar.
+    private(set) var holidayLookingIDs: Set<String> = []
 
     /// Fixed data for previews: no EventKit, no observers, no timers.
     init(fixture: [CalendarEvent], calendars: [CalendarInfo], access: Access = .granted) {
@@ -51,14 +59,17 @@ final class CalendarService {
         isFixture = true
         upcoming = fixture
         self.calendars = calendars
+        holidayLookingIDs = Set(calendars.filter { DayOffDetector.looksLikeHolidayCalendar($0.title) }.map(\.id))
+        loadedRange = Date.distantPast..<Date.distantFuture
         lastReload = Date()
     }
 
     init() {
         access = Self.currentAccess()
+        // EventKit posts this several times per sync; one reload a second later covers the burst.
         observers.append(
             NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { [weak self] _ in
-                MainActor.assumeIsolated { self?.reload() }
+                MainActor.assumeIsolated { self?.scheduleReload() }
             })
         // Synced accounts can go stale after sleep or a network switch; nudge them to refresh.
         observers.append(
@@ -67,25 +78,46 @@ final class CalendarService {
             ) { [weak self] _ in
                 MainActor.assumeIsolated { self?.refreshSources() }
             })
+        // Only the moment the network comes back matters, not every interface or DNS change.
         network.pathUpdateHandler = { [weak self] path in
-            guard path.status == .satisfied else { return }
-            Task { @MainActor in self?.refreshSources() }
+            let online = path.status == .satisfied
+            Task { @MainActor in
+                guard let self else { return }
+                let cameBack = online && !self.wasOnline
+                self.wasOnline = online
+                if cameBack {
+                    self.refreshSources()
+                }
+            }
         }
         network.start(queue: .global(qos: .utility))
         // macOS syncs Google/Exchange on its own schedule; nudging it often keeps new invites showing up quickly.
         let timer = Timer(timeInterval: 5 * 60, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.refreshSources() }
         }
+        timer.tolerance = 60  // Lets macOS batch the wake-up with others.
         RunLoop.main.add(timer, forMode: .common)
         safetyTimer = timer
         reload()
     }
 
-    /// Asks macOS to sync remote calendars (Google, Exchange…) now, then re-reads events.
+    /// Asks macOS to sync remote calendars (Google, Exchange…) now. The sync is asynchronous: anything
+    /// new arrives through `EKEventStoreChanged`, so only a deferred reload is scheduled, which also
+    /// re-anchors the window on today after midnight.
     func refreshSources() {
         guard access == .granted else { return }
         store.refreshSourcesIfNecessary()
-        reload()
+        scheduleReload()
+    }
+
+    /// One reload shortly, however many times it is asked for in the meantime.
+    private func scheduleReload() {
+        pendingReload?.cancel()
+        pendingReload = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { return }
+            self?.reload()
+        }
     }
 
     func requestAccess() async {
@@ -113,17 +145,33 @@ final class CalendarService {
             .sorted { ($0.sourceTitle, $0.title) < ($1.sourceTitle, $1.title) }
 
         lastReload = Date()
+        rangeCache = [:]
         let startOfToday = Calendar.current.startOfDay(for: Date())
         let end = Calendar.current.date(byAdding: .day, value: 14, to: startOfToday) ?? startOfToday
+        loadedRange = startOfToday..<end
         let freshEvents = events(from: startOfToday, to: end)
         // Assign only on change: every observer (status item, notifications, alerts) re-runs on assignment,
         // and the 5-minute nudge usually finds nothing new.
         if freshCalendars != calendars {
             calendars = freshCalendars
+            holidayLookingIDs = Set(freshCalendars.filter { DayOffDetector.looksLikeHolidayCalendar($0.title) }.map(\.id))
         }
         if freshEvents != upcoming {
             upcoming = freshEvents
         }
+    }
+
+    /// `events(from:to:)` with the answer kept until the next reload. Reading `upcoming` here makes
+    /// SwiftUI callers re-render when a reload brings changes.
+    func cachedEvents(from start: Date, to end: Date) -> [CalendarEvent] {
+        _ = upcoming
+        let key = "\(start.timeIntervalSinceReferenceDate)|\(end.timeIntervalSinceReferenceDate)"
+        if let hit = rangeCache[key] {
+            return hit
+        }
+        let fetched = events(from: start, to: end)
+        rangeCache[key] = fetched
+        return fetched
     }
 
     func events(from start: Date, to end: Date) -> [CalendarEvent] {

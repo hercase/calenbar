@@ -35,11 +35,11 @@ final class PanelController {
             popover.performClose(nil)
         } else {
             state.resetToToday()
-            // Looking at the panel is when fresh data matters most: ask macOS to sync now.
-            model.calendar.refreshSources()
             NSApp.activate()
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             popover.contentViewController?.view.window?.makeKey()
+            // Looking at the panel is when fresh data matters most: ask macOS to sync, after showing it.
+            model.calendar.refreshSources()
         }
     }
 }

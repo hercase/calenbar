@@ -22,7 +22,7 @@ struct EventListView: View {
                                 .padding(.vertical, PanelStyle.tight)
                         }
                         ForEach(section.events) { event in
-                            EventRow(model: model, state: state, event: event)
+                            EventRow(model: model, state: state, event: event, isHovered: state.hoveredEventID == event.id)
                         }
                     }
                 }
@@ -57,11 +57,12 @@ private struct EventRow: View {
     let model: AppModel
     let state: PanelState
     let event: CalendarEvent
+    /// Passed in rather than read from `state`, so a hover change re-renders two rows, not all of them.
+    let isHovered: Bool
 
     var body: some View {
         let isPast = event.end <= model.now
         let isSkipped = model.isSkipped(event)
-        let isHovered = state.hoveredEventID == event.id
         let link = event.meetingLink
 
         HStack(spacing: PanelStyle.small) {

@@ -52,10 +52,16 @@ enum MeetingOpener {
         NSPasteboard.general.setString(link.webURL.absoluteString, forType: .string)
     }
 
-    /// Apps registered with macOS to open web links (the same list System Settings shows).
+    private static var browserCache: [Browser]?
+
+    /// Apps registered with macOS to open web links (the same list System Settings shows). Asked of
+    /// Launch Services once per run: the Settings form re-evaluates often, the list doesn't change.
     static func installedBrowsers() -> [Browser] {
+        if let browserCache {
+            return browserCache
+        }
         guard let probe = URL(string: "https://example.com") else { return [] }
-        return NSWorkspace.shared.urlsForApplications(toOpen: probe)
+        let browsers = NSWorkspace.shared.urlsForApplications(toOpen: probe)
             .compactMap { url -> Browser? in
                 guard let bundle = Bundle(url: url), let id = bundle.bundleIdentifier else { return nil }
                 let name = FileManager.default.displayName(atPath: url.path).replacingOccurrences(of: ".app", with: "")
@@ -67,5 +73,7 @@ enum MeetingOpener {
                 }
             }
             .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        browserCache = browsers
+        return browsers
     }
 }

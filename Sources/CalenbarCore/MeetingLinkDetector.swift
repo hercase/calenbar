@@ -45,7 +45,7 @@ public enum MeetingProvider: String, CaseIterable, Sendable {
     }
 }
 
-public struct MeetingLink: Equatable, Sendable {
+public struct MeetingLink: Equatable, Hashable, Sendable {
     public let provider: MeetingProvider
     public let webURL: URL
     /// App-specific URL (e.g. `zoommtg://`) that skips the browser hop when the app is installed.
@@ -83,19 +83,23 @@ public enum MeetingLinkDetector {
     /// Searches the event URL, then location, then notes; returns the first link that belongs to a
     /// known meeting provider. Generic links (docs, maps) are ignored.
     public static func detect(url: URL?, location: String?, notes: String?) -> MeetingLink? {
-        let candidates = [url].compactMap { $0 } + links(in: location) + links(in: notes)
-        for candidate in candidates {
-            if let link = meetingLink(for: candidate) {
+        // Cheapest source first; the notes (often kilobytes of invitation HTML) only when needed.
+        if let url, let link = meetingLink(for: url) {
+            return link
+        }
+        for text in [location, notes] {
+            if let link = links(in: text).lazy.compactMap(meetingLink(for:)).first {
                 return link
             }
         }
         return nil
     }
 
+    /// Built once: creating a data detector is the expensive part of a scan.
+    private static let linkDetector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+
     private static func links(in text: String?) -> [URL] {
-        guard let text, !text.isEmpty,
-            let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        else { return [] }
+        guard let text, !text.isEmpty, let detector = linkDetector else { return [] }
 
         let range = NSRange(text.startIndex..., in: text)
         return detector.matches(in: text, range: range).compactMap { match in

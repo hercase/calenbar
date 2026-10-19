@@ -39,15 +39,14 @@ final class FullScreenAlertController {
 
         let lead = TimeInterval(settings.alertLeadMinutes * 60)
         let due = events.filter { event in
-            guard !shownKeys.contains(event.key) else { return false }
+            guard !shownKeys.contains(event.key),
+                AlertTiming.isDue(event: event, now: now, lead: lead, snoozedUntil: snoozedUntil[event.key])
+            else { return false }
             if settings.alertOnlyWithLink, event.meetingLink == nil {
                 return false
             }
             // Already joined from Calenbar: no need to interrupt.
-            if MeetingOpener.wasJoinedRecently(eventKey: event.key) {
-                return false
-            }
-            return AlertTiming.isDue(event: event, now: now, lead: lead, snoozedUntil: snoozedUntil[event.key])
+            return !MeetingOpener.wasJoinedRecently(eventKey: event.key)
         }
         switch settings.alertStyle {
         case .fullScreen:

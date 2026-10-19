@@ -136,7 +136,7 @@ struct MiniCalendarView: View {
         guard let first = days.first, let last = days.last,
             let end = calendar.date(byAdding: .day, value: 1, to: last)
         else { return ([:], []) }
-        let events = model.settings.eventFilter.apply(model.calendar.events(from: first, to: end), for: .list)
+        let events = model.settings.eventFilter.apply(model.calendar.cachedEvents(from: first, to: end), for: .list)
         var off: Set<Date> = []
         let holidayCalendars = model.holidayCalendarIDs
         for event in events where event.dayOff(holidayCalendars: holidayCalendars) != nil {

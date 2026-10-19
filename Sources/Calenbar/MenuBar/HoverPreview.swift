@@ -5,7 +5,7 @@ import SwiftUI
 /// panel: time, room, who's coming, Join. A short delay keeps passing by quiet, and the card stays
 /// while the pointer is on it.
 @MainActor
-final class HoverPreview: NSObject {
+final class HoverPreview {
     private static let openDelay: TimeInterval = 0.5
     private static let closeGrace: TimeInterval = 0.35
 
@@ -20,13 +20,16 @@ final class HoverPreview: NSObject {
         self.model = model
         self.button = button
         self.isPanelOpen = isPanelOpen
-        super.init()
-        button.addTrackingArea(
-            NSTrackingArea(
-                rect: .zero, options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self, userInfo: nil))
+        // An overlay with its own tracking area: the status bar button rebuilds its tracking areas
+        // itself and drops any added from outside. The overlay never takes clicks.
+        let overlay = TrackingOverlay(frame: button.bounds)
+        overlay.autoresizingMask = [.width, .height]
+        overlay.onEnter = { [weak self] in self?.pointerEntered() }
+        overlay.onExit = { [weak self] in self?.pointerExited() }
+        button.addSubview(overlay)
     }
 
-    @objc func mouseEntered(with event: NSEvent) {
+    private func pointerEntered() {
         closeTimer?.invalidate()
         closeTimer = nil
         let settings = model.settings
@@ -38,7 +41,7 @@ final class HoverPreview: NSObject {
         }
     }
 
-    @objc func mouseExited(with event: NSEvent) {
+    private func pointerExited() {
         openTimer?.invalidate()
         openTimer = nil
         scheduleClose()
@@ -78,4 +81,24 @@ final class HoverPreview: NSObject {
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         self.popover = popover
     }
+}
+
+/// Invisible view that only reports the pointer entering and leaving; clicks go through to the button.
+private final class TrackingOverlay: NSView {
+    var onEnter: () -> Void = {}
+    var onExit: () -> Void = {}
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        for area in trackingAreas {
+            removeTrackingArea(area)
+        }
+        addTrackingArea(
+            NSTrackingArea(
+                rect: .zero, options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self, userInfo: nil))
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+    override func mouseEntered(with event: NSEvent) { onEnter() }
+    override func mouseExited(with event: NSEvent) { onExit() }
 }

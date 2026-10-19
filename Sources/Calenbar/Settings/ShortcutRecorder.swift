@@ -24,6 +24,12 @@ struct ShortcutRecorder: View {
                 }
             }
         }
+        // Closing the window mid-recording must not leave the key monitor swallowing every key.
+        .onDisappear {
+            if uiState.isRecordingShortcut {
+                stopRecording()
+            }
+        }
     }
 
     private var label: String {

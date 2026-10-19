@@ -24,6 +24,10 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
     /// Other calendars that carry a copy of this event (a mirror into a work calendar, a shared team
     /// calendar); those copies are folded into this one by `deduplicated`.
     public var alsoIn: [String] = []
+    /// Found once here: link detection scans the notes, and every surface reads it many times a minute.
+    public let meetingLink: MeetingLink?
+    /// What the title alone says about the day (time off, a holiday); the calendar may add to it.
+    public let titleDayOff: DayOffKind?
 
     public init(
         id: String,
@@ -61,16 +65,14 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
         self.attendees = attendees
         self.myStatus = myStatus
         self.isRecurring = isRecurring
+        meetingLink = MeetingLinkDetector.detect(url: url, location: location, notes: notes)
+        titleDayOff = DayOffDetector.kind(title: title, isHolidayCalendar: false)
     }
 
     /// Stable key for a single occurrence, used to persist Hide/Mute.
     /// Includes the start so hiding one occurrence of a recurring event leaves the others visible.
     public var key: String {
         "\(externalID)|\(Int(start.timeIntervalSince1970))"
-    }
-
-    public var meetingLink: MeetingLink? {
-        MeetingLinkDetector.detect(url: url, location: location, notes: notes)
     }
 
     public func isOngoing(at now: Date) -> Bool {

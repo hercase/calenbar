@@ -79,9 +79,7 @@ private struct GeneralSettings: View {
                     Button("Refresh Now") { calendar.refreshSources() }
                 } label: {
                     Text("Calendar sync")
-                    if let last = calendar.lastReload {
-                        Text("Last updated \(last.formatted(.relative(presentation: .named)))")
-                    }
+                    LastReloadText(calendar: calendar)
                 }
             } header: {
                 Text("Sync")
@@ -120,6 +118,17 @@ private struct GeneralSettings: View {
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+/// Its own view, so a reload re-renders this line and not the whole General form.
+private struct LastReloadText: View {
+    let calendar: CalendarService
+
+    var body: some View {
+        if let last = calendar.lastReload {
+            Text("Last updated \(last.formatted(.relative(presentation: .named)))")
+        }
     }
 }
 

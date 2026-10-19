@@ -76,9 +76,13 @@ final class AppModel {
         settings.hideTitlesInMenuBar ? TitleFormatter.privateTitle(event) : TitleFormatter.displayTitle(event)
     }
 
-    /// Calendars whose days are tinted as holidays, by name unless the user said otherwise.
+    /// Calendars whose days are tinted as holidays: the ones named like it, adjusted by the user's choices.
     var holidayCalendarIDs: Set<String> {
-        Set(calendar.calendars.filter { settings.isHolidayCalendar($0) }.map(\.id))
+        var ids = calendar.holidayLookingIDs
+        for (id, isHolidays) in settings.holidayCalendarChoices {
+            if isHolidays { ids.insert(id) } else { ids.remove(id) }
+        }
+        return ids
     }
 
     func events(for purpose: CalendarPurpose) -> [CalendarEvent] {
@@ -88,10 +92,11 @@ final class AppModel {
     func listEvents(on day: Date) -> [CalendarEvent] {
         let start = Calendar.current.startOfDay(for: day)
         guard let end = Calendar.current.date(byAdding: .day, value: 1, to: start) else { return [] }
+        // Days inside the loaded window come from memory, even when they're empty.
         let source =
-            calendar.upcoming.contains { $0.start >= start && $0.start < end }
+            calendar.loadedRange.contains(start) && calendar.loadedRange.contains(end.addingTimeInterval(-1))
             ? calendar.upcoming
-            : calendar.events(from: start, to: end)
+            : calendar.cachedEvents(from: start, to: end)
         return settings.eventFilter
             .apply(source, for: .list)
             .filter { $0.start < end && $0.end > start }

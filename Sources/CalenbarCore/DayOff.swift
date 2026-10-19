@@ -83,8 +83,8 @@ public enum DayOffDetector {
 }
 
 extension CalendarEvent {
-    /// Time off or a holiday, given which calendars the user marked as holiday calendars.
+    /// Time off or a holiday, given which calendars count as holiday calendars.
     public func dayOff(holidayCalendars: Set<String>) -> DayOffKind? {
-        DayOffDetector.kind(title: title, isHolidayCalendar: holidayCalendars.contains(calendarID))
+        holidayCalendars.contains(calendarID) ? .holiday : titleDayOff
     }
 }

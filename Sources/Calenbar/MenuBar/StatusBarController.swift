@@ -53,6 +53,7 @@ final class StatusBarController {
     }()
     private var placementCheckPending = false
     private var renderedEventKey: String?
+    private var lastTitle: String?
     private var attentionTimer: Timer?
 
     init(
@@ -186,6 +187,9 @@ final class StatusBarController {
     }
 
     private func set(_ button: NSStatusBarButton, image: NSImage?, title: String) {
+        // Most minute ticks change nothing; re-setting the same values would still re-lay out the item.
+        guard button.image !== image || lastTitle != title else { return }
+        lastTitle = title
         image?.isTemplate = true
         button.image = image
         button.title = title.isEmpty ? "" : (image == nil ? title : " " + title)
@@ -338,7 +342,11 @@ final class StatusBarController {
         statusItem.isVisible = true
     }
 
-    // MARK: - Flashing as an event approaches
+}
+
+// MARK: - Flashing as an event approaches
+
+extension StatusBarController {
 
     private func updateAttention(for event: CalendarEvent?) {
         let settings = model.settings
@@ -353,6 +361,7 @@ final class StatusBarController {
         let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.attentionTick() }
         }
+        timer.tolerance = 0.1
         RunLoop.main.add(timer, forMode: .common)
         attentionTimer = timer
         attentionTick()
