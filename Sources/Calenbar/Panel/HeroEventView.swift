@@ -16,11 +16,10 @@ struct HeroEventView: View {
                 Button {
                     MeetingOpener.open(link, eventKey: event.key)
                 } label: {
-                    HStack(spacing: 6) {
-                        ProviderChipView(provider: link.provider, size: 14)
-                        Text("Join")
-                    }
-                    .padding(.horizontal, 2)
+                    // Text only: at this size a logo (or a tile behind it) outweighs the word, and
+                    // the service already shows in the event's row and card.
+                    Text("Join")
+                        .padding(.horizontal, 6)
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
