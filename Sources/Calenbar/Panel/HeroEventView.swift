@@ -17,9 +17,17 @@ struct HeroEventView: View {
                     MeetingOpener.open(link, eventKey: event.key)
                 } label: {
                     // Text only: at this size a logo (or a tile behind it) outweighs the word, and
-                    // the service already shows in the event's row and card.
-                    Text("Join")
-                        .padding(.horizontal, 6)
+                    // the service already shows in the event's row and card. The global shortcut
+                    // rides along in small type, the way menus print theirs.
+                    HStack(spacing: 5) {
+                        Text("Join")
+                        if let shortcut = model.settings.joinShortcut {
+                            Text(verbatim: shortcut.display)
+                                .font(.caption2)
+                                .opacity(0.7)
+                        }
+                    }
+                    .padding(.horizontal, 4)
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
