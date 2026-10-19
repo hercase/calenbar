@@ -160,30 +160,38 @@ private struct DayCell: View {
     let isInMonth: Bool
     let isToday: Bool
     let isSelected: Bool
-    /// Timed events that day; the fill behind the number darkens in three steps (1–2, 3–4, 5+).
+    /// Timed events that day; shown as one dot (1–2), two (3–4) or three (5+).
     let eventCount: Int
     let isDayOff: Bool
     let select: () -> Void
 
     var body: some View {
         Button(action: select) {
-            // The heat-map convention: a soft fill behind the number, stronger the busier the day, in one
-            // hue. Today is the solid version of the same hue; the selected day is a ring; a day off is
-            // written in the accent colour, the way printed calendars mark holidays in red.
             Text(day.formatted(.dateTime.day()))
-                .font(.subheadline.weight(isToday || isDayOff ? .semibold : .regular).monospacedDigit())
+                .font(.subheadline.weight(isToday ? .bold : .regular).monospacedDigit())
                 .foregroundStyle(foreground)
-                .frame(width: 24, height: 24)
+                .frame(width: 22, height: 22)
                 .background {
                     if isToday {
                         Circle().fill(Color.accentColor)
                     } else {
-                        if let load = loadOpacity {
-                            Circle().fill(Color.accentColor.opacity(load))
+                        if isDayOff {
+                            Circle().fill(Color.accentColor.opacity(0.16))
                         }
                         if isSelected {
                             Circle().strokeBorder(Color.accentColor, lineWidth: 1.2)
                         }
+                    }
+                }
+                .overlay(alignment: .bottom) {
+                    // The tint already says the day is taken; no dots on top of it.
+                    if eventCount > 0, !isDayOff {
+                        HStack(spacing: 2) {
+                            ForEach(0..<min(3, (eventCount + 1) / 2), id: \.self) { _ in
+                                Circle().fill(Color.secondary).frame(width: 3, height: 3)
+                            }
+                        }
+                        .offset(y: 4)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -197,16 +205,6 @@ private struct DayCell: View {
 
     private var dayName: String { day.formatted(date: .complete, time: .omitted) }
 
-    /// Three steps of the same hue: light, busy, packed. Nil leaves the cell plain.
-    private var loadOpacity: Double? {
-        switch eventCount {
-        case ...0: nil
-        case ...2: 0.10
-        case ...4: 0.22
-        default: 0.38
-        }
-    }
-
     private var accessibilityText: String {
         if isDayOff {
             return String(localized: "\(dayName), day off")
@@ -217,9 +215,6 @@ private struct DayCell: View {
     private var foreground: Color {
         if isToday {
             return .white
-        }
-        if isDayOff {
-            return isInMonth ? .accentColor : .accentColor.opacity(0.5)
         }
         return isInMonth ? .primary : .secondary.opacity(0.5)
     }

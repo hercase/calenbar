@@ -7,7 +7,6 @@ section into the release. Bullets are English; an optional `### es` block carrie
 ## Unreleased
 
 - Rest the pointer on the menu bar item and the event's card appears: time, room, who's coming, Join. Off in Settings › Menu Bar if you prefer.
-- Busy days show at a glance: the fill behind each day number gets stronger with the number of meetings, light, busy, packed. Holidays and days off are written in the accent colour.
 - The "Update available" pill in the panel is easier to see.
 - World clocks: type what your team says, “ET”, “PT”, “CET”, “UTC”, and the right zone comes up first.
 - New Meeting › My Room: set your standing room (a fixed Meet, your Zoom personal meeting id) in Settings › General, and it opens with the link already on the clipboard.
@@ -15,7 +14,6 @@ section into the release. Bullets are English; an optional `### es` block carrie
 
 ### es
 - Apoyá el puntero en el ítem de la barra y aparece la tarjeta del evento: hora, sala, quién viene, Unirse. Se apaga en Ajustes › Barra de menús si preferís.
-- Los días cargados se ven de un vistazo: el fondo detrás de cada número se intensifica con la cantidad de reuniones, tranquilo, cargado, imposible. Los feriados y días libres van escritos en el color de acento.
 - El aviso "Actualización disponible" del panel se ve mejor.
 - Relojes del mundo: escribí lo que dice tu equipo, “ET”, “PT”, “CET”, “UTC”, y la zona correcta aparece primero.
 - Nueva reunión › Mi sala: cargá tu sala fija (un Meet permanente, tu ID personal de Zoom) en Ajustes › General, y se abre con el link ya en el portapapeles.
