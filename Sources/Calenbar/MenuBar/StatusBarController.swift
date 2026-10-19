@@ -80,6 +80,7 @@ final class StatusBarController {
         }
         observeSpaceChanges()
         observeContinuously { [weak self] in self?.render() }
+        watchTitleWidthSetting()
     }
 
     @objc private func clicked() {
@@ -204,17 +205,38 @@ final class StatusBarController {
 
     /// How wide the title may get.
     /// - Notched MacBook: the learned width that keeps the item right of the notch, next to the other icons.
-    ///   Wider and macOS moves it left of the notch among the app menus, or hides it.
+    ///   Wider and macOS moves it left of the notch among the app menus, or hides it. A fixed width
+    ///   from Settings is the starting point of that search, so a wider choice is tried again.
     /// - Other displays (or no room at all right of the notch): the width chosen in Settings, or with
     ///   "Automatic" the learned width that macOS hasn't hidden for colliding with app menus.
     private var titleBudget: Double {
+        let fixed = model.settings.titleWidth.points
         if notchEdge != nil, let notchBudget {
-            return notchBudget
+            return min(notchBudget, fixed ?? .infinity)
         }
-        if let fixed = model.settings.titleWidth.points {
+        if let fixed {
             return clamp(fixed)
         }
         return clamp(wideBudget)
+    }
+
+    /// A new choice in Settings restarts the fit from that width; the learned budgets only ever
+    /// shrink, so without this a wider choice would never be tried.
+    private func watchTitleWidthSetting() {
+        var last = model.settings.titleWidth
+        observeContinuously { [weak self] in
+            guard let self else { return }
+            let current = model.settings.titleWidth
+            guard current != last else { return }
+            last = current
+            occlusionPenalty = 0
+            if notchEdge != nil {
+                setNotchBudget(current.points ?? Self.notchStartWidth)
+            } else {
+                setWideBudget(current.points ?? Self.widestTitle)
+            }
+            render()
+        }
     }
 
     private func clamp(_ width: Double) -> Double {

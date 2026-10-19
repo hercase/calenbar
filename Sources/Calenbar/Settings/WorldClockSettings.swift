@@ -88,9 +88,9 @@ private struct ClockRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 if let change = clockChange(at: now) {
-                    Label(change, systemImage: "clock.arrow.2.circlepath")
+                    Text(change)
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(.secondary)
                 }
             }
             Spacer()
@@ -124,14 +124,15 @@ private struct ClockRow: View {
         return parts.joined(separator: " · ")
     }
 
-    /// "Clocks go back 1h on Nov 1": the thing that silently breaks next week's meeting times.
+    /// "From 1 Nov, −5h": what the distance becomes once that zone's clocks change. The fact that
+    /// matters is the new offset; the mechanics (forward, back) don't need saying.
     private func clockChange(at now: Date) -> String? {
         guard let change = TimeZoneFacts.upcomingClockChange(in: clock.timeZone, at: now) else { return nil }
-        let when = change.date.formatted(.dateTime.month(.abbreviated).day())
-        let hours = abs(change.hourShift).formatted(.number.precision(.fractionLength(0...1)))
-        return change.hourShift > 0
-            ? String(localized: "Clocks go forward \(hours)h on \(when)")
-            : String(localized: "Clocks go back \(hours)h on \(when)")
+        var style = Date.FormatStyle().month(.abbreviated).day()
+        style.timeZone = clock.timeZone
+        let when = change.date.formatted(style)
+        let after = WorldClocksView.offsetText(of: clock.timeZone, at: change.date.addingTimeInterval(60))
+        return String(localized: "From \(when), \(after)")
     }
 }
 

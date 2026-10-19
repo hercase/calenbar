@@ -126,7 +126,7 @@
 "settings.alert.footer" = "La tarjeta aparece en la esquina que elijas, sobre todos los escritorios y apps a pantalla completa, y se queda hasta que entrás, posponés o la cerrás. Las esquinas de abajo no se pisan con las notificaciones de macOS. Pantalla completa difumina todo y no se puede pasar por alto. Las dos se van solas cuando termina la reunión.";
 "settings.horizon.footer" = "Fuera de ese plazo la barra de menús muestra solo la fecha de hoy. Un evento en curso se muestra siempre.";
 "Nothing coming up" = "Nada en el horizonte";
-"settings.width.footer" = "Para pantallas sin notch; en la pantalla de una MacBook el título ya se ajusta solo al espacio a la derecha del notch. Automático usa todo el lugar que dejan libre las apps que usás, y lo va aprendiendo. Elegí un ancho fijo si preferís una barra más quieta.";
+"settings.width.footer" = "Automático usa todo el lugar que dejan libre las apps que usás, y lo va aprendiendo; un ancho fijo deja la barra más quieta. En una MacBook con notch el título nunca pasa del espacio a la derecha del notch, elijas lo que elijas.";
 "Sync" = "Sincronización";
 "Calendar sync" = "Sincronización de calendarios";
 "Last updated %@" = "Última actualización: %@";
@@ -276,5 +276,4 @@
 "Your personal meeting room" = "Tu sala de reuniones personal";
 "Move up" = "Subir";
 "Move down" = "Bajar";
-"Clocks go forward %@h on %@" = "El reloj se adelanta %@h el %@";
-"Clocks go back %@h on %@" = "El reloj se atrasa %@h el %@";
+"From %@, %@" = "Desde el %@, %@";

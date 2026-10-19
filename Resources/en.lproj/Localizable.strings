@@ -1,6 +1,6 @@
 /* English text for identifier-style keys. Every other key is its own English text. */
 
-"settings.width.footer" = "For displays without a notch; on a MacBook screen the title already fits itself to the space right of the notch. Automatic uses as much room as the apps you use leave free, learning as it goes. Pick a fixed width if you prefer a steadier bar.";
+"settings.width.footer" = "Automatic uses as much room as the apps you use leave free, learning as it goes; a fixed width keeps the bar steadier. On a MacBook with a notch the title never grows past the space right of the notch, whatever you pick.";
 "settings.position.row" = "macOS puts new items at the far left of the menu bar and hides them first when it gets crowded. Hold ⌘ and drag the Calenbar item next to the clock once; it stays there across relaunches and updates.";
 "settings.privacy.footer" = "The menu bar shows “Meeting • in 12m” instead of the title, so a shared screen or a recording doesn't reveal it. The panel is unchanged. Also in the panel's ••• menu and the item's right-click menu.";
 "settings.shortcut.footer" = "⌃⌘J by default; record another one, or remove it with the ×. It works in any app and joins the meeting shown in the menu bar, or the next one with a link. With a personal room set, New Meeting › My Room opens it and copies the link for you to paste.";
