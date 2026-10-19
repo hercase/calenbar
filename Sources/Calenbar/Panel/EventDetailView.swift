@@ -58,7 +58,7 @@ struct EventDetailView: View {
                     MeetingOpener.open(link, eventKey: event.key)
                 } label: {
                     HStack(spacing: 6) {
-                        ProviderIconView(provider: link.provider, size: 16)
+                        ProviderChipView(provider: link.provider, size: 14)
                         Text("Join \(link.provider.displayName)")
                     }
                     .frame(maxWidth: .infinity)

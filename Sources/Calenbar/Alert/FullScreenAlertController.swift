@@ -285,7 +285,7 @@ struct AlertView: View {
                         actions.join(link)
                     } label: {
                         HStack(spacing: 8) {
-                            ProviderIconView(provider: link.provider, size: 18)
+                            ProviderChipView(provider: link.provider, size: 16)
                             Text("Join \(link.provider.displayName)")
                         }
                     }

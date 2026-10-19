@@ -43,6 +43,20 @@ enum ProviderIcon {
     }
 }
 
+/// The logo on a small white tile, for prominent buttons: the button takes the user's accent colour,
+/// and a full-colour logo straight on it can clash (Meet's green and blue on a blue button). Same
+/// device as "Sign in with…" buttons.
+struct ProviderChipView: View {
+    let provider: MeetingProvider
+    var size: CGFloat = 16
+
+    var body: some View {
+        ProviderIconView(provider: provider, size: size)
+            .padding(3)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
+    }
+}
+
 /// The service's official icon at a given size, falling back to a camera in the service's color.
 struct ProviderIconView: View {
     let provider: MeetingProvider

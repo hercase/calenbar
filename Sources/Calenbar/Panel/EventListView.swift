@@ -21,8 +21,28 @@ struct EventListView: View {
                                 .foregroundStyle(.tertiary)
                                 .padding(.vertical, PanelStyle.tight)
                         }
-                        ForEach(section.events) { event in
-                            EventRow(model: model, state: state, event: event, isHovered: state.hoveredEventID == event.id)
+                        ForEach(Array(Self.overlapGroups(section.events).enumerated()), id: \.offset) { _, group in
+                            if group.count > 1 {
+                                // Meetings that share a slot sit in one container, so the clash is
+                                // visible without deciding which one matters.
+                                VStack(alignment: .leading, spacing: PanelStyle.tight - 2) {
+                                    Label("At the same time", systemImage: "arrow.left.arrow.right")
+                                        .font(.caption2.weight(.semibold))
+                                        .foregroundStyle(.orange)
+                                        .padding(.horizontal, PanelStyle.tight + 2)
+                                        .padding(.top, PanelStyle.tight)
+                                    ForEach(group) { event in
+                                        EventRow(
+                                            model: model, state: state, event: event,
+                                            isHovered: state.hoveredEventID == event.id)
+                                    }
+                                }
+                                .background(
+                                    Color.orange.opacity(0.07), in: RoundedRectangle(cornerRadius: PanelStyle.rowCornerRadius + 2)
+                                )
+                            } else if let event = group.first {
+                                EventRow(model: model, state: state, event: event, isHovered: state.hoveredEventID == event.id)
+                            }
                         }
                     }
                 }
@@ -38,6 +58,24 @@ struct EventListView: View {
     private struct Section {
         let title: String
         let events: [CalendarEvent]
+    }
+
+    /// Consecutive timed events that share any minute form a group; everything else stands alone.
+    static func overlapGroups(_ events: [CalendarEvent]) -> [[CalendarEvent]] {
+        var groups: [[CalendarEvent]] = []
+        var groupEnd = Date.distantPast
+        for event in events {
+            if !event.isAllDay, let last = groups.last, !last.isEmpty, !last[0].isAllDay, event.start < groupEnd {
+                groups[groups.count - 1].append(event)
+            } else {
+                groups.append([event])
+                groupEnd = Date.distantPast
+            }
+            if !event.isAllDay {
+                groupEnd = max(groupEnd, event.end)
+            }
+        }
+        return groups
     }
 
     private var sections: [Section] {

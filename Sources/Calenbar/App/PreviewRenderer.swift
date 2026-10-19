@@ -217,7 +217,7 @@ struct PreviewFixtures {
             url: URL(string: "https://meet.google.com/abc-defg-hij"), attendees: people + [Self.room], status: .accepted,
             notes: "Agenda\n• Roadmap for Q4\n• Hiring update")
         oneOnOne = Self.event(
-            "1:1 with Ana", start: now.addingTimeInterval(150 * 60), minutes: 30, id: "one",
+            "1:1 with Ana", start: now.addingTimeInterval(12 * 60 + 15 * 60), minutes: 30, id: "one",
             url: URL(string: "https://zoom.us/j/123456"), attendees: Array(people.prefix(2)), status: .pending)
         let past = Self.event(
             "Design review", start: now.addingTimeInterval(-120 * 60), minutes: 60, id: "past",

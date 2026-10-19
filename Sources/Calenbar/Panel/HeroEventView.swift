@@ -17,7 +17,7 @@ struct HeroEventView: View {
                     MeetingOpener.open(link, eventKey: event.key)
                 } label: {
                     HStack(spacing: 6) {
-                        ProviderIconView(provider: link.provider, size: 16)
+                        ProviderChipView(provider: link.provider, size: 14)
                         Text("Join")
                     }
                     .padding(.horizontal, 2)

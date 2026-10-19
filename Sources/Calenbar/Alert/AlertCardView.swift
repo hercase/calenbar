@@ -55,7 +55,7 @@ struct AlertCardView: View {
                         actions.join(link)
                     } label: {
                         HStack(spacing: 6) {
-                            ProviderIconView(provider: link.provider, size: 14)
+                            ProviderChipView(provider: link.provider, size: 12)
                             Text("Join \(link.provider.displayName)")
                         }
                         .frame(maxWidth: .infinity)
