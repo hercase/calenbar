@@ -15,6 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if InstallLocation.offerMoveIfNeeded() {
             return
         }
+        NSApp.mainMenu = Self.makeMainMenu()
         let model = AppModel(settings: AppSettings(), calendar: CalendarService(), clock: MinuteClock())
         self.model = model
 
@@ -22,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.panel = panel
         statusBar = StatusBarController(
             model: model,
+            isPanelOpen: { panel.isShown },
             onOpenSettings: { [weak self] in self?.showSettings() },
             onClick: { button in panel.toggle(from: button) }
         )
@@ -46,6 +48,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 LoginLaunch.enableOnFirstRun()
             }
         }
+    }
+
+    /// A menu bar app shows no menus, but key equivalents still go through the main menu: without
+    /// an Edit menu, ⌘V does nothing in the Settings text fields.
+    private static func makeMainMenu() -> NSMenu {
+        let edit = NSMenu(title: String(localized: "Edit"))
+        edit.addItem(withTitle: String(localized: "Undo"), action: Selector(("undo:")), keyEquivalent: "z")
+        let redo = edit.addItem(withTitle: String(localized: "Redo"), action: Selector(("redo:")), keyEquivalent: "z")
+        redo.keyEquivalentModifierMask = [.command, .shift]
+        edit.addItem(.separator())
+        edit.addItem(withTitle: String(localized: "Cut"), action: #selector(NSText.cut(_:)), keyEquivalent: "x")
+        edit.addItem(withTitle: String(localized: "Copy"), action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+        edit.addItem(withTitle: String(localized: "Paste"), action: #selector(NSText.paste(_:)), keyEquivalent: "v")
+        edit.addItem(withTitle: String(localized: "Select All"), action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+        let window = NSMenu(title: String(localized: "Window"))
+        window.addItem(withTitle: String(localized: "Close"), action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
+        let main = NSMenu()
+        for submenu in [edit, window] {
+            let item = NSMenuItem(title: submenu.title, action: nil, keyEquivalent: "")
+            item.submenu = submenu
+            main.addItem(item)
+        }
+        return main
     }
 
     private func showSettings() {

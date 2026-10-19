@@ -262,3 +262,13 @@
 "· also in %@" = "· también en %@";
 "%@, %lld events" = "%@, %lld eventos";
 "More options for %@" = "Más opciones para %@";
+"Show the event's card when the pointer rests on the item" = "Mostrar la tarjeta del evento al apoyar el puntero en el ítem";
+"Edit" = "Edición";
+"Undo" = "Deshacer";
+"Redo" = "Rehacer";
+"Cut" = "Cortar";
+"Copy" = "Copiar";
+"Paste" = "Pegar";
+"Select All" = "Seleccionar todo";
+"Window" = "Ventana";
+"Close" = "Cerrar";

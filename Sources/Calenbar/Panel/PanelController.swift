@@ -27,6 +27,8 @@ final class PanelController {
         }
     }
 
+    var isShown: Bool { popover.isShown }
+
     func toggle(from button: NSStatusBarButton) {
         if popover.isShown {
             state.isPanelPinned = false

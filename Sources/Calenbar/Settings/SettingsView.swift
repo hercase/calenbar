@@ -139,6 +139,7 @@ private struct MenuBarSettings: View {
                     Text("5 min before it starts").tag(TitleRule.switchBeforeNextStarts)
                     Text("5 min before the current one ends").tag(TitleRule.switchBeforeCurrentEnds)
                 }
+                Toggle("Show the event's card when the pointer rests on the item", isOn: $settings.hoverPreview)
             } header: {
                 Text("Next event")
             } footer: {

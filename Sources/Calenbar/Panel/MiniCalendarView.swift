@@ -188,7 +188,7 @@ private struct DayCell: View {
                     if eventCount > 0, !isDayOff {
                         HStack(spacing: 2) {
                             ForEach(0..<min(3, (eventCount + 1) / 2), id: \.self) { _ in
-                                Circle().fill(Color.secondary).frame(width: 3, height: 3)
+                                Circle().fill(dotTint).frame(width: 3, height: 3)
                             }
                         }
                         .offset(y: 4)
@@ -204,6 +204,15 @@ private struct DayCell: View {
     }
 
     private var dayName: String { day.formatted(date: .complete, time: .omitted) }
+
+    /// The dots already count; the colour hints at the kind of day: light, busy, packed.
+    private var dotTint: Color {
+        switch eventCount {
+        case ...2: Color.yellow.opacity(0.9)
+        case ...4: Color.orange.opacity(0.9)
+        default: Color.red.opacity(0.85)
+        }
+    }
 
     private var accessibilityText: String {
         if isDayOff {

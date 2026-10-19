@@ -58,6 +58,8 @@ final class AppSettings {
     var titleWidth: TitleWidth { didSet { store(titleWidth, .titleWidth) } }
     var showMonthCalendar: Bool { didSet { store(showMonthCalendar, .showMonthCalendar) } }
     var showWeekNumbers: Bool { didSet { store(showWeekNumbers, .showWeekNumbers) } }
+    /// Hovering the menu bar item shows the event's card without opening the panel.
+    var hoverPreview: Bool { didSet { store(hoverPreview, .hoverPreview) } }
     /// Screen-sharing mode: the menu bar says "Meeting" instead of the event's title.
     var hideTitlesInMenuBar: Bool { didSet { store(hideTitlesInMenuBar, .hideTitlesInMenuBar) } }
     /// System-wide shortcut that joins the next meeting; nil when none is recorded.
@@ -101,7 +103,8 @@ final class AppSettings {
     }
 
     private enum Key: String {
-        case titleRule, titleHorizon, titleWidth, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar, joinShortcut,
+        case titleRule, titleHorizon, titleWidth, hoverPreview, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar,
+            joinShortcut,
             openEventsIn,
             meetingBrowserID, preferNativeMeetingApps, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
@@ -119,6 +122,7 @@ final class AppSettings {
         titleRule = Self.load(.titleRule, from: defaults) ?? .switchBeforeNextStarts
         titleHorizon = Self.load(.titleHorizon, from: defaults) ?? .today
         titleWidth = Self.load(.titleWidth, from: defaults) ?? .automatic
+        hoverPreview = Self.load(.hoverPreview, from: defaults) ?? true
         showMonthCalendar = Self.load(.showMonthCalendar, from: defaults) ?? false
         showWeekNumbers = Self.load(.showWeekNumbers, from: defaults) ?? false
         hideTitlesInMenuBar = Self.load(.hideTitlesInMenuBar, from: defaults) ?? false

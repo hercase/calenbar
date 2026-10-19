@@ -24,6 +24,8 @@ final class StatusBarController {
     private let statusItem: NSStatusItem
     private let onClick: (NSStatusBarButton) -> Void
     private let onOpenSettings: () -> Void
+    /// Resting the pointer on the item shows the event's card.
+    private var hover: HoverPreview?
     private let warningIcon = NSImage(
         systemSymbolName: "exclamationmark.triangle", accessibilityDescription: String(localized: "Warning"))
     private let idleIcon = NSImage(systemSymbolName: "calendar", accessibilityDescription: String(localized: "Calendar"))
@@ -53,11 +55,15 @@ final class StatusBarController {
     private var renderedEventKey: String?
     private var attentionTimer: Timer?
 
-    init(model: AppModel, onOpenSettings: @escaping () -> Void, onClick: @escaping (NSStatusBarButton) -> Void) {
+    init(
+        model: AppModel,
+        isPanelOpen: @escaping () -> Bool,
+        onOpenSettings: @escaping () -> Void,
+        onClick: @escaping (NSStatusBarButton) -> Void
+    ) {
         self.model = model
         self.onOpenSettings = onOpenSettings
         self.onClick = onClick
-
         // macOS decides where third-party items go (new ones land at the far left); the user can
         // Command-drag it next to the clock and, thanks to the autosave name, it stays there.
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -70,12 +76,14 @@ final class StatusBarController {
             button.imagePosition = .imageLeading
             button.wantsLayer = true
             button.layer?.cornerRadius = 4
+            hover = HoverPreview(model: model, button: button, isPanelOpen: isPanelOpen)
         }
         observeSpaceChanges()
         observeContinuously { [weak self] in self?.render() }
     }
 
     @objc private func clicked() {
+        hover?.close()
         guard let button = statusItem.button else { return }
         if NSApp.currentEvent?.type == .rightMouseUp {
             showMenu()

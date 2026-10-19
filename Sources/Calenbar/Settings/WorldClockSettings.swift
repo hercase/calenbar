@@ -184,10 +184,16 @@ private struct ClockPicker: View {
         .disabled(added)
     }
 
+    /// An abbreviation the team uses ("ET", "CET") comes first, then identifiers containing the text.
     private var zones: [String] {
         guard search.query.count >= 2 else { return [] }
+        var found: [String] = []
+        if let alias = TimeZoneAliases.identifier(for: search.query) {
+            found.append(alias)
+        }
         let needle = search.query.replacingOccurrences(of: " ", with: "_").lowercased()
-        return TimeZone.knownTimeZoneIdentifiers.filter { $0.lowercased().contains(needle) }.prefix(10).map { $0 }
+        let matches = TimeZone.knownTimeZoneIdentifiers.filter { $0.lowercased().contains(needle) && !found.contains($0) }
+        return found + matches.prefix(10)
     }
 
     static func cityName(_ identifier: String) -> String {
