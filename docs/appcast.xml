@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.7.1</title>
+      <pubDate>Wed, 21 Oct 2026 18:59:00 +0000</pubDate>
+      <sparkle:version>142</sparkle:version>
+      <sparkle:shortVersionString>0.7.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p><b>Blocks booked from a free gap end on the quarter hour.</b></p><ul><li><b>Meetings end at a time people write.</b> Booking a gap at 3:46 now gives 3:46–4:15, not 3:46–4:16, and the arrows move to 4:00, 4:30 and so on.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.7.1/Calenbar-0.7.1.dmg" length="6482448" type="application/octet-stream"
+        sparkle:edSignature="JN2FyXKYg4TS2D1WMl8SIWufLEkdbULbZfw9m+PZ4jxTLZJPTeEykBHTlZZUd7osLa2YzqMhpF9Olem7TuRtBA==" />
+    </item>
+    <item>
       <title>Calenbar 0.7.0</title>
       <pubDate>Wed, 21 Oct 2026 18:35:01 +0000</pubDate>
       <sparkle:version>139</sparkle:version>
