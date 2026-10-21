@@ -5,6 +5,17 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
+## Unreleased
+
+### Headline
+Blocks booked from a free gap end on the quarter hour.
+Los bloques que armás desde un hueco libre terminan en el cuarto de hora.
+
+- **Meetings end at a time people write.** Booking a gap at 3:46 now gives 3:46–4:15, not 3:46–4:16, and the arrows move to 4:00, 4:30 and so on.
+
+### es
+- **Las reuniones terminan en horarios redondos.** Si agendás un hueco a las 3:46, queda de 3:46 a 4:15 y no hasta 4:16, y las flechas lo mueven a 4:00, 4:30 y así.
+
 ## 0.7.0 - 2026-10-21
 
 ### Headline

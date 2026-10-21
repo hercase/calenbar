@@ -11,8 +11,10 @@ public enum FreeTime {
     public static let minimum: TimeInterval = 15 * 60
     /// A new meeting drafted from a gap. A shorter gap uses the whole gap.
     public static let meetingLength: TimeInterval = 30 * 60
-    /// How far the meeting start moves inside a longer gap.
+    /// How far the meeting start moves inside a longer gap. Moves land on the clock's :00 and :30.
     public static let meetingStep: TimeInterval = 30 * 60
+    /// A block that starts at an odd minute ends on the nearest quarter hour, the way invites are written.
+    public static let endStep: TimeInterval = 15 * 60
     /// Lunch never fills more than this unless a shorter length is chosen. A longer gap is not a longer lunch.
     public static let lunchLength: TimeInterval = 60 * 60
     private static let lunchMinimum: TimeInterval = 30 * 60
@@ -135,69 +137,99 @@ public enum FreeTime {
     public static let lengthOptions: [TimeInterval] = [meetingLength, lunchLength, 2 * 60 * 60]
 
     /// A block inside the gap. With no stored choice it is `length` (or 30 minutes) from the start.
-    public static func placement(in slot: Slot, preferredStart: Date? = nil, length: BlockLength? = nil) -> Placement {
+    /// The start can be "now" (3:46); the end is still a time people write in invites (4:15, not 4:16).
+    public static func placement(
+        in slot: Slot, preferredStart: Date? = nil, length: BlockLength? = nil, calendar: Calendar = .current
+    ) -> Placement {
         let span = slot.end.timeIntervalSince(slot.bookableStart)
         let requested = length ?? .fixed(min(meetingLength, span))
-        let interval = interval(in: slot, preferredStart: preferredStart, length: requested)
-        let resolved = resolvedLength(requested, covering: interval.duration)
+        let interval = interval(in: slot, preferredStart: preferredStart, length: requested, calendar: calendar)
+        let resolved = resolvedLength(requested, in: slot, from: interval.start)
         return Placement(
             interval: interval,
             length: resolved,
-            canMoveEarlier: shiftedStart(in: slot, from: interval.start, length: resolved, forward: false) != interval.start,
-            canMoveLater: shiftedStart(in: slot, from: interval.start, length: resolved, forward: true) != interval.start,
-            choices: choices(in: slot, from: interval.start)
+            canMoveEarlier: shiftedStart(
+                in: slot, from: interval.start, length: resolved, forward: false, calendar: calendar) != interval.start,
+            canMoveLater: shiftedStart(
+                in: slot, from: interval.start, length: resolved, forward: true, calendar: calendar) != interval.start,
+            choices: choices(in: slot, from: interval.start, calendar: calendar)
         )
     }
 
-    /// One step earlier or later. A fixed length that would no longer fit stays where it is.
-    public static func shiftedStart(in slot: Slot, from start: Date, length: BlockLength, forward: Bool) -> Date {
-        let step = forward ? meetingStep : -meetingStep
-        let candidate = start.addingTimeInterval(step)
-        guard candidate >= slot.bookableStart - 0.5 else { return start }
-        let placed = interval(in: slot, preferredStart: candidate, length: length)
+    /// The next :00 or :30 either way. Earlier never passes the gap's start, so from 4:00 it returns to 3:46.
+    /// A fixed length that would no longer fit stays where it is.
+    public static func shiftedStart(
+        in slot: Slot, from start: Date, length: BlockLength, forward: Bool, calendar: Calendar = .current
+    ) -> Date {
+        let mark = floorToMark(start, step: meetingStep, calendar: calendar)
+        let candidate: Date
+        if forward {
+            candidate = mark.addingTimeInterval(meetingStep)
+        } else {
+            let previous = mark < start - 0.5 ? mark : mark.addingTimeInterval(-meetingStep)
+            candidate = max(previous, slot.bookableStart)
+        }
+        guard forward || candidate < start - 0.5 else { return start }
+        let placed = interval(in: slot, preferredStart: candidate, length: length, calendar: calendar)
         if forward, placed.start + 0.5 < start { return start }
         if !forward, placed.start > start + 0.5 { return start }
         if placed.duration + 0.5 < minimum { return start }
-        if case .fixed(let value) = length, placed.duration + 1 < value { return start }
+        if case .fixed(let value) = length, placed.start.addingTimeInterval(value) > slot.end + 0.5 { return start }
         return placed.start
     }
 
-    private static func interval(in slot: Slot, preferredStart: Date?, length: BlockLength) -> DateInterval {
-        let span = slot.end.timeIntervalSince(slot.bookableStart)
+    private static func interval(
+        in slot: Slot, preferredStart: Date?, length: BlockLength, calendar: Calendar
+    ) -> DateInterval {
         let raw = preferredStart ?? slot.bookableStart
         switch length {
         case .untilEnd:
             let start = min(max(raw, slot.bookableStart), slot.end)
             return DateInterval(start: start, end: max(start, slot.end))
         case .fixed(let value):
-            let fitted = min(max(value, 0), span)
-            let latest = max(slot.end.addingTimeInterval(-fitted), slot.bookableStart)
+            let latest = max(slot.end.addingTimeInterval(-max(value, 0)), slot.bookableStart)
             let start = min(max(raw, slot.bookableStart), latest)
-            return DateInterval(start: start, end: start.addingTimeInterval(fitted))
+            return DateInterval(start: start, end: blockEnd(from: start, length: value, in: slot, calendar: calendar))
         }
+    }
+
+    /// The next meeting is a real edge and wins as is. Otherwise the end moves to the nearest quarter hour,
+    /// never leaving less than `minimum`.
+    private static func blockEnd(from start: Date, length: TimeInterval, in slot: Slot, calendar: Calendar) -> Date {
+        let exact = start.addingTimeInterval(max(length, 0))
+        guard exact < slot.end - 0.5 else { return slot.end }
+        var rounded = floorToMark(exact.addingTimeInterval(endStep / 2), step: endStep, calendar: calendar)
+        if rounded.timeIntervalSince(start) + 0.5 < minimum { rounded = rounded.addingTimeInterval(endStep) }
+        return min(max(rounded, start), slot.end)
     }
 
     /// A requested hour inside a 20-minute gap is just the gap.
-    private static func resolvedLength(_ requested: BlockLength, covering actual: TimeInterval) -> BlockLength {
+    private static func resolvedLength(_ requested: BlockLength, in slot: Slot, from start: Date) -> BlockLength {
         switch requested {
         case .untilEnd: .untilEnd
-        case .fixed(let value): abs(actual - value) < 1 ? .fixed(value) : .untilEnd
+        case .fixed(let value): start.addingTimeInterval(value) <= slot.end + 1 ? .fixed(value) : .untilEnd
         }
     }
 
-    private static func choices(in slot: Slot, from start: Date) -> [BlockLength] {
+    /// A length is offered only when it fits. "The rest of the gap" is dropped when one of them already ends there,
+    /// so 3:58 in a gap until 4:30 doesn't offer both "30m" and "32m" for the same 3:58–4:30.
+    private static func choices(in slot: Slot, from start: Date, calendar: Calendar) -> [BlockLength] {
         let room = slot.end.timeIntervalSince(start)
         guard room >= minimum else { return [] }
-        var list: [BlockLength] = []
-        for option in lengthOptions where option >= minimum && option <= room + 0.5 {
-            list.append(.fixed(option))
+        let fitting = lengthOptions.filter { $0 >= minimum && $0 <= room + 0.5 }
+        let reachesEnd = fitting.contains { option in
+            abs(blockEnd(from: start, length: option, in: slot, calendar: calendar).timeIntervalSince(slot.end)) < 1
         }
-        let roomIsListed = list.contains { length in
-            guard case .fixed(let value) = length else { return false }
-            return abs(value - room) < 1
-        }
-        if !roomIsListed { list.append(.untilEnd) }
-        return list
+        return fitting.map { .fixed($0) } + (reachesEnd ? [] : [.untilEnd])
+    }
+
+    /// The last :00/:15/:30/:45 the local clock showed. Counted inside the hour, so zones half or three
+    /// quarters of an hour off UTC (India, Nepal) still land where their clock does.
+    private static func floorToMark(_ date: Date, step: TimeInterval, calendar: Calendar) -> Date {
+        let parts = calendar.dateComponents([.minute, .second, .nanosecond], from: date)
+        let intoHour =
+            TimeInterval((parts.minute ?? 0) * 60 + (parts.second ?? 0)) + TimeInterval(parts.nanosecond ?? 0) / 1e9
+        return date.addingTimeInterval(-intoHour.truncatingRemainder(dividingBy: step))
     }
 
     // MARK: - Gaps

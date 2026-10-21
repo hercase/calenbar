@@ -186,6 +186,66 @@ struct FreeTimeTests {
         #expect(placed?.choices == [.untilEnd])
     }
 
+    @Test func startingNowEndsOnAQuarterHour() {
+        let next = Fixture.event("Next", Fixture.at(18, 0), Fixture.at(19, 0))
+        let slot = slots(in: agenda([next], now: Fixture.at(15, 46))).first
+        let opening = slot.map { FreeTime.placement(in: $0, calendar: calendar) }
+        #expect(opening?.interval == DateInterval(start: Fixture.at(15, 46), end: Fixture.at(16, 15)))
+        #expect(opening?.length == .fixed(30 * 60))
+        let hour = slot.map { FreeTime.placement(in: $0, length: .fixed(60 * 60), calendar: calendar) }
+        #expect(hour?.interval == DateInterval(start: Fixture.at(15, 46), end: Fixture.at(16, 45)))
+        #expect(hour?.length == .fixed(60 * 60))
+        let nearer = slots(in: agenda([next], now: Fixture.at(15, 53))).first
+        let rounded = nearer.map { FreeTime.placement(in: $0, calendar: calendar).interval }
+        #expect(rounded == DateInterval(start: Fixture.at(15, 53), end: Fixture.at(16, 30)))
+    }
+
+    @Test func movingFromNowLandsOnTheHalfHour() {
+        let next = Fixture.event("Next", Fixture.at(18, 0), Fixture.at(19, 0))
+        guard let slot = slots(in: agenda([next], now: Fixture.at(15, 46))).first else {
+            Issue.record("expected a morning slot")
+            return
+        }
+        let thirty = FreeTime.BlockLength.fixed(30 * 60)
+        let later = FreeTime.shiftedStart(in: slot, from: Fixture.at(15, 46), length: thirty, forward: true, calendar: calendar)
+        #expect(later == Fixture.at(16, 0))
+        let placed = FreeTime.placement(in: slot, preferredStart: later, length: thirty, calendar: calendar)
+        #expect(placed.interval == DateInterval(start: Fixture.at(16, 0), end: Fixture.at(16, 30)))
+        #expect(placed.canMoveEarlier)
+        let back = FreeTime.shiftedStart(in: slot, from: Fixture.at(16, 0), length: thirty, forward: false, calendar: calendar)
+        #expect(back == Fixture.at(15, 46))
+        #expect(
+            FreeTime.shiftedStart(in: slot, from: Fixture.at(16, 0), length: thirty, forward: true, calendar: calendar)
+                == Fixture.at(16, 30))
+    }
+
+    @Test func aRoundedEndAtTheNextMeetingIsNotOfferedTwice() {
+        let next = Fixture.event("Next", Fixture.at(16, 30), Fixture.at(17, 0))
+        let slot = slots(in: agenda([next], now: Fixture.at(15, 58))).first
+        let placed = slot.map { FreeTime.placement(in: $0, calendar: calendar) }
+        #expect(placed?.interval == DateInterval(start: Fixture.at(15, 58), end: Fixture.at(16, 30)))
+        #expect(placed?.choices == [.fixed(30 * 60)])
+    }
+
+    @Test func aShortGapKeepsItsOddEdges() {
+        let first = Fixture.event("A", Fixture.at(14, 0), Fixture.at(14, 43))
+        let second = Fixture.event("B", Fixture.at(15, 7), Fixture.at(16, 0))
+        let slot = slots(in: agenda([first, second], now: Fixture.at(9, 0))).last
+        let placed = slot.map { FreeTime.placement(in: $0, calendar: calendar) }
+        #expect(placed?.interval == DateInterval(start: Fixture.at(14, 43), end: Fixture.at(15, 7)))
+    }
+
+    @Test func quarterHoursFollowTheLocalClock() {
+        var india = Calendar(identifier: .gregorian)
+        india.timeZone = TimeZone(identifier: "Asia/Kolkata")!
+        // 10:16 UTC is 15:46 in India; the end is 16:15 there, 10:45 UTC.
+        let next = Fixture.event("Next", Fixture.at(12, 30), Fixture.at(13, 0))
+        let items = FreeTime.agenda(events: [next], on: Fixture.at(10, 16), now: Fixture.at(10, 16), calendar: india)
+        let slot = slots(in: items).first
+        let placed = slot.map { FreeTime.placement(in: $0, calendar: india).interval }
+        #expect(placed == DateInterval(start: Fixture.at(10, 16), end: Fixture.at(10, 45)))
+    }
+
     @Test func aShorterLunchStopsAtThirtyMinutes() {
         let first = Fixture.event("A", Fixture.at(10, 0), Fixture.at(12, 0))
         let second = Fixture.event("B", Fixture.at(14, 0), Fixture.at(15, 0))
