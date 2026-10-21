@@ -150,6 +150,10 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
             let link = MeetingLinkDetector.detect(url: URL(string: string), location: nil, notes: nil)
         else { return }
         let eventKey = userInfo[Identifier.eventKey] as? String
-        await MainActor.run { MeetingOpener.open(link, eventKey: eventKey) }
+        await MainActor.run {
+            // Still loaded unless the event changed since the banner went out; then the link opens without its account.
+            let event = eventKey.flatMap { key in model.calendar.upcoming.first { $0.key == key } }
+            MeetingOpener.open(link, eventKey: eventKey, event: event)
+        }
     }
 }

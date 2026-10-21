@@ -12,6 +12,10 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
     public let calendarID: String
     public let calendarTitle: String
     public let calendarColorHex: String
+    /// The account the calendar syncs from (EventKit's source): one per Google or Exchange login.
+    public let calendarSourceID: String
+    /// That account's name in Internet Accounts; for Google, the address unless the user renamed it.
+    public let calendarSourceTitle: String
     public let isDeclined: Bool
     public let hasOtherAttendees: Bool
     public let url: URL?
@@ -39,6 +43,8 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
         calendarID: String,
         calendarTitle: String,
         calendarColorHex: String,
+        calendarSourceID: String = "",
+        calendarSourceTitle: String = "",
         isDeclined: Bool,
         hasOtherAttendees: Bool,
         url: URL?,
@@ -57,6 +63,8 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
         self.calendarID = calendarID
         self.calendarTitle = calendarTitle
         self.calendarColorHex = calendarColorHex
+        self.calendarSourceID = calendarSourceID
+        self.calendarSourceTitle = calendarSourceTitle
         self.isDeclined = isDeclined
         self.hasOtherAttendees = hasOtherAttendees
         self.url = url

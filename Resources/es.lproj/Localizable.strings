@@ -158,6 +158,12 @@
 "Open meeting links in" = "Abrir enlaces de reuniones en";
 "Default browser" = "Navegador predeterminado";
 "Use the Zoom and Teams apps when installed" = "Usar las apps de Zoom y Teams si están instaladas";
+"Open each meeting with its account" = "Abrir cada reunión con su cuenta";
+"Automatic (%@)" = "Automático (%@)";
+"Whichever window is in front" = "La ventana que esté al frente";
+"settings.accounts.footer" = "Cada reunión se abre con la cuenta a la que te invitaron, en el perfil del navegador donde esa cuenta tiene la sesión iniciada. Automático encuentra ese perfil solo; elegí otro cuando una cuenta vive en un perfil iniciado con otra dirección.";
+"Couldn't read %@'s profiles. Google Meet still opens with the invited account." = "No se pudieron leer los perfiles de %@. Google Meet igual se abre con la cuenta invitada.";
+"%@ can't be told which profile to use. Google Meet still opens with the invited account." = "%@ no permite elegir el perfil desde afuera. Google Meet igual se abre con la cuenta invitada.";
 "Open events and invitations in" = "Abrir eventos e invitaciones en";
 "Automatic (Google Calendar for Google events)" = "Automático (Google Calendar para eventos de Google)";
 "Calendar app" = "App Calendario";

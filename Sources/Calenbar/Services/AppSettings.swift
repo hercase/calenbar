@@ -74,6 +74,8 @@ final class AppSettings {
     /// Bundle id of the browser for meeting links; empty means the system default browser.
     var meetingBrowserID: String { didSet { store(meetingBrowserID, .meetingBrowserID) } }
     var preferNativeMeetingApps: Bool { didSet { store(preferNativeMeetingApps, .preferNativeMeetingApps) } }
+    /// Browser profile per calendar account (EventKit source id). Absent means automatic.
+    var accountProfiles: [String: ProfileChoice] { didSet { store(accountProfiles, .accountProfiles) } }
     /// The user's standing meeting room (a fixed Meet, a Zoom personal meeting id): "New Meeting › My Room".
     var personalRoomURL: String { didSet { store(personalRoomURL, .personalRoomURL) } }
     var flashEnabled: Bool { didSet { store(flashEnabled, .flashEnabled) } }
@@ -118,7 +120,8 @@ final class AppSettings {
             hideTitlesInMenuBar,
             joinShortcut,
             openEventsIn,
-            meetingBrowserID, preferNativeMeetingApps, personalRoomURL, flashEnabled, flashFromFiveMinutes, attentionSound
+            meetingBrowserID, preferNativeMeetingApps, accountProfiles,
+            personalRoomURL, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
             alertStyle, alertCorner
         case disabledCalendars, holidayCalendarChoices, hiddenKeys, mutedKeys, quietKeys, worldClocks, showClocksInPanel,
@@ -148,6 +151,7 @@ final class AppSettings {
         openEventsIn = Self.load(.openEventsIn, from: defaults) ?? .automatic
         meetingBrowserID = Self.load(.meetingBrowserID, from: defaults) ?? ""
         preferNativeMeetingApps = Self.load(.preferNativeMeetingApps, from: defaults) ?? true
+        accountProfiles = Self.load(.accountProfiles, from: defaults) ?? [:]
         personalRoomURL = Self.load(.personalRoomURL, from: defaults) ?? ""
         flashEnabled = Self.load(.flashEnabled, from: defaults) ?? true
         flashFromFiveMinutes = Self.load(.flashFromFiveMinutes, from: defaults) ?? true
@@ -194,6 +198,19 @@ final class AppSettings {
             ids.insert(calendarID)
         }
         disabledCalendars[purpose] = ids
+    }
+
+    func profileChoice(forAccount sourceID: String) -> ProfileChoice {
+        accountProfiles[sourceID] ?? .automatic
+    }
+
+    func setProfileChoice(_ choice: ProfileChoice, forAccount sourceID: String) {
+        guard !sourceID.isEmpty else { return }
+        if choice == .automatic {
+            accountProfiles.removeValue(forKey: sourceID)
+        } else {
+            accountProfiles[sourceID] = choice
+        }
     }
 
     /// Holiday calendars are recognised by name; this is the user's say over that guess.

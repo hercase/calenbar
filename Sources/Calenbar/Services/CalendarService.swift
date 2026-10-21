@@ -4,29 +4,6 @@ import EventKit
 import Network
 import Observation
 
-struct CalendarInfo: Identifiable, Hashable {
-    let id: String
-    let title: String
-    let colorHex: String
-    let sourceTitle: String
-    /// True for calendars synced from an account (Google, Exchange, iCloud); false for local,
-    /// subscribed and birthday calendars, which exist on every Mac and prove nothing.
-    let isFromAccount: Bool
-    /// False for subscribed and holiday calendars, which macOS will not let us write to.
-    let canCreateEvents: Bool
-
-    init(
-        id: String, title: String, colorHex: String, sourceTitle: String, isFromAccount: Bool, canCreateEvents: Bool = true
-    ) {
-        self.id = id
-        self.title = title
-        self.colorHex = colorHex
-        self.sourceTitle = sourceTitle
-        self.isFromAccount = isFromAccount
-        self.canCreateEvents = canCreateEvents
-    }
-}
-
 /// Reads events from the macOS Calendar database and keeps them fresh.
 @MainActor
 @Observable
@@ -154,6 +131,7 @@ final class CalendarService {
                     title: calendar.title,
                     colorHex: calendar.color.hexString,
                     sourceTitle: calendar.source.title,
+                    sourceID: calendar.source.sourceIdentifier,
                     isFromAccount: [.calDAV, .exchange, .mobileMe].contains(calendar.source.sourceType),
                     canCreateEvents: calendar.allowsContentModifications
                 )
@@ -354,6 +332,8 @@ final class CalendarService {
             calendarID: event.calendar.calendarIdentifier,
             calendarTitle: event.calendar.title,
             calendarColorHex: event.calendar.color.hexString,
+            calendarSourceID: event.calendar.source?.sourceIdentifier ?? "",
+            calendarSourceTitle: event.calendar.source?.title ?? "",
             isDeclined: currentUser?.participantStatus == .declined,
             hasOtherAttendees: participants.contains { !$0.isCurrentUser },
             url: event.url,

@@ -41,7 +41,7 @@ final class AppModel {
             NSSound.beep()
             return
         }
-        MeetingOpener.open(link, eventKey: event.key)
+        MeetingOpener.open(link, event: event)
     }
 
     /// The standing room from Settings, when the text is a link.
@@ -113,7 +113,7 @@ final class AppModel {
         )
         switch (settings.openEventsIn, googleURL) {
         case (.automatic, let url?), (.googleWeb, let url?):
-            MeetingOpener.openInBrowser(url)
+            MeetingOpener.openInBrowser(url, event: event)
         default:
             calendar.openInCalendar(event)
         }

@@ -14,7 +14,7 @@ struct HeroEventView: View {
         HStack(alignment: .center, spacing: PanelStyle.medium) {
             if let link {
                 Button {
-                    MeetingOpener.open(link, eventKey: event.key)
+                    MeetingOpener.open(link, event: event)
                 } label: {
                     // Text only: at this size a logo (or a tile behind it) outweighs the word, and
                     // the service already shows in the event's row and card. The global shortcut
@@ -79,7 +79,7 @@ struct EventContextMenu: View {
 
     var body: some View {
         if let link = event.meetingLink {
-            Button("Join \(link.provider.displayName)") { MeetingOpener.open(link, eventKey: event.key) }
+            Button("Join \(link.provider.displayName)") { MeetingOpener.open(link, event: event) }
             Button("Copy Meeting Link") { MeetingOpener.copy(link) }
             Divider()
         }

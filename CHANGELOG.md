@@ -7,14 +7,22 @@ Lead each bullet with what it solves for the user (see "Writing for users" in CO
 
 ## Unreleased
 
+### Headline
+Each meeting opens with the account that was invited, and the agenda shows your free time.
+Cada reunión se abre con la cuenta invitada, y la agenda muestra tu tiempo libre.
+
+- **Into the call with the right account.** With several Google accounts, Meet used to open with whichever one the browser had in front. Now each meeting opens with the account that was invited and, in Chrome, Brave, Edge or Vivaldi, in the profile signed into it. Firefox profiles can be picked per account in Settings › General. Copied links stay as the invitation has them.
 - **No more quitting by accident.** Quit asks first, since alerts and the countdown stop until you open Calenbar again.
 - **You can see the gap you're in.** It says how much time is left (“45m free until 3:30”), the same count as the next meeting’s “in 45m”, and its line picks up the accent color. A later day doesn’t add a free morning that starts at midnight. The actions still wait for the pointer.
 - **See the open time.** The agenda shows how long you have between meetings, and free time before the first one (“free until 9:30”). Nothing after the last meeting. Rest the pointer on a gap, set the time, then make it focus, lunch, or a meeting. It starts at the length you choose in Settings (30 minutes or an hour) and you can move it in half-hour steps, or stretch it to two hours or the rest of the gap. Focus and lunch are marked busy on the calendar you choose, so other people see that time as taken. Turn it off in Settings › General.
+- **The five-minute flashes start on time.** They used to begin while the menu bar still read “in 6m”; now the first one comes as it turns to “in 5m”.
 
 ### es
+- **A la llamada con la cuenta correcta.** Con varias cuentas de Google, Meet se abría con la que el navegador tuviera al frente. Ahora cada reunión se abre con la cuenta a la que te invitaron y, en Chrome, Brave, Edge o Vivaldi, en el perfil donde esa cuenta tiene la sesión iniciada. En Firefox el perfil se elige por cuenta en Ajustes › General. Los links copiados quedan como vienen en la invitación.
 - **No más salir sin querer.** Salir pide confirmación, porque los avisos y la cuenta regresiva se detienen hasta que vuelvas a abrir Calenbar.
 - **Se ve el hueco en el que estás.** Dice cuánto queda (“45m libre hasta 3:30”), la misma cuenta que el “en 45m” de la próxima reunión, y la línea toma el color de acento. Un día que todavía no llega no inventa una mañana libre desde la medianoche. Las acciones siguen esperando al puntero.
 - **Ver el tiempo libre.** La agenda muestra cuánto hay entre reuniones, y el hueco antes de la primera (“libre hasta 9:30”). Nada después de la última. Dejá el puntero sobre un hueco, elegí el horario, y después hacelo focus, almuerzo o reunión. Arranca con la duración de Ajustes (30 minutos o una hora) y se puede correr de a media hora, o estirar a dos horas o al resto del hueco. Focus y almuerzo quedan como ocupados en el calendario que elijas, así los demás ven ese horario tomado. Se apaga en Ajustes › General.
+- **Los destellos de los cinco minutos llegan a tiempo.** Empezaban cuando la barra todavía decía “en 6m”; ahora el primero llega cuando pasa a “en 5m”.
 
 ## 0.6.1 - 2026-10-19
 

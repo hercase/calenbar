@@ -118,6 +118,7 @@ private struct GeneralSettings: View {
             } footer: {
                 SettingsFooter { Text("settings.shortcut.footer") }
             }
+            AccountProfileSettings(settings: settings, calendar: calendar)
         }
         .formStyle(.grouped)
     }

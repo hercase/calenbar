@@ -92,7 +92,7 @@ final class FullScreenAlertController {
         shownKeys.insert(event.key)
         let actions = AlertActions(
             join: { [weak self] link in
-                MeetingOpener.open(link, eventKey: event.key)
+                MeetingOpener.open(link, event: event)
                 self?.dismiss(event.key)
             },
             snooze: { [weak self] until in

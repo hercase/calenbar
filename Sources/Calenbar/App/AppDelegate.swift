@@ -35,6 +35,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         observeContinuously {
             MeetingOpener.browserBundleID = model.settings.meetingBrowserID
             MeetingOpener.preferNativeApps = model.settings.preferNativeMeetingApps
+            MeetingOpener.profileChoices = model.settings.accountProfiles
         }
         let hotKeys = HotKeyCenter { model.joinNextMeeting() }
         self.hotKeys = hotKeys
