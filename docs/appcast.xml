@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.7.0</title>
+      <pubDate>Wed, 21 Oct 2026 18:35:01 +0000</pubDate>
+      <sparkle:version>139</sparkle:version>
+      <sparkle:shortVersionString>0.7.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p><b>Your free time in the agenda, and every meeting opens with the account you were invited with.</b></p><ul><li><b>See your free time.</b> The agenda shows the gaps between meetings and before the first one (“free until 9:30”), and the one you're in counts down (“45m free until 3:30”). Hover a gap to turn it into focus, lunch or a meeting; focus and lunch show as busy to others. Turn it off in Settings › General.</li><li><b>Join with the right account.</b> With several Google accounts, Meet now opens with the one that was invited and, in Chrome, Brave, Edge or Vivaldi, in that account's profile. In Firefox you pick the profile for each account in Settings › General.</li><li><b>No more quitting by accident.</b> Quit now asks first, since alerts stop until you open Calenbar again.</li><li><b>The 5-minute flashes start on time.</b> They used to start while the menu bar still said “in 6m”.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.7.0/Calenbar-0.7.0.dmg" length="6491543" type="application/octet-stream"
+        sparkle:edSignature="a4CkblNiX+4ltS5xDaHrnFzLz+EwB4Gsg1+BFr/8ZIoOwNG7A2jesZUDr5s7hT+LwugkJ3x6wdXt4hEPWLlcAw==" />
+    </item>
+    <item>
       <title>Calenbar 0.6.1</title>
       <pubDate>Mon, 19 Oct 2026 17:56:27 +0000</pubDate>
       <sparkle:version>126</sparkle:version>
