@@ -22,6 +22,18 @@
 "tomorrow" = "mañana";
 "yesterday" = "ayer";
 "No events" = "Sin eventos";
+"Free until %@" = "Libre hasta %@";
+"%@ free until %@" = "%@ libre hasta %@";
+"Now, %@" = "Ahora, %@";
+"%@ free" = "%@ libre";
+"Focus" = "Focus";
+"Lunch" = "Almuerzo";
+"Meeting…" = "Reunión…";
+"Busy on %@. Other people can't book you, and Calenbar doesn't alert." = "Ocupado en %@. Nadie te puede agendar, y Calenbar no avisa.";
+"Until %@" = "Hasta %@";
+"New meeting, %@" = "Nueva reunión, %@";
+"Earlier" = "Más temprano";
+"Later" = "Más tarde";
 "Nothing scheduled this week" = "Nada agendado esta semana";
 "No calendar account on this Mac yet" = "Esta Mac todavía no tiene una cuenta de calendario";
 "panel.accountHint" = "Calenbar muestra los calendarios que conoce la app Calendario de la Mac. Agregá tu cuenta de Google, Exchange o iCloud en Ajustes del Sistema › Cuentas de Internet y activá Calendarios.";
@@ -107,6 +119,15 @@
 "5 min before it starts" = "5 min antes de que empiece";
 "5 min before the current one ends" = "5 min antes de que termine el actual";
 "Show month calendar in the panel" = "Mostrar el calendario mensual en el panel";
+"Show free time between meetings" = "Mostrar el tiempo libre entre reuniones";
+"Free time" = "Tiempo libre";
+"Default length" = "Duración inicial";
+"30 minutes" = "30 minutos";
+"1 hour" = "1 hora";
+"2 hours" = "2 horas";
+"Save focus and lunch on" = "Guardar focus y almuerzo en";
+"Default calendar" = "Calendario predeterminado";
+"settings.blocks.footer" = "Focus y almuerzo quedan como ocupados en ese calendario, y no aparecen en la barra ni disparan una alerta. En un calendario de Google, Exchange o iCloud, las demás personas ven ese horario como tomado. Un calendario que vive solo en esta Mac se queda en esta Mac.";
 "Menu Bar" = "Barra de menús";
 "Next event" = "Próximo evento";
 "Width" = "Ancho";
@@ -188,6 +209,12 @@
 "Move to Applications" = "Mover a Aplicaciones";
 "Not Now" = "Ahora no";
 "Calenbar couldn’t be moved" = "No se pudo mover Calenbar";
+
+/* Quit */
+"Quit Calenbar?" = "¿Salir de Calenbar?";
+"quit.explanation" = "Se van a detener los avisos y la cuenta regresiva.";
+"Quit" = "Salir";
+"Cancel" = "Cancelar";
 
 /* Settings: About */
 "Version %@" = "Versión %@";

@@ -1,3 +1,4 @@
+import CalenbarCore
 import Foundation
 import Observation
 
@@ -13,6 +14,14 @@ final class PanelState {
 
     /// Row under the mouse; reveals its inline actions.
     var hoveredEventID: String?
+    /// Free-time row under the mouse. The label is always visible; the actions wait a beat.
+    var hoveredFreeID: String?
+    /// Free-time row whose Focus / Lunch / Meeting actions are showing.
+    var revealedFreeID: String?
+    /// Where the shared block starts inside a gap. Absent means the beginning of the bookable stretch.
+    var blockStarts: [String: Date] = [:]
+    /// How long that block is. Absent means the length chosen in Settings.
+    var blockLengths: [String: FreeTime.BlockLength] = [:]
     /// Row whose detail card is showing; set after a short hover so skimming the list doesn't flash cards.
     var detailEventID: String?
     /// A clicked row keeps its card open until it is clicked again, another row is clicked, or the card is dismissed.
@@ -20,6 +29,9 @@ final class PanelState {
     @ObservationIgnored private var isHoveringDetail = false
     @ObservationIgnored private var showTask: Task<Void, Never>?
     @ObservationIgnored private var closeTask: Task<Void, Never>?
+    /// Set by a click or the keyboard, so the actions survive until the pointer actually leaves.
+    @ObservationIgnored private var pinnedFreeID: String?
+    @ObservationIgnored private var freeRevealTask: Task<Void, Never>?
 
     func resetToToday() {
         selectedDay = Calendar.current.startOfDay(for: Date())
@@ -27,6 +39,12 @@ final class PanelState {
         hoveredEventID = nil
         detailEventID = nil
         isPinned = false
+        hoveredFreeID = nil
+        revealedFreeID = nil
+        pinnedFreeID = nil
+        blockStarts = [:]
+        blockLengths = [:]
+        freeRevealTask?.cancel()
     }
 
     /// Click or Return on a row: show its card right away and keep it open; a second click lets it go.
@@ -70,6 +88,58 @@ final class PanelState {
         } else if hoveredEventID == eventID {
             hoveredEventID = nil
             scheduleClose()
+        }
+    }
+
+    /// Highlight the gap immediately. The actions follow after a short beat so skimming the list
+    /// doesn't flash them; a click or Return shows them at once.
+    func setHoveringFree(_ isHovering: Bool, id: String) {
+        freeRevealTask?.cancel()
+        if isHovering {
+            hoveredFreeID = id
+            if pinnedFreeID == id {
+                revealedFreeID = id
+                return
+            }
+            freeRevealTask = Task { [weak self] in
+                try? await Task.sleep(for: .milliseconds(250))
+                guard !Task.isCancelled, self?.hoveredFreeID == id else { return }
+                self?.revealedFreeID = id
+            }
+        } else if hoveredFreeID == id {
+            hoveredFreeID = nil
+            pinnedFreeID = nil
+            revealedFreeID = nil
+        }
+    }
+
+    /// The interval every chip will use. `defaultLength` is the Settings value, until this gap picks its own.
+    func placement(for slot: FreeTime.Slot, defaultLength: TimeInterval) -> FreeTime.Placement {
+        FreeTime.placement(
+            in: slot, preferredStart: blockStarts[slot.id], length: blockLengths[slot.id] ?? .fixed(defaultLength))
+    }
+
+    func shiftBlock(_ slot: FreeTime.Slot, forward: Bool, defaultLength: TimeInterval) {
+        let current = placement(for: slot, defaultLength: defaultLength)
+        let start = FreeTime.shiftedStart(in: slot, from: current.interval.start, length: current.length, forward: forward)
+        guard start != current.interval.start else { return }
+        blockStarts[slot.id] = start
+        blockLengths[slot.id] = current.length
+    }
+
+    func chooseLength(_ slot: FreeTime.Slot, _ length: FreeTime.BlockLength, defaultLength: TimeInterval) {
+        blockLengths[slot.id] = length
+        blockStarts[slot.id] = placement(for: slot, defaultLength: defaultLength).interval.start
+    }
+
+    func toggleFree(_ id: String) {
+        freeRevealTask?.cancel()
+        if pinnedFreeID == id {
+            pinnedFreeID = nil
+            revealedFreeID = hoveredFreeID == id ? id : nil
+        } else {
+            pinnedFreeID = id
+            revealedFreeID = id
         }
     }
 

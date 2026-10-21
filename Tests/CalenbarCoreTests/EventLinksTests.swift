@@ -38,6 +38,15 @@ struct GoogleCalendarLinkTests {
         #expect(url?.absoluteString == "https://calendar.google.com/calendar/r/day/2026/10/16")
     }
 
+    @Test func templateCarriesTheSlotInUTC() {
+        let url = GoogleCalendarLink.templateURL(
+            title: "Meeting", start: start, end: Fixture.at(13, 30, day: 16), timeZone: TimeZone(identifier: "UTC")!)
+        let items = url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false)?.queryItems }
+        #expect(items?.first { $0.name == "action" }?.value == "TEMPLATE")
+        #expect(items?.first { $0.name == "text" }?.value == "Meeting")
+        #expect(items?.first { $0.name == "dates" }?.value == "20261016T130000Z/20261016T133000Z")
+    }
+
     @Test func nonGoogleEventsHaveNoLink() {
         #expect(
             GoogleCalendarLink.url(externalID: "1234-ABCD", calendarTitle: "me@x.com", start: start, isRecurring: false) == nil)

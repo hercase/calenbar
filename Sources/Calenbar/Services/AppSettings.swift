@@ -58,6 +58,12 @@ final class AppSettings {
     var titleWidth: TitleWidth { didSet { store(titleWidth, .titleWidth) } }
     var showMonthCalendar: Bool { didSet { store(showMonthCalendar, .showMonthCalendar) } }
     var showWeekNumbers: Bool { didSet { store(showWeekNumbers, .showWeekNumbers) } }
+    /// Free stretches in the agenda: before the first meeting and between meetings.
+    var showFreeTime: Bool { didSet { store(showFreeTime, .showFreeTime) } }
+    /// Starting length of a free-time block, in minutes. 30 or 60; the gap can change it.
+    var lunchMinutes: Int { didSet { store(lunchMinutes, .lunchMinutes) } }
+    /// Calendar that receives focus and lunch. Empty means Calendar.app's default for new events.
+    var blockCalendarID: String { didSet { store(blockCalendarID, .blockCalendarID) } }
     /// Hovering the menu bar item shows the event's card without opening the panel.
     var hoverPreview: Bool { didSet { store(hoverPreview, .hoverPreview) } }
     /// Screen-sharing mode: the menu bar says "Meeting" instead of the event's title.
@@ -89,6 +95,8 @@ final class AppSettings {
     var holidayCalendarChoices: [String: Bool] { didSet { store(holidayCalendarChoices, .holidayCalendarChoices) } }
     /// Keys of skipped occurrences.
     var mutedKeys: Set<String> { didSet { store(mutedKeys, .mutedKeys) } }
+    /// Focus and lunch blocks created from a free stretch. Listed, but quiet everywhere else.
+    var quietKeys: Set<String> { didSet { store(quietKeys, .quietKeys) } }
     /// Clocks shown in the panel, one row each; more than this and the panel gets tall.
     static let maxWorldClocks = 5
     var worldClocks: [WorldClock] { didSet { store(worldClocks, .worldClocks) } }
@@ -105,13 +113,15 @@ final class AppSettings {
     }
 
     private enum Key: String {
-        case titleRule, titleHorizon, titleWidth, hoverPreview, showMonthCalendar, showWeekNumbers, hideTitlesInMenuBar,
+        case titleRule, titleHorizon, titleWidth, hoverPreview, showMonthCalendar, showWeekNumbers, showFreeTime,
+            lunchMinutes, blockCalendarID,
+            hideTitlesInMenuBar,
             joinShortcut,
             openEventsIn,
             meetingBrowserID, preferNativeMeetingApps, personalRoomURL, flashEnabled, flashFromFiveMinutes, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
             alertStyle, alertCorner
-        case disabledCalendars, holidayCalendarChoices, hiddenKeys, mutedKeys, worldClocks, showClocksInPanel,
+        case disabledCalendars, holidayCalendarChoices, hiddenKeys, mutedKeys, quietKeys, worldClocks, showClocksInPanel,
             showClocksInEventDetails
     }
 
@@ -127,6 +137,10 @@ final class AppSettings {
         hoverPreview = Self.load(.hoverPreview, from: defaults) ?? true
         showMonthCalendar = Self.load(.showMonthCalendar, from: defaults) ?? false
         showWeekNumbers = Self.load(.showWeekNumbers, from: defaults) ?? false
+        showFreeTime = Self.load(.showFreeTime, from: defaults) ?? true
+        let storedLunch: Int = Self.load(.lunchMinutes, from: defaults) ?? 60
+        lunchMinutes = storedLunch == 30 ? 30 : 60
+        blockCalendarID = Self.load(.blockCalendarID, from: defaults) ?? ""
         hideTitlesInMenuBar = Self.load(.hideTitlesInMenuBar, from: defaults) ?? false
         // Never set → the default; set to nothing (stored null) → none.
         let storedShortcut: KeyShortcut?? = Self.load(.joinShortcut, from: defaults)
@@ -152,6 +166,7 @@ final class AppSettings {
         disabledCalendars = Self.load(.disabledCalendars, from: defaults) ?? [:]
         holidayCalendarChoices = Self.load(.holidayCalendarChoices, from: defaults) ?? [:]
         mutedKeys = Self.load(.mutedKeys, from: defaults) ?? []
+        quietKeys = Self.load(.quietKeys, from: defaults) ?? []
         worldClocks = Self.load(.worldClocks, from: defaults) ?? []
         showClocksInPanel = Self.load(.showClocksInPanel, from: defaults) ?? true
         showClocksInEventDetails = Self.load(.showClocksInEventDetails, from: defaults) ?? true
@@ -164,7 +179,7 @@ final class AppSettings {
     }
 
     var eventFilter: EventFilter {
-        EventFilter(disabledCalendars: disabledCalendars, mutedKeys: mutedKeys)
+        EventFilter(disabledCalendars: disabledCalendars, mutedKeys: mutedKeys, quietKeys: quietKeys)
     }
 
     func isEnabled(calendarID: String, for purpose: CalendarPurpose) -> Bool {
@@ -217,6 +232,7 @@ final class AppSettings {
             return stamp >= cutoff
         }
         mutedKeys = mutedKeys.filter(isFresh)
+        quietKeys = quietKeys.filter(isFresh)
     }
 
     private func store<Value: Encodable>(_ value: Value, _ key: Key) {

@@ -21,27 +21,18 @@ struct EventListView: View {
                                 .foregroundStyle(.tertiary)
                                 .padding(.vertical, PanelStyle.tight)
                         }
-                        ForEach(Array(Self.overlapGroups(section.events).enumerated()), id: \.offset) { _, group in
-                            if group.count > 1 {
-                                // Meetings that share a slot sit in one container, so the clash is
-                                // visible without deciding which one matters.
-                                VStack(alignment: .leading, spacing: PanelStyle.tight - 2) {
-                                    Label("At the same time", systemImage: "arrow.left.arrow.right")
-                                        .font(.caption2.weight(.semibold))
-                                        .foregroundStyle(.orange)
-                                        .padding(.horizontal, PanelStyle.tight + 2)
-                                        .padding(.top, PanelStyle.tight)
-                                    ForEach(group) { event in
-                                        EventRow(
-                                            model: model, state: state, event: event,
-                                            isHovered: state.hoveredEventID == event.id)
-                                    }
-                                }
-                                .background(
-                                    Color.orange.opacity(0.07), in: RoundedRectangle(cornerRadius: PanelStyle.rowCornerRadius + 2)
-                                )
-                            } else if let event = group.first {
-                                EventRow(model: model, state: state, event: event, isHovered: state.hoveredEventID == event.id)
+                        let items = FreeTime.agenda(
+                            events: section.events, on: section.day, now: model.now, calendar: calendar,
+                            includeFree: model.settings.showFreeTime)
+                        ForEach(items) { item in
+                            switch item {
+                            case .free(let slot):
+                                FreeTimeRow(model: model, state: state, slot: slot)
+                            case .overlap(_, let group):
+                                OverlapGroup(model: model, state: state, events: group)
+                            case .event(let event):
+                                EventRow(
+                                    model: model, state: state, event: event, isHovered: state.hoveredEventID == event.id)
                             }
                         }
                     }
@@ -56,39 +47,119 @@ struct EventListView: View {
     }
 
     private struct Section {
+        let day: Date
         let title: String
         let events: [CalendarEvent]
-    }
-
-    /// Consecutive timed events that share any minute form a group; everything else stands alone.
-    static func overlapGroups(_ events: [CalendarEvent]) -> [[CalendarEvent]] {
-        var groups: [[CalendarEvent]] = []
-        var groupEnd = Date.distantPast
-        for event in events {
-            if !event.isAllDay, let last = groups.last, !last.isEmpty, !last[0].isAllDay, event.start < groupEnd {
-                groups[groups.count - 1].append(event)
-            } else {
-                groups.append([event])
-                groupEnd = Date.distantPast
-            }
-            if !event.isAllDay {
-                groupEnd = max(groupEnd, event.end)
-            }
-        }
-        return groups
     }
 
     private var sections: [Section] {
         let day = state.selectedDay
         if calendar.isDateInToday(day), let tomorrow = calendar.date(byAdding: .day, value: 1, to: day) {
             return [
-                Section(title: String(localized: "Today"), events: model.listEvents(on: day)),
-                Section(title: String(localized: "Tomorrow"), events: model.listEvents(on: tomorrow)),
+                Section(day: day, title: String(localized: "Today"), events: model.listEvents(on: day)),
+                Section(day: tomorrow, title: String(localized: "Tomorrow"), events: model.listEvents(on: tomorrow)),
             ]
         }
         let title = day.formatted(.dateTime.weekday(.wide).month(.wide).day())
-        return [Section(title: title, events: model.listEvents(on: day))]
+        return [Section(day: day, title: title, events: model.listEvents(on: day))]
     }
+}
+
+/// Meetings that share a slot sit in one container, so the clash is visible without deciding which one matters.
+private struct OverlapGroup: View {
+    let model: AppModel
+    let state: PanelState
+    let events: [CalendarEvent]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: PanelStyle.tight - 2) {
+            Label("At the same time", systemImage: "arrow.left.arrow.right")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.orange)
+                .padding(.horizontal, PanelStyle.tight + 2)
+                .padding(.top, PanelStyle.tight)
+            ForEach(events) { event in
+                EventRow(model: model, state: state, event: event, isHovered: state.hoveredEventID == event.id)
+            }
+        }
+        .background(Color.orange.opacity(0.07), in: RoundedRectangle(cornerRadius: PanelStyle.rowCornerRadius + 2))
+    }
+}
+
+/// One line for a free stretch. The words are the preview; the line only marks the place.
+/// The stretch you're in uses the accent color, the same mark as today. Actions wait for a hover or a click.
+private struct FreeTimeRow: View {
+    let model: AppModel
+    let state: PanelState
+    let slot: FreeTime.Slot
+
+    var body: some View {
+        let isHovered = state.hoveredFreeID == slot.id
+        let isRevealed = state.revealedFreeID == slot.id
+        VStack(alignment: .leading, spacing: PanelStyle.tight) {
+            HStack(spacing: PanelStyle.small) {
+                hairline(isNow: isOpenNow, isActive: isHovered || isRevealed)
+                Text(copy)
+                    .font(.caption)
+                    .foregroundStyle(isOpenNow || slot.isLong ? AnyShapeStyle(.secondary) : AnyShapeStyle(.tertiary))
+                    .lineLimit(1)
+                    .fixedSize()
+                hairline(isNow: isOpenNow, isActive: isHovered || isRevealed)
+            }
+            .contentShape(Rectangle())
+            .onTapGesture { state.toggleFree(slot.id) }
+            if isRevealed, slot.canBook {
+                FreeTimeActions(model: model, state: state, slot: slot)
+            }
+        }
+        .padding(.vertical, 3)
+        .padding(.horizontal, PanelStyle.tight + 2)
+        .frame(minHeight: 22)
+        .onHover { state.setHoveringFree($0, id: slot.id) }
+        .focusable(true, interactions: .activate)
+        .onKeyPress(.return) {
+            state.toggleFree(slot.id)
+            return .handled
+        }
+        .onKeyPress(.space) {
+            state.toggleFree(slot.id)
+            return .handled
+        }
+        .accessibilityElement(children: isRevealed ? .contain : .ignore)
+        .accessibilityLabel(isOpenNow ? String(localized: "Now, \(copy)") : copy)
+        .accessibilityAddTraits(slot.canBook ? .isButton : [])
+    }
+
+    /// The stretch that is open right now. Future gaps say how long they are; this one says how much is left.
+    private var isOpenNow: Bool {
+        guard slot.canBook else { return false }
+        if case .until = slot.label { return true }
+        return false
+    }
+
+    private var copy: String {
+        switch slot.label {
+        case .until(let date):
+            let time = date.formatted(Date.FormatStyle(date: .omitted, time: .shortened))
+            if slot.canBook {
+                // Same rounding as the next event's "in 24m". Counting from the next whole minute,
+                // which is where a block starts, made the two labels disagree.
+                let left = TitleFormatter.compactDuration(slot.end.timeIntervalSince(model.now))
+                return String(localized: "\(left) free until \(time)")
+            }
+            return String(localized: "Free until \(time)")
+        case .duration(let seconds):
+            return String(localized: "\(TitleFormatter.compactDuration(seconds)) free")
+        }
+    }
+
+    private func hairline(isNow: Bool, isActive: Bool) -> some View {
+        Rectangle()
+            .fill(isNow ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(Color.primary.opacity(isActive ? 0.5 : 0.2)))
+            .frame(height: 1)
+            .accessibilityHidden(true)
+    }
+
 }
 
 private struct EventRow: View {

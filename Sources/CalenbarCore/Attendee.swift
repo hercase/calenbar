@@ -107,6 +107,18 @@ public enum GoogleCalendarLink {
         return URL(string: "https://calendar.google.com/calendar/r/day/\(year)/\(month)/\(date)")
     }
 
+    /// A new event with the time filled in. Google shows it as a draft; nothing is saved until the user does.
+    public static func templateURL(title: String, start: Date, end: Date, timeZone: TimeZone) -> URL? {
+        guard var components = URLComponents(string: "https://calendar.google.com/calendar/render") else { return nil }
+        components.queryItems = [
+            URLQueryItem(name: "action", value: "TEMPLATE"),
+            URLQueryItem(name: "text", value: title),
+            URLQueryItem(name: "dates", value: "\(utcStamp(start))/\(utcStamp(end))"),
+            URLQueryItem(name: "ctz", value: timeZone.identifier),
+        ]
+        return components.url
+    }
+
     /// Google's `eid`: base64url of "<event id> <calendar e-mail>", confirmed against a real invitation.
     /// Only the primary calendar's title is its e-mail, so other calendars can't be addressed.
     private static func eventID(externalID: String, calendarTitle: String, start: Date, isRecurring: Bool) -> String? {

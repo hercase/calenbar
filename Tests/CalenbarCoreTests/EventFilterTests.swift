@@ -9,8 +9,10 @@ struct EventFilterTests {
     let declined = Fixture.event("Declined", Fixture.at(12, 0), Fixture.at(13, 0), isDeclined: true)
     let personal = Fixture.event("Gym", Fixture.at(18, 0), Fixture.at(19, 0), calendarID: "personal")
 
-    func filter(disabled: [CalendarPurpose: Set<String>] = [:], muted: Set<String> = []) -> EventFilter {
-        EventFilter(disabledCalendars: disabled, mutedKeys: muted)
+    func filter(
+        disabled: [CalendarPurpose: Set<String>] = [:], muted: Set<String> = [], quiet: Set<String> = []
+    ) -> EventFilter {
+        EventFilter(disabledCalendars: disabled, mutedKeys: muted, quietKeys: quiet)
     }
 
     @Test func titleExcludesAllDayDeclinedAndSkipped() {
@@ -48,6 +50,14 @@ struct EventFilterTests {
         let sut = filter(disabled: [.title: ["personal"]])
         #expect(sut.apply([personal], for: .title).isEmpty)
         #expect(sut.apply([personal], for: .list).map(\.title) == ["Gym"])
+    }
+
+    @Test func quietBlockStaysInTheListAndOutOfTheMenuBar() {
+        let sut = filter(quiet: [normal.key])
+        #expect(sut.apply([normal], for: .list).map(\.title) == ["Normal"])
+        #expect(sut.apply([normal], for: .title).isEmpty)
+        #expect(sut.apply([normal], for: .notify).isEmpty)
+        #expect(sut.apply([normal], for: .alert).isEmpty)
     }
 
     @Test func recurringInstancesHaveDistinctKeys() {

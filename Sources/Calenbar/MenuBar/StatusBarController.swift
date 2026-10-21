@@ -138,7 +138,7 @@ final class StatusBarController {
     @objc private func toggleHideTitles() { model.settings.hideTitlesInMenuBar.toggle() }
     @objc private func openCalendar() { model.calendar.openCalendarApp() }
     @objc private func openSettings() { onOpenSettings() }
-    @objc private func quit() { NSApp.terminate(nil) }
+    @objc private func quit() { QuitConfirmation.run() }
 
     func render() {
         guard let button = statusItem.button else { return }

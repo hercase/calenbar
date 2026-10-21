@@ -131,6 +131,37 @@ final class AppModel {
     func isSkipped(_ event: CalendarEvent) -> Bool {
         settings.mutedKeys.contains(event.key)
     }
+
+    /// Focus fills the gap and stays off the menu bar and the alerts.
+    func blockFocus(from start: Date, to end: Date) {
+        block(String(localized: "Focus"), from: start, to: end)
+    }
+
+    /// Lunch covers at most an hour inside the gap, with the same quiet treatment as focus.
+    func blockLunch(from start: Date, to end: Date) {
+        block(String(localized: "Lunch"), from: start, to: end)
+    }
+
+    /// Opens a new event with the time filled in. Nothing is saved until the user says so.
+    /// Google Calendar on the web when that's where events open; Calendar.app otherwise.
+    func draftMeeting(from start: Date, to end: Date) {
+        let title = String(localized: "Meeting")
+        let template = GoogleCalendarLink.templateURL(title: title, start: start, end: end, timeZone: .current)
+        if settings.openEventsIn == .googleWeb, let template {
+            MeetingOpener.openInBrowser(template)
+            return
+        }
+        calendar.openDraft(title: title, start: start, end: end)
+    }
+
+    private func block(_ title: String, from start: Date, to end: Date) {
+        let key = calendar.createQuietBlock(title: title, start: start, end: end, calendarID: settings.blockCalendarID)
+        guard let key else {
+            NSSound.beep()
+            return
+        }
+        settings.quietKeys.insert(key)
+    }
 }
 
 /// Re-runs `apply` whenever any observable value it read changes.

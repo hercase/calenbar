@@ -12,10 +12,18 @@ public struct EventFilter: Sendable {
     public var disabledCalendars: [CalendarPurpose: Set<String>]
     /// Keys of skipped occurrences (see `CalendarEvent.key`).
     public var mutedKeys: Set<String>
+    /// Focus and lunch blocks Calenbar created. They stay in the list, and stay out of the menu bar,
+    /// notifications and the alert — a focus block that rings is the opposite of focus.
+    public var quietKeys: Set<String>
 
-    public init(disabledCalendars: [CalendarPurpose: Set<String>] = [:], mutedKeys: Set<String> = []) {
+    public init(
+        disabledCalendars: [CalendarPurpose: Set<String>] = [:],
+        mutedKeys: Set<String> = [],
+        quietKeys: Set<String> = []
+    ) {
         self.disabledCalendars = disabledCalendars
         self.mutedKeys = mutedKeys
+        self.quietKeys = quietKeys
     }
 
     public func apply(_ events: [CalendarEvent], for purpose: CalendarPurpose) -> [CalendarEvent] {
@@ -29,7 +37,7 @@ public struct EventFilter: Sendable {
                 return true
             case .title, .notify, .alert:
                 // Skipped events behave as if they didn't exist outside the list.
-                return !event.isAllDay && !mutedKeys.contains(event.key)
+                return !event.isAllDay && !mutedKeys.contains(event.key) && !quietKeys.contains(event.key)
             }
         }
     }

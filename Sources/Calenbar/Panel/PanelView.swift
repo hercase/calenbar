@@ -168,7 +168,7 @@ private struct FooterView: View {
                 Button("Settings…", action: openSettings)
                     .keyboardShortcut(",")
                 Divider()
-                Button("Quit Calenbar") { NSApp.terminate(nil) }
+                Button("Quit Calenbar") { QuitConfirmation.run() }
                     .keyboardShortcut("q")
             } label: {
                 Image(systemName: "ellipsis.circle")

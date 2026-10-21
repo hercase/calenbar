@@ -12,6 +12,19 @@ struct CalendarInfo: Identifiable, Hashable {
     /// True for calendars synced from an account (Google, Exchange, iCloud); false for local,
     /// subscribed and birthday calendars, which exist on every Mac and prove nothing.
     let isFromAccount: Bool
+    /// False for subscribed and holiday calendars, which macOS will not let us write to.
+    let canCreateEvents: Bool
+
+    init(
+        id: String, title: String, colorHex: String, sourceTitle: String, isFromAccount: Bool, canCreateEvents: Bool = true
+    ) {
+        self.id = id
+        self.title = title
+        self.colorHex = colorHex
+        self.sourceTitle = sourceTitle
+        self.isFromAccount = isFromAccount
+        self.canCreateEvents = canCreateEvents
+    }
 }
 
 /// Reads events from the macOS Calendar database and keeps them fresh.
@@ -52,6 +65,8 @@ final class CalendarService {
     @ObservationIgnored private var wasOnline = true
     /// Calendars whose name says "holidays" in some language; the user can override per calendar.
     private(set) var holidayLookingIDs: Set<String> = []
+    /// Where Calendar.app would put a new event. Empty until the first reload.
+    private(set) var defaultCalendarID: String?
 
     /// Fixed data for previews: no EventKit, no observers, no timers.
     init(fixture: [CalendarEvent], calendars: [CalendarInfo], access: Access = .granted) {
@@ -139,7 +154,8 @@ final class CalendarService {
                     title: calendar.title,
                     colorHex: calendar.color.hexString,
                     sourceTitle: calendar.source.title,
-                    isFromAccount: [.calDAV, .exchange, .mobileMe].contains(calendar.source.sourceType)
+                    isFromAccount: [.calDAV, .exchange, .mobileMe].contains(calendar.source.sourceType),
+                    canCreateEvents: calendar.allowsContentModifications
                 )
             }
             .sorted { ($0.sourceTitle, $0.title) < ($1.sourceTitle, $1.title) }
@@ -152,6 +168,10 @@ final class CalendarService {
         let freshEvents = events(from: startOfToday, to: end)
         // Assign only on change: every observer (status item, notifications, alerts) re-runs on assignment,
         // and the 5-minute nudge usually finds nothing new.
+        let freshDefault = store.defaultCalendarForNewEvents?.calendarIdentifier
+        if freshDefault != defaultCalendarID {
+            defaultCalendarID = freshDefault
+        }
         if freshCalendars != calendars {
             calendars = freshCalendars
             holidayLookingIDs = Set(freshCalendars.filter { DayOffDetector.looksLikeHolidayCalendar($0.title) }.map(\.id))
@@ -202,6 +222,88 @@ final class CalendarService {
 
     func openCalendarApp() {
         NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Applications/Calendar.app"))
+    }
+
+    /// The calendar a focus or lunch block will land on. A saved id that no longer exists falls back to
+    /// Calendar.app's default. Nil when nothing can be written.
+    func blockDestination(preferredID: String) -> CalendarInfo? {
+        let preferred = calendars.first { $0.id == preferredID && $0.canCreateEvents }
+        if let preferred { return preferred }
+        return calendars.first { $0.id == defaultCalendarID }
+    }
+
+    /// Writes a focus or lunch block, marked busy, so people looking at that calendar see the time as taken.
+    /// The returned key matches `CalendarEvent.key`, so the block can stay out of the menu bar and the alerts.
+    /// Nil when nothing can be written.
+    func createQuietBlock(title: String, start: Date, end: Date, calendarID: String) -> String? {
+        guard !isFixture, access == .granted, let calendar = writableCalendar(preferredID: calendarID) else { return nil }
+        let event = EKEvent(eventStore: store)
+        event.title = title
+        event.startDate = start
+        event.endDate = end
+        event.calendar = calendar
+        event.availability = .busy
+        // A calendar's default alarm would buzz for a block that exists to be left alone.
+        event.alarms?.forEach { event.removeAlarm($0) }
+        do {
+            try store.save(event, span: .thisEvent, commit: true)
+        } catch {
+            return nil
+        }
+        let external = event.calendarItemExternalIdentifier ?? event.eventIdentifier ?? UUID().uuidString
+        return "\(external)|\(Int(start.timeIntervalSince1970))"
+    }
+
+    /// Hands Calendar.app a draft for this slot. The event is added only if the user confirms it there.
+    func openDraft(title: String, start: Date, end: Date) {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("calenbar-\(UUID().uuidString).ics")
+        do {
+            try draftICS(title: title, start: start, end: end).write(to: url, atomically: true, encoding: .utf8)
+        } catch {
+            NSSound.beep()
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+
+    /// The chosen calendar when it still accepts new events; otherwise Calendar.app's default.
+    private func writableCalendar(preferredID: String) -> EKCalendar? {
+        if let chosen = store.calendar(withIdentifier: preferredID), chosen.allowsContentModifications {
+            return chosen
+        }
+        return store.defaultCalendarForNewEvents
+    }
+
+    /// UTC timestamps, so Calendar.app doesn't shift the slot by misreading a local time.
+    private func draftICS(title: String, start: Date, end: Date) -> String {
+        func stamp(_ date: Date) -> String {
+            var utc = Calendar(identifier: .gregorian)
+            utc.timeZone = TimeZone(identifier: "UTC") ?? .gmt
+            let parts = utc.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            return String(
+                format: "%04d%02d%02dT%02d%02d%02dZ",
+                parts.year ?? 0, parts.month ?? 0, parts.day ?? 0, parts.hour ?? 0, parts.minute ?? 0, parts.second ?? 0)
+        }
+        let summary =
+            title
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\n", with: "\\n")
+            .replacingOccurrences(of: ",", with: "\\,")
+            .replacingOccurrences(of: ";", with: "\\;")
+        return """
+            BEGIN:VCALENDAR
+            VERSION:2.0
+            PRODID:-//Calenbar//EN
+            BEGIN:VEVENT
+            UID:\(UUID().uuidString)@calenbar
+            DTSTAMP:\(stamp(Date()))
+            DTSTART:\(stamp(start))
+            DTEND:\(stamp(end))
+            SUMMARY:\(summary)
+            END:VEVENT
+            END:VCALENDAR
+
+            """
     }
 
     static func openInternetAccountsSettings() {
