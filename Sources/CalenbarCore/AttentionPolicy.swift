@@ -3,13 +3,14 @@ import Foundation
 /// When the menu bar item flashes red / pings as an event approaches.
 public enum AttentionPolicy {
     /// - Last 30 seconds: flash every other second.
-    /// - With `fromFiveMinutes`, within the last 5 minutes: 5 quick flashes at the end of each minute.
+    /// - With `fromFiveMinutes`, once under 5 minutes are left: 5 quick flashes at the end of each minute.
+    ///   The menu bar rounds up, so 5m 51s left still reads "in 6m" and stays quiet; the first burst is at 4m 59s.
     public static func isFlashOn(start: Date, now: Date, fromFiveMinutes: Bool) -> Bool {
         guard let (minutes, seconds) = timeLeft(until: start, from: now) else { return false }
         if minutes == 0, seconds <= 30 {
             return seconds.isMultiple(of: 2)
         }
-        if fromFiveMinutes, minutes <= 5 {
+        if fromFiveMinutes, minutes < 5 {
             return seconds > 50 && !seconds.isMultiple(of: 2)
         }
         return false

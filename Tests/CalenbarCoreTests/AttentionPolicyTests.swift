@@ -12,9 +12,13 @@ struct AttentionPolicyTests {
 
     @Test func quietMoreThanFiveMinutesAway() {
         #expect(!flash(14, 53, 55))
+        // 5m 59s left still reads "in 6m" because the menu bar rounds up.
+        #expect(!flash(14, 54, 1))
     }
 
     @Test func flashesFiveTimesAtEndOfEachMinuteInLastFive() {
+        // 4m 59s left reads "in 5m"; that is the first burst.
+        #expect((0..<60).filter { flash(14, 55, $0) } == [1, 3, 5, 7, 9])
         // During 14:56 the time left goes 4m 0s → 3m 1s; flashes at 3m 59s, 57s, 55s, 53s, 51s left.
         let onSeconds = (0..<60).filter { flash(14, 56, $0) }
         #expect(onSeconds == [1, 3, 5, 7, 9])
