@@ -3,10 +3,32 @@ import Foundation
 /// Free stretches in one day's agenda. The list stays compact: a stretch is a label, never empty space
 /// proportional to its length.
 ///
-/// Shown before today's first meeting and between meetings. Nothing after the last one — the day has no
-/// real end, so "free until tonight" isn't a fact. A later day doesn't grow a morning out of midnight.
-/// All-day events don't count as edges.
+/// Shown before today's first meeting and between meetings. With a workday, also after the last meeting
+/// until the workday ends, before a later day's first meeting from when the workday starts, and across a
+/// day with no meetings. Without one, the day has no real edges: "free until tonight" isn't a fact, and a
+/// later day doesn't grow a morning out of midnight. All-day events don't count as edges.
 public enum FreeTime {
+    /// The hours a free stretch can reach when no meeting bounds it, in minutes after midnight.
+    public struct Workday: Equatable, Sendable {
+        public let start: Int
+        public let end: Int
+
+        public init(start: Int, end: Int) {
+            self.start = start
+            self.end = end
+        }
+
+        public static let standard = Workday(start: 9 * 60, end: 18 * 60)
+
+        func interval(on day: Date, calendar: Calendar) -> DateInterval? {
+            guard end > start,
+                let opening = calendar.date(bySettingHour: start / 60, minute: start % 60, second: 0, of: day),
+                let closing = calendar.date(bySettingHour: end / 60, minute: end % 60, second: 0, of: day)
+            else { return nil }
+            return DateInterval(start: opening, end: closing)
+        }
+    }
+
     /// Shorter than this is a transition between meetings, not time you can use.
     public static let minimum: TimeInterval = 15 * 60
     /// A new meeting drafted from a gap. A shorter gap uses the whole gap.
@@ -66,13 +88,16 @@ public enum FreeTime {
     }
 
     /// Timed events that share any minute stay in one group; all-day events stay on their own.
+    /// Pass no `workday` on weekends and days off: those days have no hours to fill.
     public static func agenda(
         events: [CalendarEvent],
         on day: Date,
         now: Date,
         calendar: Calendar = .current,
-        includeFree: Bool = true
+        includeFree: Bool = true,
+        workday: Workday? = nil
     ) -> [Item] {
+        let hours = includeFree ? workday?.interval(on: day, calendar: calendar) : nil
         var items: [Item] = []
         var previousEnd: Date?
         var didPlaceLeading = false
@@ -83,8 +108,9 @@ public enum FreeTime {
                 let end = group.map(\.end).max() ?? start
                 if !didPlaceLeading {
                     didPlaceLeading = true
-                    if includeFree, let slot = leadingSlot(before: start, on: day, now: now, calendar: calendar) {
-                        items.append(.free(slot))
+                    let leading = leadingSlot(before: start, on: day, now: now, hours: hours, calendar: calendar)
+                    if includeFree, let leading {
+                        items.append(.free(leading))
                     }
                 } else if includeFree, let previousEnd {
                     if let slot = between(previousEnd, and: start, now: now, calendar: calendar) {
@@ -97,6 +123,12 @@ public enum FreeTime {
                 items.append(.overlap(id: group.map(\.id).joined(separator: "+"), events: group))
             } else if let event = group.first {
                 items.append(.event(event))
+            }
+        }
+        if let hours {
+            let afterLast = max(previousEnd ?? hours.start, hours.start)
+            if let slot = between(afterLast, and: hours.end, now: now, calendar: calendar) {
+                items.append(.free(slot))
             }
         }
         return items
@@ -234,10 +266,15 @@ public enum FreeTime {
 
     // MARK: - Gaps
 
-    /// Before the first meeting, and only on today. A later day has no real start: midnight isn't when
-    /// the morning begins, and the first event already says when it does.
-    private static func leadingSlot(before end: Date, on day: Date, now: Date, calendar: Calendar) -> Slot? {
-        guard calendar.isDate(day, inSameDayAs: now) else { return nil }
+    /// Before the first meeting. Today it starts now. A later day starts when the workday does; without
+    /// one it has no real start, since midnight isn't when the morning begins.
+    private static func leadingSlot(
+        before end: Date, on day: Date, now: Date, hours: DateInterval?, calendar: Calendar
+    ) -> Slot? {
+        guard calendar.isDate(day, inSameDayAs: now) else {
+            guard let hours, day > now else { return nil }
+            return between(hours.start, and: end, now: now, calendar: calendar)
+        }
         let bookable = ceilToMinute(now, calendar: calendar)
         guard bookable < end, end.timeIntervalSince(bookable) >= minimum else { return nil }
         return Slot(

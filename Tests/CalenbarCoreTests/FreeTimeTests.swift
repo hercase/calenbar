@@ -186,6 +186,58 @@ struct FreeTimeTests {
         #expect(placed?.choices == [.untilEnd])
     }
 
+    private func workAgenda(_ events: [CalendarEvent], now: Date, on day: Date? = nil) -> [FreeTime.Slot] {
+        slots(
+            in: FreeTime.agenda(
+                events: events, on: day ?? self.day, now: now, calendar: calendar, workday: .standard))
+    }
+
+    @Test func theWorkdayEndsTheAfternoon() {
+        let sync = Fixture.event("Sync", Fixture.at(10, 0), Fixture.at(11, 0))
+        let ahead = workAgenda([sync], now: Fixture.at(9, 0))
+        let aheadLabels: [FreeTime.Label] = [.until(Fixture.at(10, 0)), .duration(7 * 3_600)]
+        #expect(ahead.map(\.label) == aheadLabels)
+        #expect(ahead.last?.end == Fixture.at(18, 0))
+
+        let open = workAgenda([sync], now: Fixture.at(15, 20)).last
+        #expect(open?.label == .until(Fixture.at(18, 0)))
+        #expect(open?.bookableStart == Fixture.at(15, 20))
+        #expect(open?.canBook == true)
+    }
+
+    @Test func nothingAfterTheWorkdayOrWithoutOne() {
+        let sync = Fixture.event("Sync", Fixture.at(10, 0), Fixture.at(11, 0))
+        #expect(workAgenda([sync], now: Fixture.at(18, 30)).isEmpty)
+        #expect(slots(in: agenda([sync], now: Fixture.at(15, 0))).isEmpty)
+        let late = Fixture.event("Late", Fixture.at(17, 0), Fixture.at(18, 30))
+        let lateLabels: [FreeTime.Label] = [.until(Fixture.at(17, 0))]
+        #expect(workAgenda([late], now: Fixture.at(15, 0)).map(\.label) == lateLabels)
+    }
+
+    @Test func aLaterDayStartsWhenTheWorkdayDoes() {
+        let tomorrow = Fixture.at(0, 0, day: 16)
+        let review = Fixture.event("Review", Fixture.at(11, 0, day: 16), Fixture.at(12, 0, day: 16))
+        let free = workAgenda([review], now: Fixture.at(18, 0), on: tomorrow)
+        let freeLabels: [FreeTime.Label] = [.duration(2 * 3_600), .duration(6 * 3_600)]
+        #expect(free.map(\.label) == freeLabels)
+        #expect(free.first?.bookableStart == Fixture.at(9, 0, day: 16))
+        #expect(free.first?.canBook == true)
+        let early = Fixture.event("Early", Fixture.at(8, 0, day: 16), Fixture.at(8, 30, day: 16))
+        let earlyStart = workAgenda([early], now: Fixture.at(18, 0), on: tomorrow).first?.bookableStart
+        #expect(earlyStart == Fixture.at(9, 0, day: 16))
+    }
+
+    @Test func aDayWithoutMeetingsIsTheWholeWorkday() {
+        let today = workAgenda([], now: Fixture.at(10, 0))
+        let todayLabels: [FreeTime.Label] = [.until(Fixture.at(18, 0))]
+        #expect(today.map(\.label) == todayLabels)
+        let beforeWork = workAgenda([], now: Fixture.at(7, 0))
+        #expect(beforeWork.first?.bookableStart == Fixture.at(9, 0))
+        let tomorrow = workAgenda([], now: Fixture.at(18, 0), on: Fixture.at(0, 0, day: 16))
+        let tomorrowLabels: [FreeTime.Label] = [.duration(9 * 3_600)]
+        #expect(tomorrow.map(\.label) == tomorrowLabels)
+    }
+
     @Test func startingNowEndsOnAQuarterHour() {
         let next = Fixture.event("Next", Fixture.at(18, 0), Fixture.at(19, 0))
         let slot = slots(in: agenda([next], now: Fixture.at(15, 46))).first

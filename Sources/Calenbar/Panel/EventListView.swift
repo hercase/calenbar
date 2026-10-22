@@ -39,7 +39,7 @@ struct EventListView: View {
                         }
                         let items = FreeTime.agenda(
                             events: section.events, on: section.day, now: model.now, calendar: calendar,
-                            includeFree: model.settings.showFreeTime)
+                            includeFree: model.settings.showFreeTime, workday: workday(for: section))
                         ForEach(items) { item in
                             switch item {
                             case .free(let slot):
@@ -61,6 +61,14 @@ struct EventListView: View {
         }
         .frame(maxHeight: 340)
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// Weekends, holidays and time off have no hours to fill, so their free time stays between meetings.
+    private func workday(for section: Section) -> FreeTime.Workday? {
+        guard !calendar.isDateInWeekend(section.day) else { return nil }
+        let holidays = model.holidayCalendarIDs
+        guard !section.events.contains(where: { $0.dayOff(holidayCalendars: holidays) != nil }) else { return nil }
+        return model.settings.workday
     }
 
     private struct Section {

@@ -73,7 +73,7 @@ private struct GeneralSettings: View {
                 Toggle("Show month calendar in the panel", isOn: $settings.showMonthCalendar)
                 Toggle("Show week numbers in the month calendar", isOn: $settings.showWeekNumbers)
                     .disabled(!settings.showMonthCalendar)
-                Toggle("Show free time between meetings", isOn: $settings.showFreeTime)
+                Toggle("Show free time", isOn: $settings.showFreeTime)
             }
             FreeTimeSettings(settings: settings, calendar: calendar)
             Section {

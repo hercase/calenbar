@@ -62,6 +62,11 @@ final class AppSettings {
     var showFreeTime: Bool { didSet { store(showFreeTime, .showFreeTime) } }
     /// Starting length of a free-time block, in minutes. 30 or 60; the gap can change it.
     var lunchMinutes: Int { didSet { store(lunchMinutes, .lunchMinutes) } }
+    /// Workday hours in minutes after midnight. Free time reaches them when no meeting bounds a stretch:
+    /// after the last meeting, before a later day's first, and across a day with none.
+    var workdayStart: Int { didSet { store(workdayStart, .workdayStart) } }
+    var workdayEnd: Int { didSet { store(workdayEnd, .workdayEnd) } }
+    var workday: FreeTime.Workday { FreeTime.Workday(start: workdayStart, end: workdayEnd) }
     /// Calendar that receives focus and lunch. Empty means Calendar.app's default for new events.
     var blockCalendarID: String { didSet { store(blockCalendarID, .blockCalendarID) } }
     /// Hovering the menu bar item shows the event's card without opening the panel.
@@ -116,7 +121,7 @@ final class AppSettings {
 
     private enum Key: String {
         case titleRule, titleHorizon, titleWidth, hoverPreview, showMonthCalendar, showWeekNumbers, showFreeTime,
-            lunchMinutes, blockCalendarID,
+            lunchMinutes, blockCalendarID, workdayStart, workdayEnd,
             hideTitlesInMenuBar,
             joinShortcut,
             openEventsIn,
@@ -144,6 +149,8 @@ final class AppSettings {
         let storedLunch: Int = Self.load(.lunchMinutes, from: defaults) ?? 60
         lunchMinutes = storedLunch == 30 ? 30 : 60
         blockCalendarID = Self.load(.blockCalendarID, from: defaults) ?? ""
+        workdayStart = Self.load(.workdayStart, from: defaults) ?? FreeTime.Workday.standard.start
+        workdayEnd = Self.load(.workdayEnd, from: defaults) ?? FreeTime.Workday.standard.end
         hideTitlesInMenuBar = Self.load(.hideTitlesInMenuBar, from: defaults) ?? false
         // Never set → the default; set to nothing (stored null) → none.
         let storedShortcut: KeyShortcut?? = Self.load(.joinShortcut, from: defaults)
