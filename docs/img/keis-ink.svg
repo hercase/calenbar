@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- keis.studio — isotipo sobre ink, para 16–32px (favicon): corrimiento exagerado -->
+  <rect width="64" height="64" rx="14" fill="#09090b"/>
+  <defs>
+    <clipPath id="kc"><path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#000" transform="translate(5.11 52.67) scale(0.03)"/></clipPath>
+    <clipPath id="km"><path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#000" transform="translate(9.71 52.67) scale(0.03)"/></clipPath>
+  </defs>
+  <path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#00b3e6" transform="translate(5.11 52.67) scale(0.03)"/>
+  <path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#ff2e9f" transform="translate(9.71 52.67) scale(0.03)"/>
+  <path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#ffd400" transform="translate(7.41 56.66) scale(0.03)"/>
+  <g clip-path="url(#kc)"><path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#ffc1f6" transform="translate(9.71 52.67) scale(0.03)"/></g>
+  <g clip-path="url(#kc)"><path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#fff2e6" transform="translate(7.41 56.66) scale(0.03)"/></g>
+  <g clip-path="url(#km)"><path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#ffdc9f" transform="translate(7.41 56.66) scale(0.03)"/></g>
+  <g clip-path="url(#kc)"><g clip-path="url(#km)"><path d="M337.2 -350.4 336.4 -668.8H378.8L779.6 -1118H1087.61L594.01 -566.8H538.8ZM97.2 0V-1490H360V0ZM798 0 434 -508 612.01 -694.4 1113.2 0Z" fill="#f5f4f0" transform="translate(7.41 56.66) scale(0.03)"/></g></g>
+  <circle cx="48.99" cy="49.28" r="4.72" fill="#00b3e6"/>
+</svg>

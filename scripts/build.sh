@@ -44,6 +44,7 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Frameworks" "$APP/Contents/Library/LaunchAgents"
 cp "$BIN/Calenbar" "$APP/Contents/MacOS/Calenbar"
 cp -R Resources/ProviderIcons "$APP/Contents/Resources/ProviderIcons"
+cp -R Resources/Brand "$APP/Contents/Resources/Brand"
 cp -R Resources/*.lproj "$APP/Contents/Resources/"
 cp Resources/LaunchAgent.plist "$APP/Contents/Library/LaunchAgents/com.hernancase.calenbar.agent.plist"
 # -R on a symlinked framework keeps Versions/Current etc. as links; the executable loads it via @rpath.

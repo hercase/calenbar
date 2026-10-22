@@ -266,3 +266,5 @@ p code { background: var(--win); border: 1px solid var(--rule); border-radius: 5
 footer { padding: 36px 0 48px; color: var(--ink-3); font-size: 14px; border-top: 1px solid var(--rule); }
 footer a { color: var(--ink-2); }
 footer span { line-height: 1.8; }
+footer a.studio { white-space: nowrap; }
+footer .studio-mark img { display: inline-block; width: 16px; height: 16px; margin-right: 5px; vertical-align: -3px; border-radius: 4px; }

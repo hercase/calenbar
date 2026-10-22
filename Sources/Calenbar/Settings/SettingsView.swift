@@ -325,7 +325,14 @@ private struct AboutView: View {
             }
             Section {
                 if let website {
-                    LabeledContent("Made by Hernan Case") { Link("keis.studio", destination: website) }
+                    LabeledContent("Made by Hernan Case") {
+                        Link(destination: website) {
+                            HStack(spacing: 6) {
+                                StudioMark()
+                                Text(verbatim: "keis.studio")
+                            }
+                        }
+                    }
                 }
                 if let site {
                     LabeledContent("Website") { Link("hercase.github.io/calenbar", destination: site) }
