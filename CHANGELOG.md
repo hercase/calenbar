@@ -5,6 +5,13 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
+## Unreleased
+
+- **Buttons look like buttons.** The pointer now lights up every button in the panel before you click: the free-time choices, the arrows, Join, the month and its days, and the ••• menu.
+
+### es
+- **Los botones se ven como botones.** Al pasar el puntero, cada botón del panel se ilumina antes del click: las opciones del tiempo libre, las flechas, Unirse, el mes y sus días, y el menú •••.
+
 ## 0.7.1 - 2026-10-21
 
 ### Headline
