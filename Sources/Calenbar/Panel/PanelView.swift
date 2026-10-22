@@ -113,11 +113,8 @@ private struct FooterView: View {
                     .font(.caption.weight(.semibold))
                     .padding(.horizontal, PanelStyle.small + 2)
                     .padding(.vertical, 4)
-                    // Solid accent with white text: the tinted version faded into the panel.
-                    .background(Color.accentColor, in: Capsule())
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.white)
+                .buttonStyle(AccentCapsuleStyle())
                 .help(
                     update.isReadyToInstall
                         ? String(localized: "Restart Calenbar to finish updating")
@@ -177,11 +174,42 @@ private struct FooterView: View {
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
             .fixedSize()
+            .frame(width: PanelStyle.iconHitSize, height: PanelStyle.iconHitSize)
+            .hoverWash()
             .help("More")
             .accessibilityLabel("More")
         }
         .padding(.horizontal, PanelStyle.inset)
         .padding(.vertical, PanelStyle.small + 2)
+    }
+}
+
+/// Solid accent with white text: the tinted version faded into the panel. Lighter under the pointer,
+/// darker while pressed.
+private struct AccentCapsuleStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        AccentCapsuleBody(configuration: configuration)
+    }
+}
+
+private struct AccentCapsuleBody: View {
+    let configuration: ButtonStyleConfiguration
+    @StateObject private var hover = PointerHover()
+
+    var body: some View {
+        configuration.label
+            .foregroundStyle(.white)
+            .background {
+                Capsule()
+                    .fill(Color.accentColor)
+                    .overlay(
+                        Capsule().fill(
+                            configuration.isPressed ? Color.black.opacity(0.18) : .white.opacity(hover.isInside ? 0.14 : 0))
+                    )
+            }
+            .contentShape(Capsule())
+            .onHover { hover.isInside = $0 }
+            .animation(.easeOut(duration: 0.12), value: hover.isInside)
     }
 }
 

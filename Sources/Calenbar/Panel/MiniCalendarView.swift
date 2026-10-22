@@ -36,9 +36,12 @@ struct MiniCalendarView: View {
                     Text(state.displayedMonth.formatted(.dateTime.month(.wide).year()))
                         .font(.subheadline.weight(.semibold))
                 }
-                .contentShape(Rectangle())
+                .padding(.horizontal, PanelStyle.tight)
+                .frame(height: PanelStyle.iconHitSize)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(QuietButtonStyle())
+            // The wash gets room to breathe; the chevron still lines up with the rows below.
+            .padding(.leading, -PanelStyle.tight)
             .help(isExpanded ? String(localized: "Hide calendar") : String(localized: "Show calendar"))
             .accessibilityLabel(isExpanded ? String(localized: "Hide calendar") : String(localized: "Show calendar"))
 
@@ -164,6 +167,7 @@ private struct DayCell: View {
     let eventCount: Int
     let isDayOff: Bool
     let select: () -> Void
+    @StateObject private var hover = PointerHover()
 
     var body: some View {
         Button(action: select) {
@@ -177,6 +181,9 @@ private struct DayCell: View {
                     } else {
                         if isDayOff {
                             Circle().fill(Color.accentColor.opacity(0.16))
+                        }
+                        if hover.isInside {
+                            Circle().fill(Color.primary.opacity(0.08))
                         }
                         if isSelected {
                             Circle().strokeBorder(Color.accentColor, lineWidth: 1.2)
@@ -199,6 +206,7 @@ private struct DayCell: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .onHover { hover.isInside = $0 }
         .accessibilityLabel(accessibilityText)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

@@ -229,9 +229,12 @@ private struct ClockPicker: View {
                         .accessibilityLabel("Already added")
                 }
             }
-            .contentShape(Rectangle())
+            .padding(.horizontal, PanelStyle.tight + 2)
+            .padding(.vertical, 3)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(QuietButtonStyle())
+        // The wash sits outside the text, so the names still line up with the search field.
+        .padding(.horizontal, -(PanelStyle.tight + 2))
         .disabled(added)
     }
 

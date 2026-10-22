@@ -59,11 +59,73 @@ struct IconButton: View {
             Image(systemName: systemImage)
                 .foregroundStyle(tint)
                 .frame(width: PanelStyle.iconHitSize, height: PanelStyle.iconHitSize)
-                .contentShape(Rectangle())
         }
-        .buttonStyle(.borderless)
+        .buttonStyle(QuietButtonStyle())
         .help(label)
         .accessibilityLabel(label)
+    }
+}
+
+/// For buttons the panel draws itself. `.plain` and `.borderless` don't react to the pointer on macOS, so
+/// a chip or an icon looked like a label until it was clicked. A wash appears on hover and deepens on
+/// press, like toolbar buttons. `rest` is the wash a chip already shows before the pointer arrives.
+struct QuietButtonStyle: ButtonStyle {
+    var rest: Double = 0
+    var cornerRadius: CGFloat = 5
+
+    func makeBody(configuration: Configuration) -> some View {
+        QuietButtonBody(configuration: configuration, rest: rest, cornerRadius: cornerRadius)
+    }
+}
+
+/// Whether the pointer is over one control. A `@StateObject` rather than `@State`: the Command Line Tools
+/// toolchain doesn't ship the SwiftUI macro plugin `@State` needs (see `PanelState`).
+final class PointerHover: ObservableObject {
+    @Published var isInside = false
+}
+
+extension View {
+    /// The same hover wash for controls that can't take a button style, like a borderless `Menu`.
+    func hoverWash(cornerRadius: CGFloat = 5) -> some View {
+        modifier(HoverWash(cornerRadius: cornerRadius))
+    }
+}
+
+private struct HoverWash: ViewModifier {
+    let cornerRadius: CGFloat
+    @StateObject private var hover = PointerHover()
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                Color.primary.opacity(hover.isInside ? 0.07 : 0),
+                in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            )
+            .onHover { hover.isInside = $0 }
+            .animation(.easeOut(duration: 0.12), value: hover.isInside)
+    }
+}
+
+private struct QuietButtonBody: View {
+    let configuration: ButtonStyleConfiguration
+    let rest: Double
+    let cornerRadius: CGFloat
+    @Environment(\.isEnabled) private var isEnabled
+    @StateObject private var hover = PointerHover()
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        configuration.label
+            .background(Color.primary.opacity(wash), in: shape)
+            .contentShape(shape)
+            .onHover { hover.isInside = $0 }
+            .animation(.easeOut(duration: 0.12), value: hover.isInside)
+    }
+
+    private var wash: Double {
+        guard isEnabled else { return rest }
+        if configuration.isPressed { return rest + 0.14 }
+        return hover.isInside ? rest + 0.07 : rest
     }
 }
 

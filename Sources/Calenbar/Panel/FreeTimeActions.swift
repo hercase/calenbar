@@ -69,12 +69,8 @@ struct FreeTimeActions: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.vertical, 4)
                 .padding(.horizontal, PanelStyle.tight)
-                .background(
-                    Color.primary.opacity(selected ? 0.14 : 0.05),
-                    in: RoundedRectangle(cornerRadius: PanelStyle.rowCornerRadius)
-                )
         }
-        .buttonStyle(GapActionStyle())
+        .buttonStyle(QuietButtonStyle(rest: selected ? 0.14 : 0.05, cornerRadius: PanelStyle.rowCornerRadius))
         .accessibilityLabel(Self.lengthLabel(choice, end: slot.end))
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
@@ -92,12 +88,8 @@ struct FreeTimeActions: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.vertical, 6)
             .padding(.horizontal, PanelStyle.tight)
-            .background(
-                Color.primary.opacity(0.06),
-                in: RoundedRectangle(cornerRadius: PanelStyle.rowCornerRadius)
-            )
         }
-        .buttonStyle(GapActionStyle())
+        .buttonStyle(QuietButtonStyle(rest: 0.06, cornerRadius: PanelStyle.rowCornerRadius))
         .help(help)
         .accessibilityLabel(help)
     }
@@ -107,9 +99,8 @@ struct FreeTimeActions: View {
             Image(systemName: systemImage)
                 .font(.body.weight(.semibold))
                 .frame(width: PanelStyle.iconHitSize, height: PanelStyle.iconHitSize)
-                .contentShape(Rectangle())
         }
-        .buttonStyle(.borderless)
+        .buttonStyle(QuietButtonStyle())
         .disabled(!enabled)
         .opacity(enabled ? 1 : 0.35)
         .help(label)
@@ -209,13 +200,5 @@ struct EqualActionRow: Layout {
     private func itemWidth(total: CGFloat, count: Int) -> CGFloat {
         let gaps = spacing * CGFloat(max(0, count - 1))
         return max(0, (total - gaps) / CGFloat(count))
-    }
-}
-
-/// Dims on press without recoloring the title.
-private struct GapActionStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .opacity(configuration.isPressed ? 0.55 : 1)
     }
 }

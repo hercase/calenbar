@@ -220,9 +220,8 @@ private struct EventRow: View {
                 } label: {
                     ProviderIconView(provider: link.provider, size: 18)
                         .frame(width: PanelStyle.iconHitSize, height: PanelStyle.iconHitSize)
-                        .contentShape(Rectangle())
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(QuietButtonStyle())
                 .help("Join \(link.provider.displayName)")
                 .accessibilityLabel("Join \(link.provider.displayName)")
             }
