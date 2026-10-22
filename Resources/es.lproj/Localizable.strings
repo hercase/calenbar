@@ -225,7 +225,7 @@
 /* Settings: About */
 "Version %@" = "Versión %@";
 "Your next meeting, always in the menu bar." = "Tu próxima reunión, siempre en la barra de menús.";
-"Made by Hernan Case" = "Hecho por Hernan Case";
+"Made by" = "Hecho por";
 "Install and Relaunch" = "Instalar y reiniciar";
 "Version %@ is ready to install." = "La versión %@ está lista para instalarse.";
 "Version %@ is available." = "Hay una versión nueva: %@.";

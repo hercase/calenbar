@@ -325,7 +325,7 @@ private struct AboutView: View {
             }
             Section {
                 if let website {
-                    LabeledContent("Made by Hernan Case") {
+                    LabeledContent("Made by") {
                         Link(destination: website) {
                             HStack(spacing: 6) {
                                 StudioMark()
