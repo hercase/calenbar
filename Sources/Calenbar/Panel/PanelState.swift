@@ -7,6 +7,15 @@ import Observation
 @MainActor
 @Observable
 final class PanelState {
+    /// How long the pointer rests on a row before its card opens. Long enough that sweeping across the
+    /// list on the way somewhere else opens nothing.
+    static let detailDelay: Duration = .milliseconds(700)
+    /// With a card already open, the next row still has to be meant: passing over three rows on the way
+    /// to a fourth shouldn't flash three cards.
+    static let detailSwitchDelay: Duration = .milliseconds(250)
+    /// The gap's actions push the rows below it down, so they wait until the pointer has clearly stopped.
+    static let freeRevealDelay: Duration = .milliseconds(550)
+
     var selectedDay = Calendar.current.startOfDay(for: Date())
     var displayedMonth = Calendar.current.startOfMonth(for: Date())
     /// Pinned: the panel stays open when you click elsewhere, until the menu bar item is clicked again.
@@ -75,13 +84,10 @@ final class PanelState {
             if isPinned {
                 return
             }
-            if detailEventID != nil {
-                // A card is already open: follow the mouse without waiting again.
-                detailEventID = eventID
-                return
-            }
+            if detailEventID == eventID { return }
+            let delay = detailEventID == nil ? Self.detailDelay : Self.detailSwitchDelay
             showTask = Task { [weak self] in
-                try? await Task.sleep(for: .milliseconds(500))
+                try? await Task.sleep(for: delay)
                 guard !Task.isCancelled, self?.hoveredEventID == eventID else { return }
                 self?.detailEventID = eventID
             }
@@ -102,7 +108,7 @@ final class PanelState {
                 return
             }
             freeRevealTask = Task { [weak self] in
-                try? await Task.sleep(for: .milliseconds(250))
+                try? await Task.sleep(for: Self.freeRevealDelay)
                 guard !Task.isCancelled, self?.hoveredFreeID == id else { return }
                 self?.revealedFreeID = id
             }

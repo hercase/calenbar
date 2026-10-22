@@ -8,9 +8,11 @@ Lead each bullet with what it solves for the user (see "Writing for users" in CO
 ## Unreleased
 
 - **Buttons look like buttons.** The pointer now lights up every button in the panel before you click: the free-time choices, the arrows, Join, the month and its days, and the ••• menu.
+- **A calmer list.** Moving the pointer across the agenda no longer flashes one card after another, and a free gap opens its choices only once you stop on it. A gap near the bottom scrolls into view so its choices aren't cut off.
 
 ### es
 - **Los botones se ven como botones.** Al pasar el puntero, cada botón del panel se ilumina antes del click: las opciones del tiempo libre, las flechas, Unirse, el mes y sus días, y el menú •••.
+- **Una lista más tranquila.** Pasar el puntero por la agenda ya no hace aparecer una tarjeta tras otra, y un hueco libre muestra sus opciones recién cuando te detenés en él. Si el hueco está abajo de todo, la lista se desplaza para que las opciones no queden cortadas.
 
 ## 0.7.1 - 2026-10-21
 

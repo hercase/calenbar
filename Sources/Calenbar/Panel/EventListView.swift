@@ -9,6 +9,22 @@ struct EventListView: View {
     private let calendar = Calendar.current
 
     var body: some View {
+        ScrollViewReader { proxy in
+            list
+                .onChange(of: state.revealedFreeID) { _, id in
+                    guard let id else { return }
+                    // After the actions are laid out; scrolling first would only reveal the label.
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(30))
+                        withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo(id) }
+                    }
+                }
+        }
+    }
+
+    /// No anchor on `scrollTo`: the list moves just enough to show the gap's actions, so the row stays
+    /// under the pointer instead of jumping to the top.
+    private var list: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: PanelStyle.medium) {
                 ForEach(sections, id: \.title) { section in
@@ -28,6 +44,7 @@ struct EventListView: View {
                             switch item {
                             case .free(let slot):
                                 FreeTimeRow(model: model, state: state, slot: slot)
+                                    .id(slot.id)
                             case .overlap(_, let group):
                                 OverlapGroup(model: model, state: state, events: group)
                             case .event(let event):
