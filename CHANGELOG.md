@@ -5,7 +5,7 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
-## Unreleased
+## 0.8.0 - 2026-10-22
 
 ### Headline
 Free time now reaches the end of your workday, and the panel feels calmer under the pointer.
