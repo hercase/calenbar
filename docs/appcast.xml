@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.8.0</title>
+      <pubDate>Thu, 22 Oct 2026 19:39:02 +0000</pubDate>
+      <sparkle:version>152</sparkle:version>
+      <sparkle:shortVersionString>0.8.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p><b>Free time now reaches the end of your workday, and the panel feels calmer under the pointer.</b></p><ul><li><b>Book the rest of your day.</b> Set your workday in Settings › General and free time reaches it: after your last meeting, from the start of tomorrow's morning, and across a day with no meetings at all. Weekends and days off are left alone.</li><li><b>Buttons look like buttons.</b> The pointer now lights up every button in the panel before you click: the free-time choices, the arrows, Join, the month and its days, and the ••• menu.</li><li><b>A calmer list.</b> Moving the pointer across the agenda no longer flashes one card after another, and a free gap opens its choices only once you stop on it. A gap near the bottom scrolls into view so its choices aren't cut off.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.8.0/Calenbar-0.8.0.dmg" length="6532601" type="application/octet-stream"
+        sparkle:edSignature="T5xD/IiqOa0/9VJG6T86FRrk6te6QyP9q39pEe3pAtSBRmq9D5HIOghKNt54JGHAC8B849EYfAxPXysx7WXjDQ==" />
+    </item>
+    <item>
       <title>Calenbar 0.7.1</title>
       <pubDate>Wed, 21 Oct 2026 18:59:00 +0000</pubDate>
       <sparkle:version>142</sparkle:version>
