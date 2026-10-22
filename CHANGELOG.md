@@ -7,6 +7,10 @@ Lead each bullet with what it solves for the user (see "Writing for users" in CO
 
 ## Unreleased
 
+### Headline
+Free time now reaches the end of your workday, and the panel feels calmer under the pointer.
+El tiempo libre ahora llega hasta el final de tu jornada, y el panel responde con más calma al puntero.
+
 - **Book the rest of your day.** Set your workday in Settings › General and free time reaches it: after your last meeting, from the start of tomorrow's morning, and across a day with no meetings at all. Weekends and days off are left alone.
 - **Buttons look like buttons.** The pointer now lights up every button in the panel before you click: the free-time choices, the arrows, Join, the month and its days, and the ••• menu.
 - **A calmer list.** Moving the pointer across the agenda no longer flashes one card after another, and a free gap opens its choices only once you stop on it. A gap near the bottom scrolls into view so its choices aren't cut off.
