@@ -39,6 +39,8 @@ final class CalendarService {
     /// Month grids ask for the same six weeks on every click; one EventKit query per reload is enough.
     @ObservationIgnored private var rangeCache: [String: [CalendarEvent]] = [:]
     @ObservationIgnored private var pendingReload: Task<Void, Never>?
+    /// When macOS was last asked to sync, by any trigger.
+    @ObservationIgnored private var lastSourceRefresh: Date?
     @ObservationIgnored private var wasOnline = true
     /// Calendars whose name says "holidays" in some language; the user can override per calendar.
     private(set) var holidayLookingIDs: Set<String> = []
@@ -98,8 +100,16 @@ final class CalendarService {
     /// re-anchors the window on today after midnight.
     func refreshSources() {
         guard access == .granted else { return }
+        lastSourceRefresh = Date()
         store.refreshSourcesIfNecessary()
         scheduleReload()
+    }
+
+    /// Same as `refreshSources`, unless a sync was already asked for within `interval`: opening and
+    /// closing the panel a few times in a row shouldn't hit the accounts every time.
+    func refreshSourcesIfStale(olderThan interval: TimeInterval) {
+        if let lastSourceRefresh, Date().timeIntervalSince(lastSourceRefresh) < interval { return }
+        refreshSources()
     }
 
     /// One reload shortly, however many times it is asked for in the meantime.
