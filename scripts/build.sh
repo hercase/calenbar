@@ -46,6 +46,7 @@ cp "$BIN/Calenbar" "$APP/Contents/MacOS/Calenbar"
 cp -R Resources/ProviderIcons "$APP/Contents/Resources/ProviderIcons"
 cp -R Resources/Brand "$APP/Contents/Resources/Brand"
 cp -R Resources/*.lproj "$APP/Contents/Resources/"
+# Legacy: only so 0.8.0 installs can unregister their launchd agent on update.
 cp Resources/LaunchAgent.plist "$APP/Contents/Library/LaunchAgents/com.hernancase.calenbar.agent.plist"
 # -R on a symlinked framework keeps Versions/Current etc. as links; the executable loads it via @rpath.
 cp -R "$SPARKLE" "$APP/Contents/Frameworks/Sparkle.framework"

@@ -7,6 +7,7 @@ Lead each bullet with what it solves for the user (see "Writing for users" in CO
 
 ## Unreleased
 
+- **Calenbar is back after a restart.** It now starts at login like any other app, so it no longer stays closed after an update. If you already had it on, it stays on.
 - **The menu bar item stays where you put it.** On a MacBook with a notch, an update could send it back to the far left of the menu bar.
 - **Alerts count the minutes right.** A meeting that started at 3:00 reads “Started 3m ago” at 3:03, not 4m.
 - **A tidier menu bar title.** With Automatic width the title stops at a comfortable length, even on a wide display. Hover it for the whole name.
@@ -14,6 +15,7 @@ Lead each bullet with what it solves for the user (see "Writing for users" in CO
 - **Fresh without the busywork.** Opening the panel syncs your calendars, but not again if it just did in the last couple of minutes.
 
 ### es
+- **Calenbar vuelve después de reiniciar.** Ahora arranca al iniciar sesión como cualquier otra app, así que ya no queda cerrado después de una actualización. Si ya lo tenías activado, sigue activado.
 - **El ícono de la barra se queda donde lo pusiste.** En una MacBook con notch, una actualización podía mandarlo al extremo izquierdo de la barra.
 - **Las alertas cuentan bien los minutos.** Una reunión que empezó a las 3:00 dice “Empezó hace 3m” a las 3:03, no 4m.
 - **Un título más prolijo en la barra.** Con ancho Automático el título se corta en un largo cómodo, incluso en un monitor ancho. Pasá el puntero para verlo completo.

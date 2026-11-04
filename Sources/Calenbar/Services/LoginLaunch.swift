@@ -1,28 +1,31 @@
 import AppKit
 import ServiceManagement
 
-/// Starts Calenbar at login through a launchd agent that also relaunches it if it ever crashes
-/// (KeepAlive on unsuccessful exit). Quitting from the panel exits cleanly and stays quit.
+/// Starts Calenbar at login as a standard login item (SMAppService.mainApp).
 @MainActor
 enum LoginLaunch {
-    static let label = "com.hernancase.calenbar.agent"
-    private static let plistName = "\(label).plist"
+    /// Builds up to 0.8.0 registered a launchd agent instead. launchd pins an agent to the code
+    /// hash it saw at registration, so after an update it refused to spawn (EX_CONFIG) and the app
+    /// stopped starting at login. It is only unregistered now.
+    static let legacyLabel = "com.hernancase.calenbar.agent"
+    private static let legacyAgent = SMAppService.agent(plistName: "\(legacyLabel).plist")
     private static let enabledOnceKey = "loginLaunchEnabledOnce"
 
-    private static var agent: SMAppService { .agent(plistName: plistName) }
+    static var isEnabled: Bool { SMAppService.mainApp.status == .enabled }
 
-    static var isEnabled: Bool { agent.status == .enabled }
-
-    /// True when this process was started by the launchd agent (so a crash will be recovered).
+    /// True when this process was started by the legacy launchd agent.
     static var isManagedByLaunchd: Bool {
-        ProcessInfo.processInfo.environment["XPC_SERVICE_NAME"] == label
+        ProcessInfo.processInfo.environment["XPC_SERVICE_NAME"] == legacyLabel
     }
 
     /// Turned on once by default: staying alive is the point of a menu bar calendar.
     static func enableOnFirstRun() {
-        // Earlier builds used a plain login item; the agent replaces it.
-        if SMAppService.mainApp.status == .enabled {
-            try? SMAppService.mainApp.unregister()
+        // Whoever had the agent registered had launch at login on: carry that over.
+        if legacyAgent.status != .notRegistered {
+            removeLegacyAgent()
+            try? SMAppService.mainApp.register()
+            UserDefaults.standard.set(true, forKey: enabledOnceKey)
+            return
         }
         guard !UserDefaults.standard.bool(forKey: enabledOnceKey) else { return }
         UserDefaults.standard.set(true, forKey: enabledOnceKey)
@@ -31,14 +34,18 @@ enum LoginLaunch {
 
     static func setEnabled(_ enabled: Bool) {
         if enabled {
-            try? agent.register()
+            try? SMAppService.mainApp.register()
         } else {
-            // Unloading the agent stops the process it manages; reopen the app outside launchd first.
-            if isManagedByLaunchd {
-                relaunchDetached(bundlePath: Bundle.main.bundlePath)
-            }
-            try? agent.unregister()
+            try? SMAppService.mainApp.unregister()
         }
+    }
+
+    private static func removeLegacyAgent() {
+        // Unloading the agent stops the process it manages; reopen the app outside launchd first.
+        if isManagedByLaunchd {
+            relaunchDetached(bundlePath: Bundle.main.bundlePath)
+        }
+        try? legacyAgent.unregister()
     }
 
     /// Opens the app at `bundlePath` a second later, from outside this process, so it starts after we
