@@ -5,6 +5,21 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
+## Unreleased
+
+- **The menu bar item stays where you put it.** On a MacBook with a notch, an update could send it back to the far left of the menu bar.
+- **Alerts count the minutes right.** A meeting that started at 3:00 reads “Started 3m ago” at 3:03, not 4m.
+- **A tidier menu bar title.** With Automatic width the title stops at a comfortable length, even on a wide display. Hover it for the whole name.
+- **Smoother panel.** A free gap's choices slide in instead of popping, the time and length change with a short animation, and every button shows the hand pointer.
+- **Fresh without the busywork.** Opening the panel syncs your calendars, but not again if it just did in the last couple of minutes.
+
+### es
+- **El ícono de la barra se queda donde lo pusiste.** En una MacBook con notch, una actualización podía mandarlo al extremo izquierdo de la barra.
+- **Las alertas cuentan bien los minutos.** Una reunión que empezó a las 3:00 dice “Empezó hace 3m” a las 3:03, no 4m.
+- **Un título más prolijo en la barra.** Con ancho Automático el título se corta en un largo cómodo, incluso en un monitor ancho. Pasá el puntero para verlo completo.
+- **Un panel más suave.** Las opciones de un hueco libre aparecen deslizándose en vez de saltar, la hora y la duración cambian con una animación corta, y todos los botones muestran la mano.
+- **Al día sin esfuerzo de más.** Abrir el panel sincroniza tus calendarios, pero no de nuevo si ya lo hizo en los últimos minutos.
+
 ## 0.8.0 - 2026-10-22
 
 ### Headline
