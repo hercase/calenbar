@@ -4,8 +4,11 @@ import CalenbarCore
 /// Owns the menu bar item: renders the next event, flashes when it's close, and toggles the panel on click.
 @MainActor
 final class StatusBarController {
-    /// The title uses as much room as the menu bar has, up to this cap.
+    /// No title width, fixed or learned, goes past this.
     private static let widestTitle = 400.0
+    /// "Automatic" uses as much room as the menu bar has, up to this. Even on a wide display a longer
+    /// title crowds the bar more than it informs; the full one is a hover away.
+    private static let automaticTitle = 240.0
     /// Below this only the countdown is left; no point shrinking further.
     private static let narrowestTitle = 60.0
     private static let shrinkStep = 40.0
@@ -16,9 +19,13 @@ final class StatusBarController {
     private static let notchStartWidth = 160.0
     private static let learnedWidthKey = "notchTitleWidth"
     private static let learnedWideWidthKey = "wideTitleWidth"
-    /// AppKit remembers where the user put the item under this name, so hiding and re-showing it
-    /// (the notch search does that) and relaunching keep its place instead of sending it to the far left.
+    /// AppKit remembers where the user put the item under this name, so relaunching keeps its place
+    /// instead of sending it to the far left.
     private static let autosaveName = "Calenbar"
+    /// Where AppKit stores that place. Hiding the item deletes it, so it's put back before re-showing.
+    private static let positionKey = "NSStatusItem Preferred Position \(autosaveName)"
+    /// Our own copy, to restore a place AppKit already lost.
+    private static let savedPositionKey = "menuBarPosition"
 
     private let model: AppModel
     private let statusItem: NSStatusItem
@@ -49,7 +56,7 @@ final class StatusBarController {
     /// menus of the apps in use (macOS hides the item when it would). Shrinks only, remembered.
     private var wideBudget: Double = {
         let saved = UserDefaults.standard.double(forKey: learnedWideWidthKey)
-        return saved > 0 ? saved : widestTitle
+        return saved > 0 ? min(saved, automaticTitle) : automaticTitle
     }()
     private var placementCheckPending = false
     private var renderedEventKey: String?
@@ -67,6 +74,7 @@ final class StatusBarController {
         self.onClick = onClick
         // macOS decides where third-party items go (new ones land at the far left); the user can
         // Command-drag it next to the clock and, thanks to the autosave name, it stays there.
+        Self.restorePosition()
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.autosaveName = Self.autosaveName
 
@@ -237,7 +245,7 @@ final class StatusBarController {
             if notchEdge != nil {
                 setNotchBudget(current.points ?? Self.notchStartWidth)
             } else {
-                setWideBudget(current.points ?? Self.widestTitle)
+                setWideBudget(current.points ?? Self.automaticTitle)
             }
             render()
         }
@@ -287,7 +295,7 @@ final class StatusBarController {
         if notchEdge != nil {
             setNotchBudget(Self.notchStartWidth)
         } else {
-            setWideBudget(Self.widestTitle)
+            setWideBudget(Self.automaticTitle)
         }
         render()
     }
@@ -319,6 +327,7 @@ final class StatusBarController {
 
     private func checkPlacement() {
         // A hidden menu bar (full-screen app) or a locked screen says nothing about space.
+        Self.rememberPosition()
         guard NSMenu.menuBarVisible(), !Self.isScreenLocked, let window = statusItem.button?.window else { return }
         let isVisible = window.occlusionState.contains(.visible)
 
@@ -343,9 +352,27 @@ final class StatusBarController {
         guard !placed else { return }
         let narrower = current - Self.shrinkStep
         setNotchBudget(narrower >= Self.narrowestTitle ? narrower : nil)
+        Self.rememberPosition()
         statusItem.isVisible = false
         render()
+        Self.restorePosition()
         statusItem.isVisible = true
+    }
+
+    // MARK: - Position
+
+    /// Keeps a copy of the place the user gave the item (it changes whenever they Command-drag it).
+    private static func rememberPosition() {
+        let defaults = UserDefaults.standard
+        guard let position = defaults.object(forKey: positionKey) else { return }
+        defaults.set(position, forKey: savedPositionKey)
+    }
+
+    /// Puts the remembered place back if AppKit dropped it, so the item doesn't land at the far left.
+    private static func restorePosition() {
+        let defaults = UserDefaults.standard
+        guard defaults.object(forKey: positionKey) == nil, let saved = defaults.object(forKey: savedPositionKey) else { return }
+        defaults.set(saved, forKey: positionKey)
     }
 
 }
