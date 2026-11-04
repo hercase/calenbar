@@ -49,6 +49,34 @@ struct TitleFormatterTests {
     }
 }
 
+struct RelativeTimeTests {
+    let start = Fixture.at(15, 0)
+
+    @Test func elapsedReadsLikeTheClock() {
+        // The minute tick lands just after the boundary; 3:03 must still read 3, not 4.
+        #expect(RelativeTime.since(start, now: Fixture.at(15, 3).addingTimeInterval(0.05)) == "3m")
+        #expect(RelativeTime.since(start, now: Fixture.at(15, 3, 59)) == "3m")
+        #expect(RelativeTime.since(start, now: Fixture.at(15, 1)) == "1m")
+        #expect(RelativeTime.since(start, now: Fixture.at(16, 4)) == "1h 4m")
+    }
+
+    @Test func elapsedToleratesAnEarlyTick() {
+        #expect(RelativeTime.minutesSince(start, now: Fixture.at(15, 3).addingTimeInterval(-0.3)) == 3)
+    }
+
+    @Test func elapsedIsZeroInTheFirstMinute() {
+        #expect(RelativeTime.minutesSince(start, now: start) == 0)
+        #expect(RelativeTime.minutesSince(start, now: Fixture.at(15, 0, 58)) == 0)
+    }
+
+    @Test func countdownCountsTheMinuteInProgress() {
+        #expect(RelativeTime.until(start, now: Fixture.at(14, 57).addingTimeInterval(0.05)) == "3m")
+        #expect(RelativeTime.until(start, now: Fixture.at(14, 57, 30)) == "3m")
+        #expect(RelativeTime.until(start, now: Fixture.at(14, 57).addingTimeInterval(-0.3)) == "3m")
+        #expect(RelativeTime.until(start, now: Fixture.at(14, 59, 59)) == "1m")
+    }
+}
+
 struct TitleWidthFitterTests {
     // One point per character keeps the arithmetic obvious.
     let measure: (String) -> Double = { Double($0.count) }

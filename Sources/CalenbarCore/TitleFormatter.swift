@@ -17,12 +17,12 @@ public enum TitleFormatter {
     /// `now` during the first minute, `25m left` while ongoing, `in 1h 4m` before it starts.
     public static func suffix(for event: CalendarEvent, now: Date) -> String {
         if event.isOngoing(at: now) {
-            if now.timeIntervalSince(event.start) < 60 {
+            if RelativeTime.minutesSince(event.start, now: now) == 0 {
                 return String(localized: "now")
             }
-            return String(localized: "\(compactDuration(event.end.timeIntervalSince(now))) left")
+            return String(localized: "\(RelativeTime.until(event.end, now: now)) left")
         }
-        return String(localized: "in \(compactDuration(event.start.timeIntervalSince(now)))")
+        return String(localized: "in \(RelativeTime.until(event.start, now: now))")
     }
 
     public static func title(for event: CalendarEvent, now: Date) -> String {
@@ -32,17 +32,22 @@ public enum TitleFormatter {
     /// Sentence-case variant for the panel: `Now`, `Ends in 12m`, `In 1h 2m`.
     public static func status(for event: CalendarEvent, now: Date) -> String {
         if event.isOngoing(at: now) {
-            if now.timeIntervalSince(event.start) < 60 {
+            if RelativeTime.minutesSince(event.start, now: now) == 0 {
                 return String(localized: "Now")
             }
-            return String(localized: "Ends in \(compactDuration(event.end.timeIntervalSince(now)))")
+            return String(localized: "Ends in \(RelativeTime.until(event.end, now: now))")
         }
-        return String(localized: "In \(compactDuration(event.start.timeIntervalSince(now)))")
+        return String(localized: "In \(RelativeTime.until(event.start, now: now))")
     }
 
-    /// Rounds up to whole minutes (never shows `0m`): `1m`, `45m`, `1h`, `1h 4m`.
+    /// A length of time, rounded up to whole minutes (never shows `0m`): `1m`, `45m`, `1h`, `1h 4m`.
+    /// For "how long until / since" use `RelativeTime`, which reads minutes off the clock.
     public static func compactDuration(_ seconds: TimeInterval) -> String {
-        let minutes = max(1, Int((seconds / 60).rounded(.up)))
+        compactMinutes(max(1, Int((seconds / 60).rounded(.up))))
+    }
+
+    /// `0m`, `45m`, `1h`, `1h 4m`.
+    public static func compactMinutes(_ minutes: Int) -> String {
         let hours = minutes / 60
         let rest = minutes % 60
         switch (hours, rest) {
