@@ -48,6 +48,7 @@ struct FreeTimeActions: View {
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(0.85)
+                .contentTransition(.numericText())
             if placement.canMoveEarlier || placement.canMoveLater {
                 shiftButton("chevron.right", enabled: placement.canMoveLater, label: String(localized: "Later")) {
                     state.shiftBlock(slot, forward: true, defaultLength: defaultLength)
@@ -55,6 +56,7 @@ struct FreeTimeActions: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .animation(PanelStyle.changeAnimation, value: placement.interval)
     }
 
     private func lengthButton(_ choice: FreeTime.BlockLength, placement: FreeTime.Placement) -> some View {

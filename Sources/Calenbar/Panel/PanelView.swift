@@ -46,8 +46,10 @@ private struct AccessRequiredView: View {
             if model.calendar.access == .notDetermined {
                 Button("Allow Access") { Task { await model.calendar.requestAccess() } }
                     .buttonStyle(.borderedProminent)
+                    .pointingHandCursor()
             } else {
                 Button("Open Privacy Settings") { CalendarService.openPrivacySettings() }
+                    .pointingHandCursor()
             }
         }
         .padding(PanelStyle.large)
@@ -64,6 +66,7 @@ private struct AccountHintView: View {
                 .fixedSize(horizontal: false, vertical: true)
             Button("Open Internet Accounts") { CalendarService.openInternetAccountsSettings() }
                 .controlSize(.small)
+                .pointingHandCursor()
         }
         .padding(.horizontal, PanelStyle.inset)
         .padding(.bottom, PanelStyle.medium)
@@ -84,7 +87,9 @@ private struct NoCalendarsView: View {
             HStack(spacing: PanelStyle.small) {
                 Button("Open Internet Accounts") { CalendarService.openInternetAccountsSettings() }
                     .buttonStyle(.borderedProminent)
+                    .pointingHandCursor()
                 Button("Refresh") { model.calendar.refreshSources() }
+                    .pointingHandCursor()
             }
         }
         .padding(PanelStyle.large)
@@ -209,7 +214,8 @@ private struct AccentCapsuleBody: View {
             }
             .contentShape(Capsule())
             .onHover { hover.isInside = $0 }
-            .animation(.easeOut(duration: 0.12), value: hover.isInside)
+            .pointingHandCursor()
+            .animation(PanelStyle.hoverAnimation, value: hover.isInside)
     }
 }
 

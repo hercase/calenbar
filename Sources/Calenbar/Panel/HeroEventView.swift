@@ -32,6 +32,7 @@ struct HeroEventView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.large)
                 .keyboardShortcut(.defaultAction)
+                .pointingHandCursor()
                 .help(
                     model.settings.joinShortcut.map {
                         String(localized: "Join \(link.provider.displayName) (Return, or \($0.display) anywhere)")
@@ -112,8 +113,7 @@ enum EventTimeText {
         if event.isOngoing(at: now) {
             return String(localized: "now")
         }
-        let delta = event.start.timeIntervalSince(now)
-        guard delta < 12 * 3_600 else { return nil }
-        return String(localized: "in \(TitleFormatter.compactDuration(delta))")
+        guard event.start.timeIntervalSince(now) < 12 * 3_600 else { return nil }
+        return String(localized: "in \(RelativeTime.until(event.start, now: now))")
     }
 }

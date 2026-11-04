@@ -291,11 +291,13 @@ struct AlertView: View {
                     }
                     .keyboardShortcut(.defaultAction)
                     .buttonStyle(.borderedProminent)
+                    .pointingHandCursor()
                 }
                 SnoozeMenu(event: event, now: now, snooze: actions.snooze)
                     .fixedSize()
                 Button("Dismiss", action: actions.dismiss)
                     .keyboardShortcut(.cancelAction)
+                    .pointingHandCursor()
             }
             .controlSize(.extraLarge)
             .padding(.top, 12)
@@ -326,6 +328,7 @@ struct SnoozeMenu: View {
                 Button("\(minutes) min") { snooze(Date().addingTimeInterval(TimeInterval(minutes * 60))) }
             }
         }
+        .pointingHandCursor()
     }
 }
 
@@ -351,20 +354,18 @@ enum AlertFacts {
     /// Quiet before the start, accent as it starts, orange once you're late. Text says the same thing,
     /// so colour is only reinforcement.
     static func headlineTint(event: CalendarEvent, now: Date) -> Color {
-        let sinceStart = now.timeIntervalSince(event.start)
-        if sinceStart < 0 { return .secondary }
-        return sinceStart < 60 ? .accentColor : .orange
+        if event.start > now { return .secondary }
+        return RelativeTime.minutesSince(event.start, now: now) == 0 ? .accentColor : .orange
     }
 
     /// Live: "Starting in 2m", then "Starting now" for the first minute, then "Started 3m ago".
     static func headline(event: CalendarEvent, now: Date) -> String {
-        let sinceStart = now.timeIntervalSince(event.start)
-        if sinceStart < 0 {
-            return String(localized: "Starting in \(TitleFormatter.compactDuration(-sinceStart))")
+        if event.start > now {
+            return String(localized: "Starting in \(RelativeTime.until(event.start, now: now))")
         }
-        if sinceStart < 60 {
+        if RelativeTime.minutesSince(event.start, now: now) == 0 {
             return String(localized: "Starting now")
         }
-        return String(localized: "Started \(TitleFormatter.compactDuration(sinceStart)) ago")
+        return String(localized: "Started \(RelativeTime.since(event.start, now: now)) ago")
     }
 }

@@ -133,10 +133,13 @@ private struct FreeTimeRow: View {
             }
             .contentShape(Rectangle())
             .onTapGesture { state.toggleFree(slot.id) }
+            .pointingHandCursor()
             if isRevealed, slot.canBook {
                 FreeTimeActions(model: model, state: state, slot: slot)
+                    .transition(.opacity.combined(with: .offset(y: -6)))
             }
         }
+        .animation(PanelStyle.hoverAnimation, value: isHovered)
         .padding(.vertical, 3)
         .padding(.horizontal, PanelStyle.tight + 2)
         .frame(minHeight: 22)
@@ -169,7 +172,7 @@ private struct FreeTimeRow: View {
             if slot.canBook {
                 // Same rounding as the next event's "in 24m". Counting from the next whole minute,
                 // which is where a block starts, made the two labels disagree.
-                let left = TitleFormatter.compactDuration(slot.end.timeIntervalSince(model.now))
+                let left = RelativeTime.until(slot.end, now: model.now)
                 return String(localized: "\(left) free until \(time)")
             }
             return String(localized: "Free until \(time)")
@@ -258,12 +261,14 @@ private struct EventRow: View {
             isHovered ? Color.primary.opacity(0.07) : .clear,
             in: RoundedRectangle(cornerRadius: PanelStyle.rowCornerRadius)
         )
+        .animation(PanelStyle.hoverAnimation, value: isHovered)
         .opacity(isPast || isSkipped ? 0.45 : 1)
         .contentShape(Rectangle())
         .onHover { state.setHovering($0, eventID: event.id) }
         // Double-click first so a single click waits for it; Return and Space work like a click.
         .onTapGesture(count: 2) { model.openEvent(event) }
         .onTapGesture { state.toggleDetail(eventID: event.id) }
+        .pointingHandCursor()
         .focusable(true, interactions: .activate)
         .onKeyPress(.return) {
             state.toggleDetail(eventID: event.id)
@@ -332,6 +337,7 @@ struct SkipButton: View {
             }
             .buttonStyle(.bordered)
             .fixedSize()
+            .pointingHandCursor()
             .help(help)
         } else {
             IconButton(systemImage: symbol, label: help) {

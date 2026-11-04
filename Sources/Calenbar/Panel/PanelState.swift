@@ -1,6 +1,7 @@
+import AppKit
 import CalenbarCore
-import Foundation
 import Observation
+import SwiftUI
 
 /// UI state for the panel. Kept in an `@Observable` class instead of SwiftUI `@State` because the
 /// Command Line Tools toolchain doesn't ship the SwiftUI macro plugin that `@State` needs.
@@ -104,19 +105,27 @@ final class PanelState {
         if isHovering {
             hoveredFreeID = id
             if pinnedFreeID == id {
-                revealedFreeID = id
+                reveal(id)
                 return
             }
             freeRevealTask = Task { [weak self] in
                 try? await Task.sleep(for: Self.freeRevealDelay)
                 guard !Task.isCancelled, self?.hoveredFreeID == id else { return }
-                self?.revealedFreeID = id
+                self?.reveal(id)
             }
         } else if hoveredFreeID == id {
             hoveredFreeID = nil
             pinnedFreeID = nil
-            revealedFreeID = nil
+            reveal(nil)
         }
+    }
+
+    /// The actions push every row below the gap, so the whole list moves in one animation.
+    /// With Reduce Motion on, they appear in place as before.
+    private func reveal(_ id: String?) {
+        guard revealedFreeID != id else { return }
+        let animation = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? nil : PanelStyle.changeAnimation
+        withAnimation(animation) { revealedFreeID = id }
     }
 
     /// The interval every chip will use. `defaultLength` is the Settings value, until this gap picks its own.
@@ -142,10 +151,10 @@ final class PanelState {
         freeRevealTask?.cancel()
         if pinnedFreeID == id {
             pinnedFreeID = nil
-            revealedFreeID = hoveredFreeID == id ? id : nil
+            reveal(hoveredFreeID == id ? id : nil)
         } else {
             pinnedFreeID = id
-            revealedFreeID = id
+            reveal(id)
         }
     }
 

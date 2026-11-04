@@ -62,6 +62,7 @@ struct AlertCardView: View {
                         .padding(.vertical, 2)
                     }
                     .buttonStyle(.borderedProminent)
+                    .pointingHandCursor()
                 }
                 SnoozeMenu(event: event, now: now, snooze: actions.snooze)
                     .fixedSize()

@@ -52,6 +52,7 @@ struct MiniCalendarView: View {
                     Button("Today") { state.resetToToday() }
                         .buttonStyle(.borderless)
                         .font(.caption)
+                        .pointingHandCursor()
                 }
                 IconButton(systemImage: "chevron.left", label: String(localized: "Previous month")) { shiftMonth(-1) }
                 IconButton(systemImage: "chevron.right", label: String(localized: "Next month")) { shiftMonth(1) }
@@ -207,6 +208,7 @@ private struct DayCell: View {
         }
         .buttonStyle(.plain)
         .onHover { hover.isInside = $0 }
+        .pointingHandCursor()
         .accessibilityLabel(accessibilityText)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

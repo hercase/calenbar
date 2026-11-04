@@ -15,6 +15,10 @@ enum PanelStyle {
     /// Minimum clickable area for icon-only buttons.
     static let iconHitSize: CGFloat = 24
     static let rowCornerRadius: CGFloat = 6
+    /// Pointer feedback: short enough that it never trails the mouse.
+    static let hoverAnimation = Animation.easeOut(duration: 0.12)
+    /// Content that appears, moves or changes value.
+    static let changeAnimation = Animation.smooth(duration: 0.25)
 }
 
 /// Small grey title above a group ("Today", "World Clocks"), with an optional trailing accessory.
@@ -89,6 +93,31 @@ extension View {
     func hoverWash(cornerRadius: CGFloat = 5) -> some View {
         modifier(HoverWash(cornerRadius: cornerRadius))
     }
+
+    /// The hand macOS shows over links, on every clickable control outside Settings.
+    func pointingHandCursor() -> some View {
+        modifier(PointingHandCursor())
+    }
+}
+
+private struct PointingHandCursor: ViewModifier {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func body(content: Content) -> some View {
+        if #available(macOS 15, *) {
+            content.pointerStyle(isEnabled ? .link : nil)
+        } else {
+            // Re-set on every move rather than push/pop: a control that vanishes under the pointer
+            // (a gap's actions closing) would leave an unbalanced push and a stuck hand.
+            content.onContinuousHover { phase in
+                switch phase {
+                case .active where isEnabled: NSCursor.pointingHand.set()
+                case .active: break
+                case .ended: NSCursor.arrow.set()
+                }
+            }
+        }
+    }
 }
 
 private struct HoverWash: ViewModifier {
@@ -102,7 +131,8 @@ private struct HoverWash: ViewModifier {
                 in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
             )
             .onHover { hover.isInside = $0 }
-            .animation(.easeOut(duration: 0.12), value: hover.isInside)
+            .pointingHandCursor()
+            .animation(PanelStyle.hoverAnimation, value: hover.isInside)
     }
 }
 
@@ -119,7 +149,9 @@ private struct QuietButtonBody: View {
             .background(Color.primary.opacity(wash), in: shape)
             .contentShape(shape)
             .onHover { hover.isInside = $0 }
-            .animation(.easeOut(duration: 0.12), value: hover.isInside)
+            .pointingHandCursor()
+            // Keyed on the wash, not the hover, so a chip becoming the selected one fades too.
+            .animation(PanelStyle.hoverAnimation, value: wash)
     }
 
     private var wash: Double {

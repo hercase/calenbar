@@ -65,6 +65,7 @@ struct EventDetailView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
+                .pointingHandCursor()
             }
 
             if !event.rooms.isEmpty || location != nil || !event.people.isEmpty {
@@ -245,6 +246,7 @@ struct EventActionsRow: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(hasPrimaryJoin ? .secondary : .accentColor)
+                    .pointingHandCursor()
                     .help("You haven't answered this invitation yet")
                 } else {
                     Button {
@@ -254,6 +256,7 @@ struct EventActionsRow: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
+                    .pointingHandCursor()
                 }
             }
             .lineLimit(1)
