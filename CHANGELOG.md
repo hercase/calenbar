@@ -5,7 +5,7 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
-## Unreleased
+## 0.8.2 - 2026-11-06
 
 - **A heads-up when another meeting is right behind this one.** While you're still in a meeting, the menu bar flashes yellow once, 10 minutes before the next one starts, if it begins during the current one or right after it. Turn it off in Settings › Notifications.
 
