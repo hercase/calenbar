@@ -5,8 +5,9 @@ import Foundation
 /// happens and, from time to time, tries one step wider: room comes back as soon as icons or app
 /// menus are gone, and a bar that is still full is tried less and less often.
 public struct WidthProbe: Sendable {
-    /// Wait after the bar made the title shrink, or after the first try that didn't fit.
-    public static let firstRetry: TimeInterval = 10 * 60
+    /// Wait after the bar made the title shrink, or after the first try that didn't fit. Short, because
+    /// the room usually comes back soon: a menu bar manager collapsing its icons, an app quitting.
+    public static let firstRetry: TimeInterval = 60
     /// Each try that doesn't fit doubles the wait, up to this.
     public static let longestRetry: TimeInterval = 4 * 60 * 60
 

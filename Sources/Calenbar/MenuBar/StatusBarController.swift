@@ -19,13 +19,6 @@ final class StatusBarController {
     private static let notchStartWidth = 160.0
     private static let learnedWidthKey = "notchTitleWidth"
     private static let learnedWideWidthKey = "wideTitleWidth"
-    /// AppKit remembers where the user put the item under this name, so relaunching keeps its place
-    /// instead of sending it to the far left.
-    private static let autosaveName = "Calenbar"
-    /// Where AppKit stores that place. Hiding the item deletes it, so it's put back before re-showing.
-    private static let positionKey = "NSStatusItem Preferred Position \(autosaveName)"
-    /// Our own copy, to restore a place AppKit already lost.
-    private static let savedPositionKey = "menuBarPosition"
 
     let model: AppModel
     let statusItem: NSStatusItem
@@ -63,6 +56,8 @@ final class StatusBarController {
     private var widthProbe = WidthProbe()
     /// A wider title is on screen and the next placement check decides whether it stays.
     private var isProbing = false
+    /// The last placement check found the item hidden and asked for a second look.
+    private var wasHiddenOnce = false
     private var renderedEventKey: String?
     private var lastTitle: String?
     var attentionTimer: Timer?
@@ -296,6 +291,15 @@ final class StatusBarController {
         // undecided stays; the next check shrinks it if it doesn't fit.
         guard NSMenu.menuBarVisible(), !Self.isScreenLocked, let window = statusItem.button?.window else { return }
         let isVisible = window.occlusionState.contains(.visible)
+        // macOS hides the item for a moment while it lays the bar out again (after our own re-show, or
+        // another app's item appearing). Only a second look that still finds it hidden counts.
+        if !isVisible, !wasHiddenOnce {
+            wasHiddenOnce = true
+            isProbing = wasProbing
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in self?.checkPlacement() }
+            return
+        }
+        wasHiddenOnce = false
 
         let fits: Bool
         if let edge = notchEdge, notchBudget != nil {
@@ -340,22 +344,6 @@ final class StatusBarController {
         render()
         Self.restorePosition()
         statusItem.isVisible = true
-    }
-
-    // MARK: - Position
-
-    /// Keeps a copy of the place the user gave the item (it changes whenever they Command-drag it).
-    private static func rememberPosition() {
-        let defaults = UserDefaults.standard
-        guard let position = defaults.object(forKey: positionKey) else { return }
-        defaults.set(position, forKey: savedPositionKey)
-    }
-
-    /// Puts the remembered place back if AppKit dropped it, so the item doesn't land at the far left.
-    private static func restorePosition() {
-        let defaults = UserDefaults.standard
-        guard defaults.object(forKey: positionKey) == nil, let saved = defaults.object(forKey: savedPositionKey) else { return }
-        defaults.set(saved, forKey: positionKey)
     }
 }
 

@@ -13,16 +13,16 @@ struct WidthProbeTests {
     @Test func waitsLongerAfterEachTryThatDoesNotFit() {
         var probe = WidthProbe()
         probe.didNotFit(now: now)
-        #expect(!probe.isDue(now: Fixture.at(10, 9)))
-        #expect(probe.isDue(now: Fixture.at(10, 10)))
-        probe.didNotFit(now: Fixture.at(10, 10))
-        #expect(!probe.isDue(now: Fixture.at(10, 29)))
-        #expect(probe.isDue(now: Fixture.at(10, 30)))
+        #expect(!probe.isDue(now: Fixture.at(10, 0, 59)))
+        #expect(probe.isDue(now: Fixture.at(10, 1)))
+        probe.didNotFit(now: Fixture.at(10, 1))
+        #expect(!probe.isDue(now: Fixture.at(10, 2, 59)))
+        #expect(probe.isDue(now: Fixture.at(10, 3)))
     }
 
     @Test func waitIsCapped() {
-        #expect(WidthProbe.delay(afterFailures: 1) == 10 * 60)
-        #expect(WidthProbe.delay(afterFailures: 3) == 40 * 60)
+        #expect(WidthProbe.delay(afterFailures: 1) == 60)
+        #expect(WidthProbe.delay(afterFailures: 3) == 4 * 60)
         #expect(WidthProbe.delay(afterFailures: 20) == WidthProbe.longestRetry)
     }
 
@@ -33,14 +33,14 @@ struct WidthProbeTests {
         probe.fit()
         #expect(probe.isDue(now: now))
         probe.didNotFit(now: now)
-        #expect(probe.isDue(now: Fixture.at(10, 10)))
+        #expect(probe.isDue(now: Fixture.at(10, 1)))
     }
 
     @Test func shrinkingOnItsOwnHoldsOffWithoutGrowingTheWait() {
         var probe = WidthProbe()
         probe.shrank(now: now)
-        #expect(!probe.isDue(now: Fixture.at(10, 9)))
-        #expect(probe.isDue(now: Fixture.at(10, 10)))
+        #expect(!probe.isDue(now: Fixture.at(10, 0, 59)))
+        #expect(probe.isDue(now: Fixture.at(10, 1)))
         #expect(probe.failures == 0)
     }
 
@@ -48,7 +48,8 @@ struct WidthProbeTests {
         var probe = WidthProbe()
         for _ in 0..<3 { probe.didNotFit(now: now) }
         probe.shrank(now: now)
-        #expect(!probe.isDue(now: Fixture.at(10, 39)))
+        #expect(!probe.isDue(now: Fixture.at(10, 3)))
+        #expect(probe.isDue(now: Fixture.at(10, 4)))
     }
 
     @Test func widerStepsUpToTheCeiling() {
