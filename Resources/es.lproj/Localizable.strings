@@ -174,6 +174,7 @@
 "Grab attention when an event is close" = "Llamar la atención cuando falta poco";
 "Flash red in the menu bar" = "Parpadear en rojo en la barra de menús";
 "Start 5 minutes before (flashes at the end of each minute)" = "Empezar 5 minutos antes (parpadea al final de cada minuto)";
+"Flash yellow 10 min before a meeting right after this one" = "Parpadear en amarillo 10 min antes de una reunión justo después de esta";
 "Play a sound at 5 min, at 30 s, and when the alert card appears" = "Sonido a los 5 min, a los 30 s y cuando aparece la tarjeta de alerta";
 
 /* Settings: Calendars */
@@ -282,6 +283,7 @@
 "Calenbar sends one like this before each meeting, with a Join button." = "Calenbar manda una así antes de cada reunión, con un botón Unirse.";
 "Preview" = "Vista previa";
 "Send Test Notification" = "Enviar notificación de prueba";
+"Flash Yellow Now" = "Parpadear en amarillo ahora";
 "Show Test Alert" = "Mostrar alerta de prueba";
 "Corner" = "Esquina";
 "Bottom right" = "Abajo a la derecha";

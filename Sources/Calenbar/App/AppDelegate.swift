@@ -27,6 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onOpenSettings: { [weak self] in self?.showSettings() },
             onClick: { button in panel.toggle(from: button) }
         )
+        model.previewFollowUpFlash = { [weak self] in self?.statusBar?.previewFollowUpFlash() }
         notifications = NotificationScheduler(model: model)
         model.notifications = notifications
         alerts = FullScreenAlertController(model: model)

@@ -51,3 +51,29 @@ struct AttentionPolicyTests {
         #expect(!AttentionPolicy.needsSecondTicks(start: start, now: Fixture.at(15, 1)))
     }
 }
+
+struct FollowUpAttentionTests {
+    let next = Fixture.at(13, 30)
+
+    func flash(_ hour: Int, _ minute: Int, _ second: Int) -> Bool {
+        AttentionPolicy.isFollowUpFlashOn(start: next, now: Fixture.at(hour, minute, second))
+    }
+
+    @Test func flashesOnceTenMinutesBefore() {
+        // 9m 59s → 9m 51s left: the same five-flash burst as the red ones.
+        #expect((0..<60).filter { flash(13, 20, $0) } == [1, 3, 5, 7, 9])
+    }
+
+    @Test func quietOtherwise() {
+        #expect((0..<60).allSatisfy { !flash(13, 19, $0) })
+        #expect((0..<60).allSatisfy { !flash(13, 21, $0) })
+        #expect((0..<60).allSatisfy { !flash(13, 25, $0) })
+    }
+
+    @Test func ticksOnlyAroundTheBurst() {
+        #expect(!AttentionPolicy.needsFollowUpTicks(start: next, now: Fixture.at(13, 18, 59)))
+        #expect(AttentionPolicy.needsFollowUpTicks(start: next, now: Fixture.at(13, 19, 0)))
+        #expect(AttentionPolicy.needsFollowUpTicks(start: next, now: Fixture.at(13, 20, 30)))
+        #expect(!AttentionPolicy.needsFollowUpTicks(start: next, now: Fixture.at(13, 21, 0)))
+    }
+}

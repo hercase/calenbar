@@ -1,6 +1,7 @@
 import Foundation
 
-/// When the menu bar item flashes red / pings as an event approaches.
+/// When the menu bar item flashes red / pings as an event approaches, and yellow for a meeting right
+/// behind the current one.
 public enum AttentionPolicy {
     /// - Last 30 seconds: flash every other second.
     /// - With `fromFiveMinutes`, once under 5 minutes are left: 5 quick flashes at the end of each minute.
@@ -26,6 +27,24 @@ public enum AttentionPolicy {
     public static func needsSecondTicks(start: Date, now: Date) -> Bool {
         let left = start.timeIntervalSince(now)
         return left > 0 && left <= 6 * 60
+    }
+
+    /// While you're still in a meeting, how long before the next one starts the bar warns, once, in yellow.
+    public static let followUpLead = 10
+
+    /// One burst of 5 quick flashes as `followUpLead` minutes are about to be left before the meeting
+    /// right behind the current one (9m 59s to 9m 51s, like the red bursts).
+    public static func isFollowUpFlashOn(start: Date, now: Date) -> Bool {
+        guard let (minutes, seconds) = timeLeft(until: start, from: now) else { return false }
+        return minutes == followUpLead - 1 && seconds > 50 && !seconds.isMultiple(of: 2)
+    }
+
+    /// The yellow burst needs a per-second timer only around it: the minute before and after, so the
+    /// status item's once-a-minute refresh always lands inside and starts it in time.
+    public static func needsFollowUpTicks(start: Date, now: Date) -> Bool {
+        let left = start.timeIntervalSince(now)
+        let lead = Double(followUpLead * 60)
+        return left > lead - 60 && left <= lead + 60
     }
 
     /// Whole minutes and seconds until `start`, or nil once it has started.

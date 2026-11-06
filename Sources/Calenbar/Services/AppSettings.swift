@@ -85,6 +85,8 @@ final class AppSettings {
     var personalRoomURL: String { didSet { store(personalRoomURL, .personalRoomURL) } }
     var flashEnabled: Bool { didSet { store(flashEnabled, .flashEnabled) } }
     var flashFromFiveMinutes: Bool { didSet { store(flashFromFiveMinutes, .flashFromFiveMinutes) } }
+    /// One yellow burst 10 minutes before a meeting right behind the one you're in.
+    var flashFollowUp: Bool { didSet { store(flashFollowUp, .flashFollowUp) } }
     var attentionSound: Bool { didSet { store(attentionSound, .attentionSound) } }
 
     var notificationsEnabled: Bool { didSet { store(notificationsEnabled, .notificationsEnabled) } }
@@ -126,7 +128,7 @@ final class AppSettings {
             joinShortcut,
             openEventsIn,
             meetingBrowserID, preferNativeMeetingApps, accountProfiles,
-            personalRoomURL, flashEnabled, flashFromFiveMinutes, attentionSound
+            personalRoomURL, flashEnabled, flashFromFiveMinutes, flashFollowUp, attentionSound
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
             alertStyle, alertCorner
         case disabledCalendars, holidayCalendarChoices, hiddenKeys, mutedKeys, quietKeys, worldClocks, showClocksInPanel,
@@ -162,6 +164,7 @@ final class AppSettings {
         personalRoomURL = Self.load(.personalRoomURL, from: defaults) ?? ""
         flashEnabled = Self.load(.flashEnabled, from: defaults) ?? true
         flashFromFiveMinutes = Self.load(.flashFromFiveMinutes, from: defaults) ?? true
+        flashFollowUp = Self.load(.flashFollowUp, from: defaults) ?? true
         attentionSound = Self.load(.attentionSound, from: defaults) ?? false
         notificationsEnabled = Self.load(.notificationsEnabled, from: defaults) ?? true
         notifyLeadMinutes = Self.load(.notifyLeadMinutes, from: defaults) ?? 1

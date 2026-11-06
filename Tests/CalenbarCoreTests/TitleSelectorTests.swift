@@ -82,3 +82,45 @@ struct TitleSelectorEndRuleTests {
         #expect(selector.select(from: [ongoing, next], now: Fixture.at(13, 57))?.title == "Workshop")
     }
 }
+
+struct TitleFollowUpTests {
+    let selector = TitleSelector(rule: .switchBeforeNextStarts, calendar: Fixture.calendar)
+
+    @Test func backToBackMeetingFollowsTheOngoingOne() {
+        let ongoing = Fixture.event("PK x DEPT", Fixture.at(13, 0), Fixture.at(13, 30))
+        let next = Fixture.event("Standup", Fixture.at(13, 30), Fixture.at(14, 0))
+        let later = Fixture.event("Review", Fixture.at(13, 34), Fixture.at(14, 0))
+        #expect(selector.followUp(to: ongoing, in: [ongoing, later, next], now: Fixture.at(13, 20))?.title == "Standup")
+    }
+
+    @Test func overlappingMeetingFollows() {
+        let ongoing = Fixture.event("Workshop", Fixture.at(13, 0), Fixture.at(15, 0))
+        let next = Fixture.event("1:1", Fixture.at(14, 0), Fixture.at(14, 30))
+        #expect(selector.followUp(to: ongoing, in: [ongoing, next], now: Fixture.at(13, 50))?.title == "1:1")
+    }
+
+    @Test func meetingWithinFiveMinutesOfTheEndFollows() {
+        let ongoing = Fixture.event("PK x DEPT", Fixture.at(13, 0), Fixture.at(13, 30))
+        let next = Fixture.event("Standup", Fixture.at(13, 35), Fixture.at(14, 0))
+        #expect(selector.followUp(to: ongoing, in: [ongoing, next], now: Fixture.at(13, 25))?.title == "Standup")
+    }
+
+    @Test func meetingLaterThanThatDoesNotFollow() {
+        let ongoing = Fixture.event("PK x DEPT", Fixture.at(13, 0), Fixture.at(13, 30))
+        let next = Fixture.event("Standup", Fixture.at(13, 36), Fixture.at(14, 0))
+        #expect(selector.followUp(to: ongoing, in: [ongoing, next], now: Fixture.at(13, 26)) == nil)
+    }
+
+    @Test func upcomingShownEventHasNoFollowUp() {
+        let shown = Fixture.event("Standup", Fixture.at(13, 30), Fixture.at(14, 0))
+        let next = Fixture.event("Review", Fixture.at(14, 0), Fixture.at(14, 30))
+        #expect(selector.followUp(to: shown, in: [shown, next], now: Fixture.at(13, 26)) == nil)
+    }
+
+    @Test func otherOngoingAndAllDayEventsDoNotFollow() {
+        let ongoing = Fixture.event("Short", Fixture.at(13, 0), Fixture.at(13, 30))
+        let long = Fixture.event("Long", Fixture.at(9, 0), Fixture.at(17, 0))
+        let allDay = Fixture.event("Holiday", Fixture.at(0, 0, day: 16), Fixture.at(0, 0, day: 17), isAllDay: true)
+        #expect(selector.followUp(to: ongoing, in: [ongoing, long, allDay], now: Fixture.at(13, 5)) == nil)
+    }
+}

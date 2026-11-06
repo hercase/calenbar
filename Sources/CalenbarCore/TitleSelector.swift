@@ -88,6 +88,21 @@ public struct TitleSelector: Sendable {
         }
     }
 
+    /// How soon after the shown meeting ends the next one may start and still count as right behind it.
+    public static let followUpGap: TimeInterval = 5 * 60
+
+    /// While the menu bar shows an ongoing event, the meeting right behind it: the earliest one starting
+    /// before it ends, or within `followUpGap` of its end. Nil when the shown event hasn't started yet
+    /// (it is the next thing already) or nothing follows closely.
+    public func followUp(to shown: CalendarEvent, in events: [CalendarEvent], now: Date) -> CalendarEvent? {
+        guard shown.isOngoing(at: now) else { return nil }
+        let latestStart = shown.end.addingTimeInterval(Self.followUpGap)
+        return
+            events
+            .filter { $0.key != shown.key && !$0.isAllDay && $0.start > now && $0.start <= latestStart }
+            .min { Self.ranksBefore($0, $1, earliestFirst: true) }
+    }
+
     /// Orders by start time; on a tie, events with other attendees win (real meetings over focus blocks).
     private static func ranksBefore(_ lhs: CalendarEvent, _ rhs: CalendarEvent, earliestFirst: Bool) -> Bool {
         if lhs.start != rhs.start {

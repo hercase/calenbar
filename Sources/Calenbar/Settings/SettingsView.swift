@@ -25,7 +25,9 @@ enum SettingsWindow {
             Page(
                 title: String(localized: "Notifications"), symbol: "bell.badge",
                 view: AnyView(
-                    NotificationSettings(settings: model.settings, scheduler: model.notifications, alerts: model.alerts))),
+                    NotificationSettings(
+                        settings: model.settings, scheduler: model.notifications, alerts: model.alerts,
+                        previewFollowUpFlash: model.previewFollowUpFlash))),
             Page(
                 title: String(localized: "Time Zones"), symbol: "globe",
                 view: AnyView(WorldClockSettings(settings: model.settings, uiState: uiState, clock: model.clock))),
@@ -213,6 +215,7 @@ private struct NotificationSettings: View {
     @Bindable var settings: AppSettings
     let scheduler: NotificationScheduler?
     let alerts: FullScreenAlertController?
+    let previewFollowUpFlash: (() -> Void)?
 
     var body: some View {
         Form {
@@ -244,6 +247,12 @@ private struct NotificationSettings: View {
                 Toggle("Flash red in the menu bar", isOn: $settings.flashEnabled)
                 Toggle("Start 5 minutes before (flashes at the end of each minute)", isOn: $settings.flashFromFiveMinutes)
                     .disabled(!settings.flashEnabled)
+                Toggle("Flash yellow 10 min before a meeting right after this one", isOn: $settings.flashFollowUp)
+                    .disabled(!settings.flashEnabled)
+                LabeledContent("Preview") {
+                    Button("Flash Yellow Now") { previewFollowUpFlash?() }
+                }
+                .disabled(!settings.flashEnabled || !settings.flashFollowUp || previewFollowUpFlash == nil)
                 Toggle("Play a sound at 5 min, at 30 s, and when the alert card appears", isOn: $settings.attentionSound)
             }
             Section {

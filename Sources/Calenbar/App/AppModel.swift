@@ -15,6 +15,8 @@ final class AppModel {
     var notifications: NotificationScheduler?
     /// Set by the app delegate; Settings uses it for the test alert.
     var alerts: FullScreenAlertController?
+    /// Set by the app delegate; Settings uses it to preview the yellow flash.
+    var previewFollowUpFlash: (() -> Void)?
 
     init(settings: AppSettings, calendar: CalendarService, clock: MinuteClock) {
         self.settings = settings
@@ -28,6 +30,12 @@ final class AppModel {
     var titleEvent: CalendarEvent? {
         let candidates = settings.eventFilter.apply(calendar.upcoming, for: .title)
         return TitleSelector(rule: settings.titleRule, horizon: settings.titleHorizon).select(from: candidates, now: now)
+    }
+
+    /// The meeting right behind the ongoing one in the menu bar, for the yellow warning.
+    func titleFollowUp(to shown: CalendarEvent) -> CalendarEvent? {
+        TitleSelector(rule: settings.titleRule, horizon: settings.titleHorizon)
+            .followUp(to: shown, in: events(for: .title), now: now)
     }
 
     /// The meeting the global shortcut and "Join Next Meeting" open.
