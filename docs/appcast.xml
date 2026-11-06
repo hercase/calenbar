@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.8.2</title>
+      <pubDate>Fri, 06 Nov 2026 21:12:16 +0000</pubDate>
+      <sparkle:version>166</sparkle:version>
+      <sparkle:shortVersionString>0.8.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<ul><li><b>A heads-up when another meeting is right behind this one.</b> While you're still in a meeting, the menu bar flashes yellow once, 10 minutes before the next one starts, if it begins during the current one or right after it. Turn it off in Settings › Notifications.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.8.2/Calenbar-0.8.2.dmg" length="6608707" type="application/octet-stream"
+        sparkle:edSignature="UkruGqjQ8Bu9P58dzcmPmM3+13YvrotqbMWfUNYITx0fNgUz4Nld3fhvYt8Ue/x+PGM8x5E1boKMJFuVtPClDA==" />
+    </item>
+    <item>
       <title>Calenbar 0.8.1</title>
       <pubDate>Fri, 06 Nov 2026 14:33:33 +0000</pubDate>
       <sparkle:version>163</sparkle:version>
