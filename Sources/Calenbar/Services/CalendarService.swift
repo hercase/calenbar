@@ -354,7 +354,11 @@ final class CalendarService {
             isRecurring: event.hasRecurrenceRules
         )
     }
+}
 
+// MARK: - EventKit participants
+
+extension CalendarService {
     private static func email(from url: URL) -> String? {
         guard url.scheme == "mailto" else { return nil }
         return url.absoluteString.replacingOccurrences(of: "mailto:", with: "").removingPercentEncoding
