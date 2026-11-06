@@ -5,7 +5,7 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
-## Unreleased
+## 0.8.1 - 2026-11-06
 
 - **Calenbar is back after a restart.** It now starts at login like any other app, so it no longer stays closed after an update. If you already had it on, it stays on.
 - **The menu bar item stays where you put it.** On a MacBook with a notch, an update could send it back to the far left of the menu bar.
