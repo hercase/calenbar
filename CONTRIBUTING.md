@@ -34,7 +34,7 @@ Keep logic in Core with tests; the app layer should be thin.
 
 ## Menu bar width
 
-On macOS with a notch, `CGWindowListCopyWindowInfo` no longer reports other apps' status items, so `StatusBarController` learns a title width that only ever shrinks and forces a re-layout when the item lands left of the notch. It is fragile by nature; read it fully before changing it.
+On macOS with a notch, `CGWindowListCopyWindowInfo` no longer reports other apps' status items, so `StatusBarController` learns a title width: it shrinks and forces a re-layout when the item lands left of the notch (or macOS hides it), and while the title is cut it tries one step wider from time to time (`WidthProbe`, waiting longer after each try that doesn't fit), so the room comes back once the bar has some. It is fragile by nature; read it fully before changing it.
 
 ## Commits
 

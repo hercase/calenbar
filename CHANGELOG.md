@@ -13,6 +13,7 @@ Lead each bullet with what it solves for the user (see "Writing for users" in CO
 - **A tidier menu bar title.** With Automatic width the title stops at a comfortable length, even on a wide display. Hover it for the whole name.
 - **Smoother panel.** A free gap's choices slide in instead of popping, the time and length change with a short animation, and every button shows the hand pointer.
 - **Fresh without the busywork.** Opening the panel syncs your calendars, but not again if it just did in the last couple of minutes.
+- **The meeting name comes back on its own.** When a crowded menu bar left room only for the countdown, the title stayed short even after you made space. Now Calenbar tries a little wider from time to time and gets the name back once there's room.
 
 ### es
 - **Calenbar vuelve después de reiniciar.** Ahora arranca al iniciar sesión como cualquier otra app, así que ya no queda cerrado después de una actualización. Si ya lo tenías activado, sigue activado.
@@ -21,6 +22,7 @@ Lead each bullet with what it solves for the user (see "Writing for users" in CO
 - **Un título más prolijo en la barra.** Con ancho Automático el título se corta en un largo cómodo, incluso en un monitor ancho. Pasá el puntero para verlo completo.
 - **Un panel más suave.** Las opciones de un hueco libre aparecen deslizándose en vez de saltar, la hora y la duración cambian con una animación corta, y todos los botones muestran la mano.
 - **Al día sin esfuerzo de más.** Abrir el panel sincroniza tus calendarios, pero no de nuevo si ya lo hizo en los últimos minutos.
+- **El nombre de la reunión vuelve solo.** Cuando la barra llena dejaba lugar solo para la cuenta regresiva, el título quedaba corto aunque después hicieras espacio. Ahora Calenbar prueba un poco más ancho de vez en cuando y recupera el nombre en cuanto hay lugar.
 
 ## 0.8.0 - 2026-10-22
 

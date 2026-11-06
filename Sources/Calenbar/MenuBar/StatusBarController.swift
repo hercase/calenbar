@@ -27,10 +27,10 @@ final class StatusBarController {
     /// Our own copy, to restore a place AppKit already lost.
     private static let savedPositionKey = "menuBarPosition"
 
-    private let model: AppModel
-    private let statusItem: NSStatusItem
+    let model: AppModel
+    let statusItem: NSStatusItem
     private let onClick: (NSStatusBarButton) -> Void
-    private let onOpenSettings: () -> Void
+    let onOpenSettings: () -> Void
     /// Resting the pointer on the item shows the event's card.
     private var hover: HoverPreview?
     private let warningIcon = NSImage(
@@ -45,23 +45,27 @@ final class StatusBarController {
 
     /// Extra shrinking applied only if macOS still hides the item despite the computed budget.
     private var occlusionPenalty = 0.0
-    /// On a notched MacBook: the widest title known to keep the item right of the notch. It only ever
-    /// shrinks (and is remembered across launches), so the item never jumps over the notch again.
-    /// nil when even the narrowest title doesn't fit there.
+    /// On a notched MacBook: the widest title known to keep the item right of the notch, remembered
+    /// across launches. It shrinks when the item lands left of the notch and steps back up through
+    /// `widthProbe`. nil when even the narrowest title doesn't fit there.
     private var notchBudget: Double? = {
         let saved = UserDefaults.standard.double(forKey: learnedWidthKey)
         return saved > 0 ? saved : notchStartWidth
     }()
     /// Displays without a notch, "Automatic" width: the widest title known not to collide with the
-    /// menus of the apps in use (macOS hides the item when it would). Shrinks only, remembered.
+    /// menus of the apps in use (macOS hides the item when it would). Remembered; grows back like `notchBudget`.
     private var wideBudget: Double = {
         let saved = UserDefaults.standard.double(forKey: learnedWideWidthKey)
         return saved > 0 ? min(saved, automaticTitle) : automaticTitle
     }()
     private var placementCheckPending = false
+    /// When a cut title next tries one step wider, so the item gets its room back once the bar has some.
+    private var widthProbe = WidthProbe()
+    /// A wider title is on screen and the next placement check decides whether it stays.
+    private var isProbing = false
     private var renderedEventKey: String?
     private var lastTitle: String?
-    private var attentionTimer: Timer?
+    var attentionTimer: Timer?
 
     init(
         model: AppModel,
@@ -106,48 +110,6 @@ final class StatusBarController {
         onClick(button)
     }
 
-    /// Right click: the same actions as the panel's "•••" menu, without opening the panel.
-    private func showMenu() {
-        let menu = NSMenu()
-        menu.autoenablesItems = false
-        if let update = model.updater.pending {
-            let title =
-                update.isReadyToInstall
-                ? String(localized: "Restart to Update") : String(localized: "Update to \(update.version)…")
-            menu.addItem(withTitle: title, action: #selector(installUpdate), keyEquivalent: "").target = self
-            menu.addItem(.separator())
-        }
-        let shortcut = model.settings.joinShortcut
-        let join = menu.addItem(
-            withTitle: String(localized: "Join Next Meeting"), action: #selector(joinNext),
-            keyEquivalent: shortcut?.menuKeyEquivalent ?? "")
-        join.keyEquivalentModifierMask = shortcut?.flags ?? []
-        join.target = self
-        join.isEnabled = model.nextMeeting != nil
-        menu.addItem(.separator())
-        let hide = menu.addItem(
-            withTitle: String(localized: "Hide Event Titles"), action: #selector(toggleHideTitles), keyEquivalent: "")
-        hide.target = self
-        hide.state = model.settings.hideTitlesInMenuBar ? .on : .off
-        menu.addItem(.separator())
-        menu.addItem(withTitle: String(localized: "Open Calendar"), action: #selector(openCalendar), keyEquivalent: "").target =
-            self
-        menu.addItem(withTitle: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",").target = self
-        menu.addItem(.separator())
-        menu.addItem(withTitle: String(localized: "Quit Calenbar"), action: #selector(quit), keyEquivalent: "q").target = self
-        // Attaching a menu makes the button pop it up on click; detach right after so left clicks keep opening the panel.
-        statusItem.menu = menu
-        statusItem.button?.performClick(nil)
-        statusItem.menu = nil
-    }
-
-    @objc private func joinNext() { model.joinNextMeeting() }
-    @objc private func installUpdate() { model.updater.checkForUpdates() }
-    @objc private func toggleHideTitles() { model.settings.hideTitlesInMenuBar.toggle() }
-    @objc private func openCalendar() { model.calendar.openCalendarApp() }
-    @objc private func openSettings() { onOpenSettings() }
-    @objc private func quit() { QuitConfirmation.run() }
-
     func render() {
         guard let button = statusItem.button else { return }
 
@@ -182,16 +144,16 @@ final class StatusBarController {
         let icon = todayIcon
         let font = NSFont.menuBarFont(ofSize: 0)
         let shownTitle = model.menuBarTitle(for: event)
-        let title = TitleWidthFitter.fit(
-            title: shownTitle,
-            suffix: TitleFormatter.suffix(for: event, now: model.now),
-            maxWidth: titleBudget
-        ) { text in
+        let suffix = TitleFormatter.suffix(for: event, now: model.now)
+        let title = TitleWidthFitter.fit(title: shownTitle, suffix: suffix, maxWidth: titleBudget) { text in
             Double((text as NSString).size(withAttributes: [.font: font]).width)
         }
         set(button, image: icon, title: title)
         button.toolTip = model.settings.hideTitlesInMenuBar ? shownTitle : "\(shownTitle) — \(event.calendarTitle)"
         schedulePlacementCheck()
+        if title != shownTitle + TitleFormatter.separator + suffix {
+            probeWiderIfDue()
+        }
     }
 
     private func set(_ button: NSStatusBarButton, image: NSImage?, title: String) {
@@ -232,8 +194,7 @@ final class StatusBarController {
         return clamp(wideBudget)
     }
 
-    /// A new choice in Settings restarts the fit from that width; the learned budgets only ever
-    /// shrink, so without this a wider choice would never be tried.
+    /// A new choice in Settings restarts the fit from that width at once, instead of probing up to it.
     private func watchTitleWidthSetting() {
         var last = model.settings.titleWidth
         observeContinuously { [weak self] in
@@ -242,6 +203,7 @@ final class StatusBarController {
             guard current != last else { return }
             last = current
             occlusionPenalty = 0
+            widthProbe = WidthProbe()
             if notchEdge != nil {
                 setNotchBudget(current.points ?? Self.notchStartWidth)
             } else {
@@ -292,6 +254,7 @@ final class StatusBarController {
     /// Displays changed: start again from the default widths; what fits may have changed either way.
     private func refit() {
         occlusionPenalty = 0
+        widthProbe = WidthProbe()
         if notchEdge != nil {
             setNotchBudget(Self.notchStartWidth)
         } else {
@@ -326,15 +289,36 @@ final class StatusBarController {
     }
 
     private func checkPlacement() {
-        // A hidden menu bar (full-screen app) or a locked screen says nothing about space.
         Self.rememberPosition()
+        let wasProbing = isProbing
+        isProbing = false
+        // A hidden menu bar (full-screen app) or a locked screen says nothing about space. A probe left
+        // undecided stays; the next check shrinks it if it doesn't fit.
         guard NSMenu.menuBarVisible(), !Self.isScreenLocked, let window = statusItem.button?.window else { return }
         let isVisible = window.occlusionState.contains(.visible)
 
-        if let edge = notchEdge, let current = notchBudget {
-            let placed = isVisible && window.frame.minX >= edge - 1
-            searchNotchBudget(current: current, placed: placed)
-        } else if !isVisible, titleBudget > Self.narrowestTitle {
+        let fits: Bool
+        if let edge = notchEdge, notchBudget != nil {
+            fits = isVisible && window.frame.minX >= edge - 1
+        } else {
+            fits = isVisible || titleBudget <= Self.narrowestTitle
+        }
+        guard !fits else {
+            if wasProbing {
+                widthProbe.fit()
+                render()
+            }
+            return
+        }
+
+        if wasProbing {
+            widthProbe.didNotFit(now: Date())
+        } else {
+            widthProbe.shrank(now: Date())
+        }
+        if notchEdge != nil, let current = notchBudget {
+            shrinkNotchBudget(from: current)
+        } else {
             // Hidden by macOS: the title collided with the app menus (or the bar is just full).
             // Automatic remembers the narrower width; a fixed width shrinks only for now.
             if model.settings.titleWidth == .automatic {
@@ -348,8 +332,7 @@ final class StatusBarController {
 
     /// The item landed left of the notch (or hidden): narrow the title and make macOS lay the item out
     /// again, since it won't move an item back over the notch by itself.
-    private func searchNotchBudget(current: Double, placed: Bool) {
-        guard !placed else { return }
+    private func shrinkNotchBudget(from current: Double) {
         let narrower = current - Self.shrinkStep
         setNotchBudget(narrower >= Self.narrowestTitle ? narrower : nil)
         Self.rememberPosition()
@@ -374,47 +357,44 @@ final class StatusBarController {
         guard defaults.object(forKey: positionKey) == nil, let saved = defaults.object(forKey: savedPositionKey) else { return }
         defaults.set(saved, forKey: positionKey)
     }
-
 }
 
-// MARK: - Flashing as an event approaches
+// MARK: - Growing back
 
 extension StatusBarController {
-
-    private func updateAttention(for event: CalendarEvent?) {
-        let settings = model.settings
-        let wanted = settings.flashEnabled || settings.attentionSound
-        guard wanted, let event, AttentionPolicy.needsSecondTicks(start: event.start, now: Date()) else {
-            attentionTimer?.invalidate()
-            attentionTimer = nil
-            setFlash(false)
-            return
-        }
-        guard attentionTimer == nil else { return }
-        let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
-            MainActor.assumeIsolated { self?.attentionTick() }
-        }
-        timer.tolerance = 0.1
-        RunLoop.main.add(timer, forMode: .common)
-        attentionTimer = timer
-        attentionTick()
+    /// Tries the title one step wider when it's cut and the last try is long enough ago. Not while the
+    /// item flashes for a meeting about to start: a probe that doesn't fit makes it jump for a moment.
+    private func probeWiderIfDue() {
+        guard !isProbing, attentionTimer == nil, widthProbe.isDue(now: Date()),
+            NSMenu.menuBarVisible(), !Self.isScreenLocked, widen()
+        else { return }
+        isProbing = true
+        render()
     }
 
-    private func attentionTick() {
-        let settings = model.settings
-        guard let event = model.titleEvent, AttentionPolicy.needsSecondTicks(start: event.start, now: Date()) else {
-            updateAttention(for: nil)
-            return
+    /// Sets the width learned for this display one step wider; false when it's already as wide as the
+    /// settings allow.
+    private func widen() -> Bool {
+        let fixed = model.settings.titleWidth.points
+        if notchEdge != nil {
+            let ceiling = fixed ?? Self.notchStartWidth
+            guard
+                let next = WidthProbe.wider(
+                    than: notchBudget, step: Self.shrinkStep, narrowest: Self.narrowestTitle, ceiling: ceiling)
+            else { return false }
+            setNotchBudget(next)
+            return true
         }
-        let now = Date()
-        let fromFive = settings.flashFromFiveMinutes
-        setFlash(settings.flashEnabled && AttentionPolicy.isFlashOn(start: event.start, now: now, fromFiveMinutes: fromFive))
-        if settings.attentionSound, AttentionPolicy.shouldPing(start: event.start, now: now, fromFiveMinutes: fromFive) {
-            NSSound(named: "Ping")?.play()
+        if fixed != nil {
+            guard occlusionPenalty > 0 else { return false }
+            occlusionPenalty = max(0, occlusionPenalty - Self.shrinkStep)
+            return true
         }
-    }
-
-    private func setFlash(_ isOn: Bool) {
-        statusItem.button?.layer?.backgroundColor = isOn ? NSColor.systemRed.cgColor : nil
+        guard
+            let next = WidthProbe.wider(
+                than: wideBudget, step: Self.shrinkStep, narrowest: Self.narrowestTitle, ceiling: Self.automaticTitle)
+        else { return false }
+        setWideBudget(next)
+        return true
     }
 }
