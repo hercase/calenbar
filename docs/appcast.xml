@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.8.1</title>
+      <pubDate>Fri, 06 Nov 2026 14:33:33 +0000</pubDate>
+      <sparkle:version>163</sparkle:version>
+      <sparkle:shortVersionString>0.8.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<ul><li><b>Calenbar is back after a restart.</b> It now starts at login like any other app, so it no longer stays closed after an update. If you already had it on, it stays on.</li><li><b>The menu bar item stays where you put it.</b> On a MacBook with a notch, an update could send it back to the far left of the menu bar.</li><li><b>Alerts count the minutes right.</b> A meeting that started at 3:00 reads “Started 3m ago” at 3:03, not 4m.</li><li><b>A tidier menu bar title.</b> With Automatic width the title stops at a comfortable length, even on a wide display. Hover it for the whole name.</li><li><b>Smoother panel.</b> A free gap's choices slide in instead of popping, the time and length change with a short animation, and every button shows the hand pointer.</li><li><b>Fresh without the busywork.</b> Opening the panel syncs your calendars, but not again if it just did in the last couple of minutes.</li><li><b>The meeting name comes back on its own.</b> When a crowded menu bar left room only for the countdown, the title stayed short even after you made space. Now Calenbar tries a little wider from time to time and gets the name back once there's room.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.8.1/Calenbar-0.8.1.dmg" length="6604266" type="application/octet-stream"
+        sparkle:edSignature="dCiiGAgtBg0CFyzFCowLi82dhF2FdQ/IetWohT74GkU6ChUhXwXtEp7fZqVdIq17wJYsOJ9VAPiOQxdCcKI0CQ==" />
+    </item>
+    <item>
       <title>Calenbar 0.8.0</title>
       <pubDate>Thu, 22 Oct 2026 19:39:02 +0000</pubDate>
       <sparkle:version>152</sparkle:version>
