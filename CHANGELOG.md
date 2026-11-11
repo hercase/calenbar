@@ -5,7 +5,7 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
-## Unreleased
+## 0.8.3 - 2026-11-11
 
 - **Join, or open the event, without hunting for it.** The reminder now has "Open in Calendar" and "Copy link" within reach: as quiet buttons under the full-screen alert and as small icons on the corner card. The system notification gets an "Open Event" button too.
 - **The alert tells you which key does what.** Join shows ↩ and Dismiss shows esc; the corner card shows your global Join shortcut. Esc closes the alert whichever button has focus.
