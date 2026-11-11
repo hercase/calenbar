@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.8.3</title>
+      <pubDate>Wed, 11 Nov 2026 14:53:33 +0000</pubDate>
+      <sparkle:version>169</sparkle:version>
+      <sparkle:shortVersionString>0.8.3</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<ul><li><b>Join, or open the event, without hunting for it.</b> The reminder now has "Open in Calendar" and "Copy link" within reach: as quiet buttons under the full-screen alert and as small icons on the corner card. The system notification gets an "Open Event" button too.</li><li><b>The alert tells you which key does what.</b> Join shows ↩ and Dismiss shows esc; the corner card shows your global Join shortcut. Esc closes the alert whichever button has focus.</li><li><b>No more cut-off Join on the card.</b> In Spanish, "Unirse a Google Meet" plus the shortcut didn't fit; the card now shortens to "Unirse" and keeps the shortcut.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.8.3/Calenbar-0.8.3.dmg" length="6653858" type="application/octet-stream"
+        sparkle:edSignature="uzaAWckTnJW3IzE5Fv+Qi/DRDqBcI+X2IclEF3izkEZuhImD2VuxpxGDmp45x0s7Un30GNATQagsGJCX4xyCBQ==" />
+    </item>
+    <item>
       <title>Calenbar 0.8.2</title>
       <pubDate>Fri, 06 Nov 2026 21:12:16 +0000</pubDate>
       <sparkle:version>166</sparkle:version>
