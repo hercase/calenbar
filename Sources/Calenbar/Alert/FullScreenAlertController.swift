@@ -100,7 +100,9 @@ final class FullScreenAlertController {
                 self?.shownKeys.remove(event.key)
                 self?.dismiss(event.key)
             },
-            dismiss: { [weak self] in self?.dismiss(event.key) }
+            dismiss: { [weak self] in self?.dismiss(event.key) },
+            openEvent: { [model] in model.openEvent(event) },
+            copyLink: { MeetingOpener.copy($0) }
         )
         present(event, actions: actions)
     }
@@ -242,6 +244,9 @@ struct AlertActions {
     /// Called with the moment the alert should come back.
     let snooze: (Date) -> Void
     let dismiss: () -> Void
+    /// Quick access to the event in the user's calendar, and to the link on the clipboard.
+    var openEvent: () -> Void = {}
+    var copyLink: (MeetingLink) -> Void = { _ in }
 }
 
 struct AlertView: View {
@@ -287,7 +292,10 @@ struct AlertView: View {
                         HStack(spacing: 8) {
                             ProviderChipView(provider: link.provider, size: 16)
                             Text("Join \(link.provider.displayName)")
+                            KeyCap(text: "↩")
                         }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
                     }
                     .keyboardShortcut(.defaultAction)
                     .buttonStyle(.borderedProminent)
@@ -295,77 +303,42 @@ struct AlertView: View {
                 }
                 SnoozeMenu(event: event, now: now, snooze: actions.snooze)
                     .fixedSize()
-                Button("Dismiss", action: actions.dismiss)
-                    .keyboardShortcut(.cancelAction)
-                    .pointingHandCursor()
+                Button(action: actions.dismiss) {
+                    HStack(spacing: 8) {
+                        Text("Dismiss")
+                        KeyCap(text: "esc")
+                    }
+                }
+                .keyboardShortcut(.cancelAction)
+                .pointingHandCursor()
             }
             .controlSize(.extraLarge)
             .padding(.top, 12)
+
+            HStack(spacing: 20) {
+                Button {
+                    actions.openEvent()
+                } label: {
+                    Label("Open in \(model.eventDestinationName(event))", systemImage: "calendar")
+                }
+                if let link = event.meetingLink {
+                    CopyLinkButton(link: link, copy: actions.copyLink)
+                }
+            }
+            .buttonStyle(QuietButtonStyle(rest: 0.06, cornerRadius: 8))
+            .labelStyle(.titleAndIcon)
+            .font(.callout)
+            .foregroundStyle(.secondary)
+            .pointingHandCursor()
         }
         .padding(60)
         .frame(maxWidth: 900)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onExitCommand(perform: actions.dismiss)  // Esc, whichever control has focus.
     }
 
     private var place: String? { AlertFacts.place(event) }
     private var people: String? { AlertFacts.people(event) }
 
     static func headline(event: CalendarEvent, now: Date) -> String { AlertFacts.headline(event: event, now: now) }
-}
-
-/// Snooze choices shared by both alert styles.
-struct SnoozeMenu: View {
-    let event: CalendarEvent
-    let now: Date
-    let snooze: (Date) -> Void
-
-    var body: some View {
-        Menu("Snooze") {
-            if event.start.timeIntervalSince(now) > 60 {
-                Button("When it starts") { snooze(event.start) }
-            }
-            ForEach(AlertTiming.snoozeMinutes, id: \.self) { minutes in
-                Button("\(minutes) min") { snooze(Date().addingTimeInterval(TimeInterval(minutes * 60))) }
-            }
-        }
-        .pointingHandCursor()
-    }
-}
-
-/// The lines both alert styles print about the meeting.
-enum AlertFacts {
-    /// Rooms first (they're what you walk to); otherwise the free-text location when it says something.
-    static func place(_ event: CalendarEvent) -> String? {
-        event.rooms.isEmpty ? event.displayLocation : event.rooms.joined(separator: ", ")
-    }
-
-    /// "Organized by Ana · 6 guests · 4 accepted"; nothing for an event with no other guests.
-    static func people(_ event: CalendarEvent) -> String? {
-        let others = event.people.filter { !$0.isCurrentUser }
-        guard !others.isEmpty else { return nil }
-        let accepted = event.people.filter { $0.status == .accepted }.count
-        let counts = String(localized: "\(event.people.count) guests · \(accepted) accepted")
-        if let organizer = event.organizer, !organizer.isCurrentUser {
-            return String(localized: "Organized by \(organizer.displayName)") + " · " + counts
-        }
-        return counts
-    }
-
-    /// Quiet before the start, accent as it starts, orange once you're late. Text says the same thing,
-    /// so colour is only reinforcement.
-    static func headlineTint(event: CalendarEvent, now: Date) -> Color {
-        if event.start > now { return .secondary }
-        return RelativeTime.minutesSince(event.start, now: now) == 0 ? .accentColor : .orange
-    }
-
-    /// Live: "Starting in 2m", then "Starting now" for the first minute, then "Started 3m ago".
-    static func headline(event: CalendarEvent, now: Date) -> String {
-        if event.start > now {
-            return String(localized: "Starting in \(RelativeTime.until(event.start, now: now))")
-        }
-        if RelativeTime.minutesSince(event.start, now: now) == 0 {
-            return String(localized: "Starting now")
-        }
-        return String(localized: "Started \(RelativeTime.since(event.start, now: now)) ago")
-    }
 }

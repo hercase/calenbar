@@ -15,6 +15,7 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         static let meetingCategory = "MEETING"
         static let eventCategory = "EVENT"
         static let joinAction = "JOIN"
+        static let openAction = "OPEN"
         static let linkKey = "link"
         static let eventKey = "eventKey"
     }
@@ -32,9 +33,11 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         center.delegate = self
         let join = UNNotificationAction(
             identifier: Identifier.joinAction, title: String(localized: "Join"), options: [.foreground])
+        let open = UNNotificationAction(
+            identifier: Identifier.openAction, title: String(localized: "Open Event"), options: [.foreground])
         center.setNotificationCategories([
-            UNNotificationCategory(identifier: Identifier.meetingCategory, actions: [join], intentIdentifiers: []),
-            UNNotificationCategory(identifier: Identifier.eventCategory, actions: [], intentIdentifiers: []),
+            UNNotificationCategory(identifier: Identifier.meetingCategory, actions: [join, open], intentIdentifiers: []),
+            UNNotificationCategory(identifier: Identifier.eventCategory, actions: [open], intentIdentifiers: []),
         ])
         // Reschedule only when events or settings change; deliberately not on every clock tick.
         observeContinuously { [weak self] in self?.reschedule() }
@@ -120,6 +123,7 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
                 content.userInfo = [Identifier.linkKey: link.webURL.absoluteString, Identifier.eventKey: event.key]
             } else {
                 content.categoryIdentifier = Identifier.eventCategory
+                content.userInfo = [Identifier.eventKey: event.key]
             }
             // A calendar trigger fires at the wall-clock moment, which survives sleep; an interval drifts.
             // The zone is attached so the instant is unambiguous; a zone change reschedules anyway.
@@ -141,10 +145,16 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
+        let userInfo = response.notification.request.content.userInfo
+        if response.actionIdentifier == Identifier.openAction, let key = userInfo[Identifier.eventKey] as? String {
+            await MainActor.run {
+                if let event = model.calendar.upcoming.first(where: { $0.key == key }) { model.openEvent(event) }
+            }
+            return
+        }
         let isJoin =
             response.actionIdentifier == Identifier.joinAction
             || response.actionIdentifier == UNNotificationDefaultActionIdentifier
-        let userInfo = response.notification.request.content.userInfo
         guard isJoin,
             let string = userInfo[Identifier.linkKey] as? String,
             let link = MeetingLinkDetector.detect(url: URL(string: string), location: nil, notes: nil)

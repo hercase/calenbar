@@ -319,3 +319,7 @@
 "Next month" = "Mes siguiente";
 "%@ is already in the list as the same time zone." = "%@ ya está en la lista con la misma zona horaria.";
 "At the same time" = "A la misma hora";
+"Copy link" = "Copiar link";
+"Copied" = "Copiado";
+"Copy meeting link" = "Copiar link de la reunión";
+"Open Event" = "Abrir evento";

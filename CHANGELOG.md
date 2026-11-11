@@ -5,6 +5,17 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
+## Unreleased
+
+- **Join, or open the event, without hunting for it.** The reminder now has "Open in Calendar" and "Copy link" within reach: as quiet buttons under the full-screen alert and as small icons on the corner card. The system notification gets an "Open Event" button too.
+- **The alert tells you which key does what.** Join shows ↩ and Dismiss shows esc; the corner card shows your global Join shortcut. Esc closes the alert whichever button has focus.
+- **No more cut-off Join on the card.** In Spanish, "Unirse a Google Meet" plus the shortcut didn't fit; the card now shortens to "Unirse" and keeps the shortcut.
+
+### es
+- **Unite o abrí el evento sin buscar.** El aviso ahora tiene "Abrir en Calendario" y "Copiar link" a mano: como botones discretos bajo la alerta de pantalla completa y como íconos chicos en la tarjeta de la esquina. La notificación del sistema suma un botón "Abrir evento".
+- **La alerta te dice qué tecla hace qué.** Unirse muestra ↩ y Descartar muestra esc; la tarjeta muestra tu atajo global para unirte. Esc cierra la alerta sin importar qué botón tenga el foco.
+- **Ya no se corta Unirse en la tarjeta.** En español, "Unirse a Google Meet" más el atajo no entraba; ahora la tarjeta lo acorta a "Unirse" y conserva el atajo.
+
 ## 0.8.2 - 2026-11-06
 
 - **A heads-up when another meeting is right behind this one.** While you're still in a meeting, the menu bar flashes yellow once, 10 minutes before the next one starts, if it begins during the current one or right after it. Turn it off in Settings › Notifications.
