@@ -76,4 +76,16 @@ struct FollowUpAttentionTests {
         #expect(AttentionPolicy.needsFollowUpTicks(start: next, now: Fixture.at(13, 20, 30)))
         #expect(!AttentionPolicy.needsFollowUpTicks(start: next, now: Fixture.at(13, 21, 0)))
     }
+
+    @Test func namesTheNextMeetingWhileTheBurstRunsAndJustAfter() {
+        func names(_ minute: Int, _ second: Int) -> Bool {
+            AttentionPolicy.showsFollowUpTitle(start: next, now: Fixture.at(13, minute, second))
+        }
+        #expect(!names(19, 59))  // 10m 1s left: not yet
+        #expect(names(20, 0))  // 10m left
+        #expect(names(20, 9))  // inside the burst
+        #expect(names(20, 30))  // after it, long enough to read
+        #expect(names(20, 39))  // 9m 21s left: last second of the window
+        #expect(!names(20, 40))  // 9m 20s left: back to the ongoing meeting
+    }
 }

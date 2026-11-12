@@ -29,6 +29,15 @@ extension StatusBarController {
         attentionTick()
     }
 
+    /// The next meeting, while the bar should name it instead of the ongoing `event`.
+    func followUpToName(for event: CalendarEvent) -> CalendarEvent? {
+        guard model.settings.flashEnabled, model.settings.flashFollowUp, !isPreviewingFlash,
+            let next = model.titleFollowUp(to: event),
+            AttentionPolicy.showsFollowUpTitle(start: next.start, now: Date())
+        else { return nil }
+        return next
+    }
+
     private func attention(for event: CalendarEvent) -> Attention? {
         let settings = model.settings
         let now = Date()
@@ -57,6 +66,10 @@ extension StatusBarController {
                 NSSound(named: "Ping")?.play()
             }
         case .followUp(let next):
+            // Title first: setting it drops the black-on-yellow styling, which `setFlash` puts back.
+            if (followUpToName(for: event) != nil) != showsFollowUpTitle {
+                render()
+            }
             setFlash(AttentionPolicy.isFollowUpFlashOn(start: next.start, now: now) ? .systemYellow : nil)
         }
     }

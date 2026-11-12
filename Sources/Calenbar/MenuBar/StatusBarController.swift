@@ -61,6 +61,8 @@ final class StatusBarController {
     private var renderedEventKey: String?
     private var lastTitle: String?
     var attentionTimer: Timer?
+    /// The bar currently names the meeting behind the ongoing one (the yellow warning), not the ongoing one.
+    var showsFollowUpTitle = false
     /// Settings' flash preview in progress; while it runs, re-renders and the countdown leave the bar alone.
     var previewTask: Task<Void, Never>?
     var isPreviewingFlash: Bool { previewTask != nil }
@@ -141,13 +143,17 @@ final class StatusBarController {
 
         let icon = todayIcon
         let font = NSFont.menuBarFont(ofSize: 0)
-        let shownTitle = model.menuBarTitle(for: event)
-        let suffix = TitleFormatter.suffix(for: event, now: model.now)
+        // While the yellow warning runs, say what it is about: the meeting coming up behind this one.
+        let followUp = followUpToName(for: event)
+        showsFollowUpTitle = followUp != nil
+        let named = followUp ?? event
+        let shownTitle = model.menuBarTitle(for: named)
+        let suffix = TitleFormatter.suffix(for: named, now: model.now)
         let title = TitleWidthFitter.fit(title: shownTitle, suffix: suffix, maxWidth: titleBudget) { text in
             Double((text as NSString).size(withAttributes: [.font: font]).width)
         }
         set(button, image: icon, title: title)
-        button.toolTip = model.settings.hideTitlesInMenuBar ? shownTitle : "\(shownTitle) — \(event.calendarTitle)"
+        button.toolTip = model.settings.hideTitlesInMenuBar ? shownTitle : "\(shownTitle) — \(named.calendarTitle)"
         schedulePlacementCheck()
         if title != shownTitle + TitleFormatter.separator + suffix {
             probeWiderIfDue()

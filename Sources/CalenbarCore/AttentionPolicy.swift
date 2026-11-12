@@ -39,6 +39,17 @@ public enum AttentionPolicy {
         return minutes == followUpLead - 1 && seconds > 50 && !seconds.isMultiple(of: 2)
     }
 
+    /// How long the bar names the meeting behind the current one, from `followUpLead` minutes before it
+    /// starts: the burst itself is ~10 seconds, too short to read what the yellow is about.
+    public static let followUpTitleSeconds: TimeInterval = 40
+
+    /// Whether the bar shows the next meeting's title in place of the current one's, for the yellow warning.
+    public static func showsFollowUpTitle(start: Date, now: Date) -> Bool {
+        let left = start.timeIntervalSince(now)
+        let lead = Double(followUpLead * 60)
+        return left <= lead && left > lead - followUpTitleSeconds
+    }
+
     /// The yellow burst needs a per-second timer only around it: the minute before and after, so the
     /// status item's once-a-minute refresh always lands inside and starts it in time.
     public static func needsFollowUpTicks(start: Date, now: Date) -> Bool {
