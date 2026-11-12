@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.8.5</title>
+      <pubDate>Thu, 12 Nov 2026 18:04:49 +0000</pubDate>
+      <sparkle:version>184</sparkle:version>
+      <sparkle:shortVersionString>0.8.5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<ul><li><b>Return joins the meeting, not whatever app you were in.</b> The full-screen alert didn't always take the keyboard, so pressing Return could land in another app while you were looking at the alert. It now takes the keyboard when it appears, and gives it back to your app when you dismiss or snooze it.</li><li><b>Know which meeting the yellow flash is about.</b> When a meeting is right behind the one you're in, the yellow flash 10 minutes before now shows that meeting's title and start time in the menu bar for about 40 seconds, then goes back to your current meeting.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.8.5/Calenbar-0.8.5.dmg" length="6793159" type="application/octet-stream"
+        sparkle:edSignature="Bl0HIJ+fQZhbuKIjhd2typG/xmR5MuJvO+X+iWyjXKc/6it5usRORnMld25C/0RF6/hDQzKbal5ye5/+auXnBQ==" />
+    </item>
+    <item>
       <title>Calenbar 0.8.4</title>
       <pubDate>Thu, 12 Nov 2026 14:56:29 +0000</pubDate>
       <sparkle:version>179</sparkle:version>
@@ -104,16 +114,6 @@
       <description><![CDATA[<p><b>A shortcut to join, an alert that doesn't take over, and days off on the calendar.</b></p><ul><li><b>⌃⌘J joins the next meeting from any app.</b> Change or remove the shortcut in Settings › General. The same action is in the menu bar item's right-click menu and the panel's ••• menu.</li><li><b>The alert is a small card now.</b> It appears in a corner of the screen when a meeting starts, over every desktop and full-screen app, with a live countdown, the room, who's coming, Join and Snooze (1, 5 or 10 minutes, or until it starts). Overlapping meetings stack their cards. Full screen is still there as a choice. Both styles leave on their own when the meeting ends.</li><li><b>Try before you decide.</b> Settings › Notifications has “Send Test Notification” and “Show Test Alert”.</li><li><b>Days off on the calendar.</b> Time off (Out of office, PTO, vacation and their equivalents in nine languages) and holiday calendars tint their days in the month view and get an icon in the list.</li><li><b>How busy is that day.</b> One, two or three dots under each day, and optional week numbers.</li><li><b>Calendars, by account.</b> Settings › Calendars groups them by account; unchecking List drops a calendar from Calenbar in one click, and the ••• button hides it, shows it everywhere or marks it as a holidays calendar.</li><li><b>Mirrored events show once.</b> A personal event copied into a work calendar is one row, even when the copy says just “Busy” or carries a tag; the card names the other calendar.</li><li><b>Sharing your screen?</b> Hide event titles and the menu bar says “Meeting • in 12m” until you turn it back on.</li><li><b>New meeting, now.</b> Start a Google Meet, Zoom or Microsoft Teams call from the panel's ••• menu.</li><li><b>Updates you can see.</b> When one is waiting, the menu bar icon gets a dot and both menus offer “Update to…” or “Restart to Update”.</li><li><b>No Accessibility permission.</b> On displays without a notch, the title width is Automatic (it learns how much room your apps leave) or Short, Medium or Long.</li><li>Up to five world clocks, with no duplicates. Settings › Notifications says when macOS has notifications turned off for Calenbar. Install with Homebrew: <code>brew install --cask hercase/calenbar/calenbar --no-quarantine</code>.</li></ul>]]></description>
       <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.5.0/Calenbar-0.5.0.dmg" length="5994250" type="application/octet-stream"
         sparkle:edSignature="EyeHR7H6g2yHxezzfaVj3B+8JEEupeMTFdoYeVXZiYxbHIRrpG6gcbNraeiy94CyqQqIueaSYYiMO05knjiWDQ==" />
-    </item>
-    <item>
-      <title>Calenbar 0.4.1</title>
-      <pubDate>Fri, 16 Oct 2026 14:56:04 +0000</pubDate>
-      <sparkle:version>58</sparkle:version>
-      <sparkle:shortVersionString>0.4.1</sparkle:shortVersionString>
-      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<p>The full-screen alert is now off by default and can target a chosen screen; no alert for meetings you already joined; the panel and the Calendars tab say when the Mac has no calendar account; the menu bar item keeps its place.</p>]]></description>
-      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.4.1/Calenbar-0.4.1.dmg" length="5673796" type="application/octet-stream"
-        sparkle:edSignature="rUxtKvWIW3NT9w2zg33xq55idJ+CU+pzXc6CgwSkLmKcXyHWCxzzQtd22H3incNj2dq3Gad8cs5hCBGOx/AzAQ==" />
     </item>
   </channel>
 </rss>
