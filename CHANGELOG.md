@@ -5,6 +5,13 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
+## Unreleased
+
+- **The alert no longer traps you when you unplug a monitor.** If you disconnected an external display while the full-screen alert was open, it could stay at the old size with its buttons off screen. It now fits the screen you're left with, and Esc and the buttons keep working.
+
+### es
+- **La alerta ya no te deja atrapado al desenchufar un monitor.** Si desconectabas una pantalla externa con la alerta de pantalla completa abierta, podía quedarse del tamaño anterior con los botones fuera de pantalla. Ahora se ajusta a la pantalla que te queda, y Esc y los botones siguen funcionando.
+
 ## 0.8.3 - 2026-11-11
 
 - **Join, or open the event, without hunting for it.** The reminder now has "Open in Calendar" and "Copy link" within reach: as quiet buttons under the full-screen alert and as small icons on the corner card. The system notification gets an "Open Event" button too.
