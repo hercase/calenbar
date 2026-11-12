@@ -22,6 +22,7 @@ final class FullScreenAlertController {
     private var shownKeys: Set<String> = []
     private var snoozedUntil: [String: Date] = [:]
     private var screenObserver: NSObjectProtocol?
+    private var windowScreenObserver: NSObjectProtocol?
 
     init(model: AppModel) {
         self.model = model
@@ -30,20 +31,29 @@ final class FullScreenAlertController {
         screenObserver = NotificationCenter.default.addObserver(
             forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main
         ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.screensChanged() }
+            MainActor.assumeIsolated { self?.screensChanged(force: true) }
+        }
+        // Some display changes (a resolution switch, a wake from sleep) only reach the window itself.
+        windowScreenObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.didChangeScreenNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.screensChanged(force: false) }
         }
     }
 
     /// Fits what is on screen to the displays that exist now: the takeover is resized to the
     /// screen it belongs on (the chosen one, or the one with the pointer when that is gone) and
     /// takes key again, so Esc and the buttons keep working; cards are re-stacked in the corner.
-    private func screensChanged() {
+    /// Without `force` it only acts on a takeover that no longer fills its screen, so it is cheap
+    /// and quiet enough to run on every tick as a safety net for a notification that never came.
+    private func screensChanged(force: Bool) {
         guard !shown.isEmpty, let screen = Self.screen(for: model.settings.alertDisplayID) else { return }
         for entry in shown.values where !entry.isCard {
+            guard force || entry.panel.frame != screen.frame else { continue }
             entry.panel.setFrame(screen.frame, display: true)
             entry.panel.makeKeyAndOrderFront(nil)
         }
-        if shown.values.contains(where: \.isCard) {
+        if force, shown.values.contains(where: \.isCard) {
             layoutCards(on: screen)
         }
     }
@@ -56,6 +66,8 @@ final class FullScreenAlertController {
         for entry in shown.values where entry.event.end <= now {
             dismiss(entry.event.key)
         }
+        // Safety net: a takeover stranded at an old screen size is fixed within a minute at worst.
+        screensChanged(force: false)
         guard settings.alertEnabled else {
             for key in shown.keys {
                 dismiss(key)
