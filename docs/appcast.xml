@@ -6,6 +6,16 @@
     <description>Updates for Calenbar, the menu bar calendar.</description>
     <language>en</language>
     <item>
+      <title>Calenbar 0.8.4</title>
+      <pubDate>Thu, 12 Nov 2026 14:56:29 +0000</pubDate>
+      <sparkle:version>179</sparkle:version>
+      <sparkle:shortVersionString>0.8.4</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<ul><li><b>The alert no longer traps you when you unplug a monitor.</b> If you disconnected an external display while the full-screen alert was open, it could stay at the old size with its buttons off screen. It now fits the screen you're left with, and Esc and the buttons keep working.</li><li><b>See what each menu bar flash looks like before it surprises you.</b> Settings › Notifications now has a mock menu bar and two small buttons, Starting (red) and Up next (yellow), that play the real flash with a line saying when it fires. Yellow flashes now use black text so the title is readable, and the red is a bit deeper for the same reason.</li><li><b>Find out which time zones your meetings come from, without hunting for them.</b> Settings › Time Zones now suggests the zones that show up in your events (where the invite was created, or "11am PT" in the title) and that you have no clock for. Add one with a click or dismiss it; nothing is added on its own. While there's room for another clock, the panel also tells you when it has suggestions.</li></ul>]]></description>
+      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.8.4/Calenbar-0.8.4.dmg" length="6791837" type="application/octet-stream"
+        sparkle:edSignature="bKpTxcJ6mgC1GjbOajLoR8QEFJGXfEcFKJMXQaJSfrow/qZ6Z98hFzd6iu9jsk0GZctUGHNqX9eVjiavny0iAw==" />
+    </item>
+    <item>
       <title>Calenbar 0.8.3</title>
       <pubDate>Wed, 11 Nov 2026 14:53:33 +0000</pubDate>
       <sparkle:version>169</sparkle:version>
@@ -104,16 +114,6 @@
       <description><![CDATA[<p>The full-screen alert is now off by default and can target a chosen screen; no alert for meetings you already joined; the panel and the Calendars tab say when the Mac has no calendar account; the menu bar item keeps its place.</p>]]></description>
       <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.4.1/Calenbar-0.4.1.dmg" length="5673796" type="application/octet-stream"
         sparkle:edSignature="rUxtKvWIW3NT9w2zg33xq55idJ+CU+pzXc6CgwSkLmKcXyHWCxzzQtd22H3incNj2dq3Gad8cs5hCBGOx/AzAQ==" />
-    </item>
-    <item>
-      <title>Calenbar 0.4.0</title>
-      <pubDate>Fri, 16 Oct 2026 01:39:28 +0000</pubDate>
-      <sparkle:version>38</sparkle:version>
-      <sparkle:shortVersionString>0.4.0</sparkle:shortVersionString>
-      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<p>In-app updates, a redesigned event card, a clearer Settings window and a landing page for new users.</p>]]></description>
-      <enclosure url="https://github.com/hercase/calenbar/releases/download/v0.4.0/Calenbar-0.4.0.dmg" length="5686823" type="application/octet-stream"
-        sparkle:edSignature="1BSftxEMcspjZKXB5ww4TY6MOB9hZMKcP0WoZeOq0+i3A2dY7KTrVpjI67XSYmn4g6bJ8WR66k/6DimypM6iCg==" />
     </item>
   </channel>
 </rss>
