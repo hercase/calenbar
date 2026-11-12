@@ -21,6 +21,7 @@ final class FullScreenAlertController {
     private var shown: [String: Shown] = [:]
     private var shownKeys: Set<String> = []
     private var snoozedUntil: [String: Date] = [:]
+    private var previousApp: NSRunningApplication?
     private var screenObserver: NSObjectProtocol?
     private var windowScreenObserver: NSObjectProtocol?
 
@@ -126,7 +127,7 @@ final class FullScreenAlertController {
         let actions = AlertActions(
             join: { [weak self] link in
                 MeetingOpener.open(link, event: event)
-                self?.dismiss(event.key)
+                self?.dismiss(event.key, restoreFocus: false)
             },
             snooze: { [weak self] until in
                 self?.snoozedUntil[event.key] = until
@@ -178,7 +179,13 @@ final class FullScreenAlertController {
         blur.addSubview(content)
         panel.contentView = blur
 
-        // Key without activating: Return and Esc work, and the app the user was in stays active.
+        // A panel in an inactive app does not reliably get the keyboard, and Return would land in
+        // whatever app is in front. Take the keyboard for real, and remember who to give it back to.
+        if previousApp == nil {
+            let front = NSWorkspace.shared.frontmostApplication
+            previousApp = front?.processIdentifier == ProcessInfo.processInfo.processIdentifier ? nil : front
+        }
+        NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
         return panel
     }
@@ -249,9 +256,15 @@ final class FullScreenAlertController {
         return NSScreen.screens.first(where: { $0.frame.contains(mouse) }) ?? NSScreen.main
     }
 
-    private func dismiss(_ key: String) {
+    /// `restoreFocus` hands the keyboard back to the app the takeover interrupted; joining skips it,
+    /// since the meeting's app is coming to the front.
+    private func dismiss(_ key: String, restoreFocus: Bool = true) {
         guard let entry = shown.removeValue(forKey: key) else { return }
         entry.panel.orderOut(nil)
+        if !entry.isCard, !shown.values.contains(where: { !$0.isCard }) {
+            if restoreFocus { previousApp?.activate() }
+            previousApp = nil
+        }
         // Called from a button inside the window: let the click finish before the window goes away.
         DispatchQueue.main.async { entry.panel.close() }
         if entry.isCard, let screen = entry.panel.screen ?? Self.screen(for: model.settings.alertDisplayID) {
