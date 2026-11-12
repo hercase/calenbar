@@ -9,10 +9,12 @@ Lead each bullet with what it solves for the user (see "Writing for users" in CO
 
 - **The alert no longer traps you when you unplug a monitor.** If you disconnected an external display while the full-screen alert was open, it could stay at the old size with its buttons off screen. It now fits the screen you're left with, and Esc and the buttons keep working.
 - **See what each menu bar flash looks like before it surprises you.** Settings › Notifications now has a mock menu bar and two small buttons, Starting (red) and Up next (yellow), that play the real flash with a line saying when it fires. Yellow flashes now use black text so the title is readable, and the red is a bit deeper for the same reason.
+- **Find out which time zones your meetings come from, without hunting for them.** Settings › Time Zones now suggests the zones that show up in your events (where the invite was created, or "11am PT" in the title) and that you have no clock for. Add one with a click or dismiss it; nothing is added on its own. While there's room for another clock, the panel also tells you when it has suggestions.
 
 ### es
 - **La alerta ya no te deja atrapado al desenchufar un monitor.** Si desconectabas una pantalla externa con la alerta de pantalla completa abierta, podía quedarse del tamaño anterior con los botones fuera de pantalla. Ahora se ajusta a la pantalla que te queda, y Esc y los botones siguen funcionando.
 - **Mirá cómo se ve cada parpadeo de la barra de menús antes de que te sorprenda.** Ajustes › Notificaciones ahora tiene una barra de menús en miniatura y dos botones chicos, Empieza (rojo) y Sigue (amarillo), que muestran el parpadeo real con una línea que dice cuándo se dispara. El amarillo ahora usa texto negro para que el título se lea, y el rojo es un poco más profundo por lo mismo.
+- **Descubrí de qué zonas horarias vienen tus reuniones, sin buscarlas.** Ajustes › Zonas horarias ahora sugiere las zonas que aparecen en tus eventos (donde se creó la invitación, o "11am PT" en el título) y para las que no tenés reloj. Agregá una con un clic o descartala; nada se agrega solo. Mientras haya lugar para otro reloj, el panel también avisa cuando hay sugerencias.
 
 ## 0.8.3 - 2026-11-11
 
