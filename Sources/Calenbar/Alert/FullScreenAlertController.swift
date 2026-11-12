@@ -21,10 +21,31 @@ final class FullScreenAlertController {
     private var shown: [String: Shown] = [:]
     private var shownKeys: Set<String> = []
     private var snoozedUntil: [String: Date] = [:]
+    private var screenObserver: NSObjectProtocol?
 
     init(model: AppModel) {
         self.model = model
         observeContinuously { [weak self] in self?.check() }
+        // Plugging or unplugging a display must not strand an alert at the old screen's size.
+        screenObserver = NotificationCenter.default.addObserver(
+            forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.screensChanged() }
+        }
+    }
+
+    /// Fits what is on screen to the displays that exist now: the takeover is resized to the
+    /// screen it belongs on (the chosen one, or the one with the pointer when that is gone) and
+    /// takes key again, so Esc and the buttons keep working; cards are re-stacked in the corner.
+    private func screensChanged() {
+        guard !shown.isEmpty, let screen = Self.screen(for: model.settings.alertDisplayID) else { return }
+        for entry in shown.values where !entry.isCard {
+            entry.panel.setFrame(screen.frame, display: true)
+            entry.panel.makeKeyAndOrderFront(nil)
+        }
+        if shown.values.contains(where: \.isCard) {
+            layoutCards(on: screen)
+        }
     }
 
     private func check() {
