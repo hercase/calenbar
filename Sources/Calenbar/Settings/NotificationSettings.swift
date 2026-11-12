@@ -42,20 +42,29 @@ struct NotificationSettings: View {
                     .disabled(!settings.flashEnabled)
                 Toggle("Flash yellow 10 min before a back-to-back meeting", isOn: $settings.flashFollowUp)
                     .disabled(!settings.flashEnabled)
-                HStack(spacing: 12) {
-                    FlashMockBar(flash: flashPreviewing, isOn: flashPhaseOn)
-                    Spacer(minLength: 0)
-                    HStack(spacing: 8) {
-                        FlashTestButton(
-                            color: .red, isRunning: flashPreviewing == .red, action: { previewFlash?(.red) },
-                            title: { Text("Starting") })
-                        FlashTestButton(
-                            color: .yellow, isRunning: flashPreviewing == .yellow, action: { previewFlash?(.yellow) },
-                            title: { Text("Up next") }
-                        )
-                        .disabled(!settings.flashFollowUp)
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 12) {
+                        FlashMockBar(flash: flashPreviewing, isOn: flashPhaseOn)
+                        Spacer(minLength: 0)
+                        HStack(spacing: 8) {
+                            FlashTestButton(
+                                color: .red, isRunning: flashPreviewing == .red, action: { previewFlash?(.red) },
+                                title: { Text("Starting") }
+                            )
+                            .help("Red: your event is about to start")
+                            FlashTestButton(
+                                color: .yellow, isRunning: flashPreviewing == .yellow, action: { previewFlash?(.yellow) },
+                                title: { Text("Up next") }
+                            )
+                            .help("Yellow: a heads-up for the meeting right after this one")
+                            .disabled(!settings.flashFollowUp)
+                        }
+                        .disabled(!settings.flashEnabled || previewFlash == nil)
                     }
-                    .disabled(!settings.flashEnabled || previewFlash == nil)
+                    flashCaption
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 Toggle("Play a sound at 5 min, at 30 s, and when the alert card appears", isOn: $settings.attentionSound)
             }
@@ -102,5 +111,21 @@ struct NotificationSettings: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    /// What the running preview stands for; before any preview, a nudge to try them.
+    @ViewBuilder private var flashCaption: some View {
+        switch flashPreviewing {
+        case .red where settings.flashFromFiveMinutes:
+            Text(
+                "Starting: red. Quick bursts at the end of each minute from 5 min before, then every other second in the last 30."
+            )
+        case .red:
+            Text("Starting: red. Flashes every other second in the last 30 seconds before the event.")
+        case .yellow:
+            Text("Up next: yellow. One short burst 10 min before the meeting right after the one you're in.")
+        case nil:
+            Text("Try each one to see it here and in your menu bar.")
+        }
     }
 }

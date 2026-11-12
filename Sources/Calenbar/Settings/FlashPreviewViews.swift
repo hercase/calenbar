@@ -22,7 +22,6 @@ struct FlashTestButton<Title: View>: View {
         .controlSize(.small)
         .buttonStyle(.bordered)
         .tint(isRunning ? color : nil)
-        .help(isRunning ? Text("Stop the preview") : Text("Preview this flash in the menu bar"))
         .accessibilityValue(isRunning ? Text("Running") : Text(""))
     }
 }
