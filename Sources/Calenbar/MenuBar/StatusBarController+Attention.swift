@@ -16,7 +16,7 @@ extension StatusBarController {
         guard let event, attention(for: event) != nil else {
             attentionTimer?.invalidate()
             attentionTimer = nil
-            setFlash(nil)
+            if !isPreviewingFlash { setFlash(nil) }
             return
         }
         guard attentionTimer == nil else { return }
@@ -44,6 +44,7 @@ extension StatusBarController {
             updateAttention(for: nil)
             return
         }
+        if isPreviewingFlash { return }
         let settings = model.settings
         let now = Date()
         switch attention {
@@ -51,7 +52,7 @@ extension StatusBarController {
             let fromFive = settings.flashFromFiveMinutes
             let isOn =
                 settings.flashEnabled && AttentionPolicy.isFlashOn(start: event.start, now: now, fromFiveMinutes: fromFive)
-            setFlash(isOn ? .systemRed : nil)
+            setFlash(isOn ? FlashPreview.red.nsColor : nil)
             if settings.attentionSound, AttentionPolicy.shouldPing(start: event.start, now: now, fromFiveMinutes: fromFive) {
                 NSSound(named: "Ping")?.play()
             }
@@ -60,18 +61,51 @@ extension StatusBarController {
         }
     }
 
-    /// Settings' preview: the yellow burst right away (5 flashes, a second on and a second off).
-    /// Skipped while a real countdown is flashing.
-    func previewFollowUpFlash() {
-        guard attentionTimer == nil else { return }
-        for flash in 0..<5 {
-            let start = Double(flash) * 2
-            DispatchQueue.main.asyncAfter(deadline: .now() + start) { [weak self] in self?.setFlash(.systemYellow) }
-            DispatchQueue.main.asyncAfter(deadline: .now() + start + 1) { [weak self] in self?.setFlash(nil) }
+    /// Settings' preview: a burst of the chosen color right away (5 flashes, a second on and a second off).
+    /// It takes over from a real countdown (which resumes on the next tick). Pressing the other color
+    /// switches to it; pressing the running one stops it.
+    func previewFlash(_ kind: FlashPreview) {
+        let wasRunning = model.flashPreviewing
+        stopPreview()
+        if wasRunning == kind { return }
+
+        let color = kind.nsColor
+        model.flashPreviewing = kind
+        previewTask = Task { [weak self] in
+            for _ in 0..<5 {
+                self?.setFlash(color)
+                self?.model.flashPhaseOn = true
+                try? await Task.sleep(for: .seconds(1))
+                self?.setFlash(nil)
+                self?.model.flashPhaseOn = false
+                try? await Task.sleep(for: .seconds(1))
+                if Task.isCancelled { return }
+            }
+            self?.previewTask = nil
+            self?.model.flashPreviewing = nil
         }
     }
 
+    private func stopPreview() {
+        previewTask?.cancel()
+        previewTask = nil
+        model.flashPreviewing = nil
+        model.flashPhaseOn = false
+        setFlash(nil)
+    }
+
     private func setFlash(_ color: NSColor?) {
-        statusItem.button?.layer?.backgroundColor = color?.cgColor
+        guard let button = statusItem.button else { return }
+        button.layer?.backgroundColor = color?.cgColor
+        // White on yellow is unreadable: put the title and icon in black while it's yellow.
+        let onYellow = color == .systemYellow
+        button.contentTintColor = onYellow ? .black : nil
+        if onYellow {
+            button.attributedTitle = NSAttributedString(
+                string: button.title,
+                attributes: [.foregroundColor: NSColor.black, .font: NSFont.menuBarFont(ofSize: 0)])
+        } else if button.attributedTitle.length > 0 {
+            button.title = button.title
+        }
     }
 }

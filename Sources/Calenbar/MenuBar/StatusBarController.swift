@@ -61,6 +61,9 @@ final class StatusBarController {
     private var renderedEventKey: String?
     private var lastTitle: String?
     var attentionTimer: Timer?
+    /// Settings' flash preview in progress; while it runs, re-renders and the countdown leave the bar alone.
+    var previewTask: Task<Void, Never>?
+    var isPreviewingFlash: Bool { previewTask != nil }
 
     init(
         model: AppModel,

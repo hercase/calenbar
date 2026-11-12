@@ -172,9 +172,9 @@
 "Calendar app" = "App Calendario";
 "Google Calendar (web)" = "Google Calendar (web)";
 "Grab attention when an event is close" = "Llamar la atención cuando falta poco";
-"Flash red in the menu bar" = "Parpadear en rojo en la barra de menús";
+"Flash red when a meeting is about to start" = "Parpadear en rojo cuando una reunión está por empezar";
 "Start 5 minutes before (flashes at the end of each minute)" = "Empezar 5 minutos antes (parpadea al final de cada minuto)";
-"Flash yellow 10 min before a meeting right after this one" = "Parpadear en amarillo 10 min antes de una reunión justo después de esta";
+"Flash yellow 10 min before a back-to-back meeting" = "Parpadear en amarillo 10 min antes de una reunión seguida";
 "Play a sound at 5 min, at 30 s, and when the alert card appears" = "Sonido a los 5 min, a los 30 s y cuando aparece la tarjeta de alerta";
 
 /* Settings: Calendars */
@@ -283,7 +283,12 @@
 "Calenbar sends one like this before each meeting, with a Join button." = "Calenbar manda una así antes de cada reunión, con un botón Unirse.";
 "Preview" = "Vista previa";
 "Send Test Notification" = "Enviar notificación de prueba";
-"Flash Yellow Now" = "Parpadear en amarillo ahora";
+"Starting" = "Empieza";
+"Up next" = "Sigue";
+"Stop the preview" = "Detener la vista previa";
+"Preview this flash in the menu bar" = "Ver este parpadeo en la barra de menús";
+"Running" = "En curso";
+"Menu bar preview" = "Vista previa de la barra de menús";
 "Show Test Alert" = "Mostrar alerta de prueba";
 "Corner" = "Esquina";
 "Bottom right" = "Abajo a la derecha";

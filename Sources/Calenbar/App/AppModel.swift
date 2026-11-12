@@ -15,8 +15,12 @@ final class AppModel {
     var notifications: NotificationScheduler?
     /// Set by the app delegate; Settings uses it for the test alert.
     var alerts: FullScreenAlertController?
-    /// Set by the app delegate; Settings uses it to preview the yellow flash.
-    var previewFollowUpFlash: (() -> Void)?
+    /// Set by the app delegate; Settings uses it to preview the red and yellow flashes.
+    var previewFlash: ((FlashPreview) -> Void)?
+    /// The flash preview running right now, so Settings can show which button is active.
+    var flashPreviewing: FlashPreview?
+    /// Whether the running preview is in its "on" beat, so Settings' mock bar flashes in step with the real one.
+    var flashPhaseOn = false
 
     init(settings: AppSettings, calendar: CalendarService, clock: MinuteClock) {
         self.settings = settings
@@ -179,5 +183,18 @@ func observeContinuously(_ apply: @escaping @MainActor () -> Void) {
         apply()
     } onChange: {
         Task { @MainActor in observeContinuously(apply) }
+    }
+}
+
+/// The two menu bar flashes Settings can preview.
+enum FlashPreview {
+    case red, yellow
+
+    /// A touch deeper than systemRed so the white title clears 4.5:1; black on systemYellow is already far above it.
+    var nsColor: NSColor {
+        switch self {
+        case .red: NSColor(red: 0.84, green: 0, blue: 0.08, alpha: 1)
+        case .yellow: .systemYellow
+        }
     }
 }
