@@ -184,6 +184,8 @@ final class PanelState {
 @Observable
 final class SettingsUIState {
     var isAddingClock = false
+    /// Whether the list of dismissed clock suggestions is open.
+    var showDismissedSuggestions = false
     /// Feedback under the clock list after a pick that changed nothing.
     var clockNote: String?
     let citySearch = CitySearch()

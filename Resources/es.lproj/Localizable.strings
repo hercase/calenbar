@@ -332,3 +332,13 @@
 "Copied" = "Copiado";
 "Copy meeting link" = "Copiar link de la reunión";
 "Open Event" = "Abrir evento";
+"Meetings in %@" = "Reuniones en %@";
+"Add clocks" = "Agregar relojes";
+"Hide dismissed" = "Ocultar descartadas";
+"Show dismissed (%lld)" = "Ver descartadas (%lld)";
+"Add %@" = "Agregar %@";
+"Dismiss %@" = "Descartar %@";
+"Restore" = "Restaurar";
+"Time zones in your meetings" = "Zonas horarias en tus reuniones";
+"In %lld meetings · %@" = "En %lld reuniones · %@";
+"settings.clocks.suggestions.footer" = "De tus reuniones de los últimos %1$lld y los próximos %2$lld días: dónde se creó cada invitación, o una hora como “11am PT” en el texto. Agregá las que usás para no tener que hacer la cuenta.";

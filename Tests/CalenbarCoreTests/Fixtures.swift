@@ -29,7 +29,8 @@ enum Fixture {
         notes: String? = nil,
         attendees: [Attendee] = [],
         myStatus: ParticipationStatus = .unknown,
-        isRecurring: Bool = false
+        isRecurring: Bool = false,
+        timeZoneID: String? = nil
     ) -> CalendarEvent {
         CalendarEvent(
             id: id ?? title,
@@ -50,7 +51,8 @@ enum Fixture {
             notes: notes,
             attendees: attendees,
             myStatus: myStatus,
-            isRecurring: isRecurring
+            isRecurring: isRecurring,
+            timeZoneID: timeZoneID
         )
     }
 }

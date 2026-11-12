@@ -2,11 +2,14 @@ import CalenbarCore
 import SwiftUI
 
 struct WorldClockSettings: View {
-    @Bindable var settings: AppSettings
+    let model: AppModel
     @Bindable var uiState: SettingsUIState
-    let clock: MinuteClock
+
+    private var settings: AppSettings { model.settings }
+    private var clock: MinuteClock { model.clock }
 
     var body: some View {
+        @Bindable var settings = model.settings
         Form {
             Section {
                 if settings.worldClocks.isEmpty {
@@ -71,12 +74,90 @@ struct WorldClockSettings: View {
                     }
                 }
             }
+            suggestionsSection
             Section("Show") {
                 Toggle("In the panel", isOn: $settings.showClocksInPanel)
                 Toggle("Meeting times in event details", isOn: $settings.showClocksInEventDetails)
             }
         }
         .formStyle(.grouped)
+    }
+
+    /// Zones the meetings point at that have no clock yet; the user decides, nothing is added alone.
+    @ViewBuilder private var suggestionsSection: some View {
+        let suggestions = model.clockSuggestions
+        let dismissed = settings.dismissedClockSuggestions.keys.sorted()
+        if !suggestions.isEmpty || !dismissed.isEmpty {
+            Section {
+                ForEach(suggestions) { suggestion in
+                    SuggestionRow(
+                        suggestion: suggestion,
+                        now: clock.now,
+                        canAdd: settings.worldClocks.count < AppSettings.maxWorldClocks,
+                        add: { settings.addWorldClock(timeZoneID: suggestion.timeZoneID, name: suggestion.cityName) },
+                        dismiss: { settings.dismissClockSuggestion(suggestion) }
+                    )
+                }
+                if !dismissed.isEmpty {
+                    Button(
+                        uiState.showDismissedSuggestions
+                            ? String(localized: "Hide dismissed") : String(localized: "Show dismissed (\(dismissed.count))")
+                    ) { uiState.showDismissedSuggestions.toggle() }
+                    .buttonStyle(.link)
+                    if uiState.showDismissedSuggestions {
+                        ForEach(dismissed, id: \.self) { zone in
+                            HStack {
+                                Text(ClockSuggestion(timeZoneID: zone, eventCount: 0, lastEvent: .distantPast).cityName)
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                Button("Restore") { settings.restoreClockSuggestion(timeZoneID: zone) }
+                            }
+                        }
+                    }
+                }
+            } header: {
+                Text("Time zones in your meetings")
+            } footer: {
+                SettingsFooter {
+                    Text(
+                        String(
+                            format: String(localized: "settings.clocks.suggestions.footer"),
+                            ClockSuggestions.lookBackDays, ClockSuggestions.lookAheadDays))
+                }
+            }
+        }
+    }
+}
+
+private struct SuggestionRow: View {
+    let suggestion: ClockSuggestion
+    let now: Date
+    let canAdd: Bool
+    let add: () -> Void
+    let dismiss: () -> Void
+
+    var body: some View {
+        let zone = TimeZone(identifier: suggestion.timeZoneID) ?? .current
+        HStack(spacing: PanelStyle.medium) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(suggestion.cityName).font(.body.weight(.medium))
+                Text("In \(suggestion.eventCount) meetings · \(WorldClocksView.offsetText(of: zone, at: now))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text(now.formatted(WorldClocksView.timeStyle(in: zone)))
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+            HStack(spacing: 2) {
+                IconButton(
+                    systemImage: "plus.circle.fill", label: String(localized: "Add \(suggestion.cityName)"),
+                    tint: canAdd ? .accentColor : .secondary, action: add
+                )
+                .disabled(!canAdd)
+                IconButton(systemImage: "xmark", label: String(localized: "Dismiss \(suggestion.cityName)"), action: dismiss)
+            }
+        }
     }
 }
 

@@ -218,12 +218,14 @@ struct PreviewFixtures {
             notes: "Agenda\n• Roadmap for Q4\n• Hiring update")
         oneOnOne = Self.event(
             "1:1 with Ana", start: now.addingTimeInterval(12 * 60 + 15 * 60), minutes: 30, id: "one",
-            url: URL(string: "https://zoom.us/j/123456"), attendees: Array(people.prefix(2)), status: .pending)
+            url: URL(string: "https://zoom.us/j/123456"), attendees: Array(people.prefix(2)), status: .pending,
+            timeZoneID: "America/Los_Angeles")
         let past = Self.event(
             "Design review", start: now.addingTimeInterval(-120 * 60), minutes: 60, id: "past",
             attendees: Array(people.prefix(2)),
-            status: .accepted)
-        let gym = Self.event("Gym", start: Self.at(19, 0), minutes: 60, id: "gym", calendar: ("personal", "#34C759"))
+            status: .accepted, timeZoneID: "Europe/London")
+        let gym = Self.event(
+            "Gym", start: Self.at(19, 0), minutes: 60, id: "gym", calendar: ("personal", "#34C759"), timeZoneID: "Europe/London")
         let offsite = Self.event(
             "Company offsite", start: Self.at(0, 0, dayOffset: 1), minutes: 24 * 60, id: "offsite", isAllDay: true)
         let vacation = Self.event(
@@ -231,7 +233,7 @@ struct PreviewFixtures {
         let planning = Self.event(
             "Sprint planning", start: Self.at(10, 0, dayOffset: 1), minutes: 60, id: "planning",
             url: URL(string: "https://teams.microsoft.com/l/meetup-join/19%3ameeting_abc%40thread.v2/0"),
-            attendees: Array(people.prefix(2)), status: .accepted)
+            attendees: Array(people.prefix(2)), status: .accepted, timeZoneID: "America/Los_Angeles")
         let calendars = [
             CalendarInfo(id: "work", title: "me@example.com", colorHex: "#3B82F6", sourceTitle: "Google", isFromAccount: true),
             CalendarInfo(id: "personal", title: "Personal", colorHex: "#34C759", sourceTitle: "iCloud", isFromAccount: true),
@@ -281,13 +283,14 @@ struct PreviewFixtures {
         attendees: [Attendee] = [],
         status: ParticipationStatus = .unknown,
         isAllDay: Bool = false,
-        notes: String? = nil
+        notes: String? = nil,
+        timeZoneID: String? = nil
     ) -> CalendarEvent {
         CalendarEvent(
             id: id, externalID: id, title: title, start: start, end: start.addingTimeInterval(Double(minutes) * 60),
             isAllDay: isAllDay, calendarID: calendar.0, calendarTitle: calendar.0 == "work" ? "me@example.com" : "Personal",
             calendarColorHex: calendar.1, isDeclined: false, hasOtherAttendees: !attendees.isEmpty, url: url,
-            location: nil, notes: notes, attendees: attendees, myStatus: status)
+            location: nil, notes: notes, attendees: attendees, myStatus: status, timeZoneID: timeZoneID)
     }
 
     private static func model(

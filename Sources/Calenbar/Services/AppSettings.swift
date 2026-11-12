@@ -110,6 +110,12 @@ final class AppSettings {
     static let maxWorldClocks = 5
     var worldClocks: [WorldClock] { didSet { store(worldClocks, .worldClocks) } }
     var showClocksInPanel: Bool { didSet { store(showClocksInPanel, .showClocksInPanel) } }
+    /// Zones the user turned down as suggested clocks, with when and how strong they were.
+    var dismissedClockSuggestions: [String: ClockDismissal] {
+        didSet { store(dismissedClockSuggestions, .dismissedClockSuggestions) }
+    }
+    /// The panel's one-line nudge toward Settings, closed for good by its own X.
+    var clockNudgeDismissed: Bool { didSet { store(clockNudgeDismissed, .clockNudgeDismissed) } }
     var showClocksInEventDetails: Bool { didSet { store(showClocksInEventDetails, .showClocksInEventDetails) } }
 
     /// Backed by the launchd agent, not UserDefaults; re-read after each change in case macOS refused it.
@@ -132,7 +138,7 @@ final class AppSettings {
         case notificationsEnabled, notifyLeadMinutes, alertEnabled, alertLeadMinutes, alertOnlyWithLink, alertDisplayID,
             alertStyle, alertCorner
         case disabledCalendars, holidayCalendarChoices, hiddenKeys, mutedKeys, quietKeys, worldClocks, showClocksInPanel,
-            showClocksInEventDetails
+            showClocksInEventDetails, dismissedClockSuggestions, clockNudgeDismissed
     }
 
     static let notifyLeadOptions = [0, 1, 2, 5, 10]
@@ -183,6 +189,8 @@ final class AppSettings {
         quietKeys = Self.load(.quietKeys, from: defaults) ?? []
         worldClocks = Self.load(.worldClocks, from: defaults) ?? []
         showClocksInPanel = Self.load(.showClocksInPanel, from: defaults) ?? true
+        dismissedClockSuggestions = Self.load(.dismissedClockSuggestions, from: defaults) ?? [:]
+        clockNudgeDismissed = Self.load(.clockNudgeDismissed, from: defaults) ?? false
         showClocksInEventDetails = Self.load(.showClocksInEventDetails, from: defaults) ?? true
         // 0.1.0 had separate "hide from menu bar" and "mute" sets; both became Skip.
         if let legacyHidden: Set<String> = Self.load(.hiddenKeys, from: defaults) {
@@ -244,6 +252,14 @@ final class AppSettings {
         }
         worldClocks.append(WorldClock(timeZoneID: timeZoneID, name: name))
         return true
+    }
+
+    func dismissClockSuggestion(_ suggestion: ClockSuggestion, now: Date = Date()) {
+        dismissedClockSuggestions[suggestion.timeZoneID] = ClockDismissal(date: now, eventCount: suggestion.eventCount)
+    }
+
+    func restoreClockSuggestion(timeZoneID: String) {
+        dismissedClockSuggestions.removeValue(forKey: timeZoneID)
     }
 
     /// Skip = the event disappears from the menu bar and never alerts; it stays (dimmed) in the list.

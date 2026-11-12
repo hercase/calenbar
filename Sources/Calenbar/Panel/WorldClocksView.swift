@@ -56,3 +56,26 @@ struct WorldClocksView: View {
         return style
     }
 }
+
+/// One quiet line under a short list of clocks: the meetings point at zones the user has no clock for.
+/// It only opens Settings, where the suggestions live; nothing is added from the panel.
+struct ClockNudgeView: View {
+    let names: [String]
+    let open: () -> Void
+    let dismiss: () -> Void
+
+    var body: some View {
+        HStack(spacing: PanelStyle.small) {
+            Text("Meetings in \(ListFormatter.localizedString(byJoining: names))")
+                .lineLimit(1)
+                .foregroundStyle(.secondary)
+            Spacer(minLength: PanelStyle.small)
+            Button("Add clocks", action: open)
+                .buttonStyle(.link)
+            IconButton(systemImage: "xmark", label: String(localized: "Dismiss"), action: dismiss)
+        }
+        .font(.caption)
+        .padding(.horizontal, PanelStyle.inset)
+        .padding(.bottom, PanelStyle.small)
+    }
+}

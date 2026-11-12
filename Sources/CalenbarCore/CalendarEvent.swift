@@ -25,6 +25,8 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
     /// Your own answer to the invitation.
     public let myStatus: ParticipationStatus
     public let isRecurring: Bool
+    /// The zone the event was created in, when the calendar says so (nil for all-day events).
+    public let timeZoneID: String?
     /// Other calendars that carry a copy of this event (a mirror into a work calendar, a shared team
     /// calendar); those copies are folded into this one by `deduplicated`.
     public var alsoIn: [String] = []
@@ -52,7 +54,8 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
         notes: String?,
         attendees: [Attendee] = [],
         myStatus: ParticipationStatus = .unknown,
-        isRecurring: Bool = false
+        isRecurring: Bool = false,
+        timeZoneID: String? = nil
     ) {
         self.id = id
         self.externalID = externalID
@@ -73,6 +76,7 @@ public struct CalendarEvent: Equatable, Hashable, Sendable, Identifiable {
         self.attendees = attendees
         self.myStatus = myStatus
         self.isRecurring = isRecurring
+        self.timeZoneID = timeZoneID
         meetingLink = MeetingLinkDetector.detect(url: url, location: location, notes: notes)
         // Time off is a day or at least a half day; a short meeting with "vacation" in its title isn't.
         let kind = DayOffDetector.kind(title: title, isHolidayCalendar: false)

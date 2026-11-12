@@ -6,6 +6,13 @@ struct PanelView: View {
     let state: PanelState
     let openSettings: () -> Void
 
+    /// Zones to mention under the clock list while there's room for another; empty when the nudge shouldn't show.
+    private var clockNudgeNames: [String] {
+        let count = model.settings.worldClocks.count
+        guard (1..<AppSettings.maxWorldClocks).contains(count), !model.settings.clockNudgeDismissed else { return [] }
+        return model.clockSuggestions.prefix(2).map(\.cityName)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if model.calendar.access != .granted {
@@ -25,6 +32,14 @@ struct PanelView: View {
                 if model.settings.showClocksInPanel, !model.settings.worldClocks.isEmpty {
                     PanelDivider()
                     WorldClocksView(clocks: model.settings.worldClocks, now: model.now)
+                    let nudgeNames = clockNudgeNames
+                    if !nudgeNames.isEmpty {
+                        ClockNudgeView(
+                            names: nudgeNames,
+                            open: { model.openTimeZoneSettings?() },
+                            dismiss: { model.settings.clockNudgeDismissed = true }
+                        )
+                    }
                 }
             }
             PanelDivider()

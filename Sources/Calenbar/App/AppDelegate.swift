@@ -28,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onClick: { button in panel.toggle(from: button) }
         )
         model.previewFlash = { [weak self] kind in self?.statusBar?.previewFlash(kind) }
+        model.openTimeZoneSettings = { [weak self] in self?.showSettings(page: String(localized: "Time Zones")) }
         notifications = NotificationScheduler(model: model)
         model.notifications = notifications
         alerts = FullScreenAlertController(model: model)
@@ -75,10 +76,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return main
     }
 
-    private func showSettings() {
+    private func showSettings(page: String? = nil) {
         guard let model else { return }
         if settingsWindow == nil {
             settingsWindow = SettingsWindow.make(model: model, uiState: SettingsUIState())
+        }
+        let tabs = settingsWindow?.contentViewController as? NSTabViewController
+        if let index = tabs?.tabViewItems.firstIndex(where: { $0.label == page }) {
+            tabs?.selectedTabViewItemIndex = index
         }
         NSApp.activate()
         settingsWindow?.makeKeyAndOrderFront(nil)

@@ -351,7 +351,8 @@ final class CalendarService {
             notes: event.notes,
             attendees: attendees,
             myStatus: currentUser.map { Self.status($0.participantStatus) } ?? .unknown,
-            isRecurring: event.hasRecurrenceRules
+            isRecurring: event.hasRecurrenceRules,
+            timeZoneID: event.isAllDay ? nil : event.timeZone?.identifier
         )
     }
 }

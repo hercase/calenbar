@@ -14,3 +14,4 @@
 "panel.accountHint" = "Calenbar shows the calendars the Mac's Calendar app knows. Add your Google, Exchange or iCloud account in System Settings › Internet Accounts and turn on Calendars.";
 "install.moveExplanation" = "Calenbar is running from a disk image or a temporary location. Moving it to the Applications folder lets it start at login and update itself.";
 "quit.explanation" = "Meeting alerts and the countdown will stop.";
+"settings.clocks.suggestions.footer" = "From your meetings in the last %1$lld and next %2$lld days: where each invite was created, or a time like “11am PT” in the text. Add the ones you work with so you never do the math.";

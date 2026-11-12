@@ -31,7 +31,7 @@ enum SettingsWindow {
                     ))),
             Page(
                 title: String(localized: "Time Zones"), symbol: "globe",
-                view: AnyView(WorldClockSettings(settings: model.settings, uiState: uiState, clock: model.clock))),
+                view: AnyView(WorldClockSettings(model: model, uiState: uiState))),
             Page(title: String(localized: "About"), symbol: "info.circle", view: AnyView(AboutView(updater: model.updater))),
         ]
     }

@@ -21,6 +21,9 @@ final class AppModel {
     var flashPreviewing: FlashPreview?
     /// Whether the running preview is in its "on" beat, so Settings' mock bar flashes in step with the real one.
     var flashPhaseOn = false
+    /// Set by the app delegate; the panel's clock nudge opens Settings on the Time Zones page.
+    var openTimeZoneSettings: (() -> Void)?
+    @ObservationIgnored private var suggestionCache: (key: String, value: [ClockSuggestion])?
 
     init(settings: AppSettings, calendar: CalendarService, clock: MinuteClock) {
         self.settings = settings
@@ -29,6 +32,27 @@ final class AppModel {
     }
 
     var now: Date { clock.now }
+
+    /// Time zones the next 60 days of meetings (and the last 30) point at that have no clock yet.
+    /// Remembered until the calendar reloads, since the panel asks on every redraw.
+    var clockSuggestions: [ClockSuggestion] {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: now)
+        let existing = Set(settings.worldClocks.map(\.timeZoneID))
+        let dismissed = settings.dismissedClockSuggestions
+        let key = [
+            "\(calendar.lastReload?.timeIntervalSinceReferenceDate ?? 0)", "\(today.timeIntervalSinceReferenceDate)",
+            existing.sorted().joined(separator: ","),
+            dismissed.map { "\($0.key)=\($0.value.date.timeIntervalSinceReferenceDate)" }.sorted().joined(separator: ","),
+        ].joined(separator: "|")
+        if let cached = suggestionCache, cached.key == key { return cached.value }
+        let start = cal.date(byAdding: .day, value: -ClockSuggestions.lookBackDays, to: today) ?? today
+        let end = cal.date(byAdding: .day, value: ClockSuggestions.lookAheadDays, to: today) ?? today
+        let value = ClockSuggestions.suggest(
+            events: calendar.cachedEvents(from: start, to: end), now: now, existing: existing, dismissed: dismissed)
+        suggestionCache = (key, value)
+        return value
+    }
 
     /// The event shown in the menu bar, or nil when nothing qualifies.
     var titleEvent: CalendarEvent? {
