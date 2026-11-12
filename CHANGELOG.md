@@ -5,7 +5,7 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
-## Unreleased
+## 0.8.4 - 2026-11-12
 
 - **The alert no longer traps you when you unplug a monitor.** If you disconnected an external display while the full-screen alert was open, it could stay at the old size with its buttons off screen. It now fits the screen you're left with, and Esc and the buttons keep working.
 - **See what each menu bar flash looks like before it surprises you.** Settings › Notifications now has a mock menu bar and two small buttons, Starting (red) and Up next (yellow), that play the real flash with a line saying when it fires. Yellow flashes now use black text so the title is readable, and the red is a bit deeper for the same reason.
