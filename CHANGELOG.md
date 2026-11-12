@@ -5,6 +5,15 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
+## Unreleased
+
+- **Return joins the meeting, not whatever app you were in.** The full-screen alert didn't always take the keyboard, so pressing Return could land in another app while you were looking at the alert. It now takes the keyboard when it appears, and gives it back to your app when you dismiss or snooze it.
+- **Know which meeting the yellow flash is about.** When a meeting is right behind the one you're in, the yellow flash 10 minutes before now shows that meeting's title and start time in the menu bar for about 40 seconds, then goes back to your current meeting.
+
+### es
+- **Enter te une a la reunión, no a la app en la que estabas.** La alerta de pantalla completa no siempre tomaba el teclado, así que al apretar Enter podía caer en otra app mientras mirabas la alerta. Ahora toma el teclado al aparecer y se lo devuelve a tu app cuando la descartás o la posponés.
+- **Sabé de qué reunión es el parpadeo amarillo.** Cuando hay una reunión justo detrás de la que estás, el parpadeo amarillo de 10 minutos antes ahora muestra en la barra de menús el título y la hora de esa reunión durante unos 40 segundos, y después vuelve a tu reunión actual.
+
 ## 0.8.4 - 2026-11-12
 
 - **The alert no longer traps you when you unplug a monitor.** If you disconnected an external display while the full-screen alert was open, it could stay at the old size with its buttons off screen. It now fits the screen you're left with, and Esc and the buttons keep working.
