@@ -5,7 +5,7 @@ release. Write the next version under "Unreleased" as you go; `scripts/release.s
 section into the release. Bullets are English; an optional `### es` block carries the Spanish ones.
 Lead each bullet with what it solves for the user (see "Writing for users" in CONTRIBUTING.md).
 
-## Unreleased
+## 0.8.5 - 2026-11-12
 
 - **Return joins the meeting, not whatever app you were in.** The full-screen alert didn't always take the keyboard, so pressing Return could land in another app while you were looking at the alert. It now takes the keyboard when it appears, and gives it back to your app when you dismiss or snooze it.
 - **Know which meeting the yellow flash is about.** When a meeting is right behind the one you're in, the yellow flash 10 minutes before now shows that meeting's title and start time in the menu bar for about 40 seconds, then goes back to your current meeting.
